@@ -10,6 +10,7 @@ class Button extends StatelessWidget{
   Widget build(BuildContext context){
     Size size = MediaQuery.of(context).size; //obtiene el tama;o del dispositivo
     return Container(
+      margin: const EdgeInsets.symmetric(vertical:8),
       width:size.width *.9,
       height: 50,
       decoration: BoxDecoration(
