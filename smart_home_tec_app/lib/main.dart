@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_home_tec_app/pages/auth_page.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,12 +10,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'SmartHome TEC',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
         ),
-      ),
-    );
+        home: const AuthPage());
   }
 }
