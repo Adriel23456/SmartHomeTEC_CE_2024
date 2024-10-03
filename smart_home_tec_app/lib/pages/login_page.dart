@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget{
 
 class _LoginPageState extends State<LoginPage> {
   //definir controles, estos van a obtener el valor de entrada y enviarlo a la base de datos
-  final userName = TextEditingController();
+  final userMail = TextEditingController();
   final password=TextEditingController();
   bool isRemembered=false;
 
@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text("Inicio de Sesión", style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: colorBaseBoton),),
-              TextEntry(writtenText: "Nombre de Usuario", icon: Icons.account_circle, controller: userName),
+              TextEntry(writtenText: "Correo", icon: Icons.account_circle, controller: userMail),
               TextEntry(writtenText: "Contraseña", icon: Icons.lock, controller: password, passwordVisibility: true),
 
               ListTile(
