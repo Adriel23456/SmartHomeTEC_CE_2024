@@ -18,7 +18,6 @@ class AuthPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //here goes all the elements of the page/screen
                   const Text("Pagina de Autenticacion", style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: colorBaseBoton),),
                   const Text("Inicia sesión o Regista tu cuenta", style: TextStyle(color: Colors.grey),),
                   Button(texto: "Login",funcion:(){Navigator.push(context,MaterialPageRoute(builder: (context)=>const LoginPage()));}),
