@@ -26,6 +26,86 @@ class _RegisterPageState extends State<RegisterPage> {
   final homeInfo = TextEditingController();
   final db = DatabaseHelper();
 
+  //variable for showing error texts
+  bool badEmail = false;
+  bool passwordsDifferent = false;
+  bool emptySpaces = false;
+  bool adminAttempted = false;
+  bool unaccceptablePassowrd = false;
+  bool userExists = false;
+  bool passwordDerived = false;
+
+  void _resetVariables() {
+    setState(() {
+      badEmail = false;
+    });
+    setState(() {
+      passwordsDifferent = false;
+    });
+    setState(() {
+      emptySpaces = false;
+    });
+    setState(() {
+      adminAttempted = false;
+    });
+    setState(() {
+      unaccceptablePassowrd = false;
+    });
+    setState(() {
+      userExists = false;
+    });
+    setState(() {
+      passwordDerived = false;
+    });
+  }
+
+  bool _isNonExistentUser() {
+    //checks for the mail in the database of clientes
+    //if it exists, return false
+
+    return true;
+  }
+
+  bool _isAcceptablePassowrd() {
+    if (password.text == passwordConfirm.text) {
+      if ((password.text != userMail.text) &&
+          password.text != name.text &&
+          password.text != lastName.text &&
+          password.text != (userMail.text.split("@"))[0]) {
+        //passowrd cant be equal to the mail, name, last name or the mail first part
+
+        if ((password.text.length >= 5)) {
+          //password must have 5 or more characters
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool _isAcceptableMail() {
+    if (userMail.text.contains("@") && !(userMail.text.contains(" "))) {
+      //the mail contains a @ and has no white spaces
+      if ((userMail.text.split("@")[0]).isNotEmpty &&
+          userMail.text.split("@")[1].isNotEmpty) {
+        //there is text on both side of the @
+        if ((!(userMail.text.split("@")[0]).contains("@")) &&
+            (!(userMail.text.split("@")[1]).contains("@"))) {
+          //there is no other @ in the email address
+          if (!(userMail.text.split("@")[1]).contains("admin")) {
+            //the user is not tryring to forcefully create an admin account
+            return true;
+          } else if ((userMail.text.split("@")[1]).contains("admin")) {
+            setState(() {
+              adminAttempted = true;
+            });
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   bool fieldsFilled() {
     if (userMail.text.isNotEmpty &&
         password.text.isNotEmpty &&
@@ -36,33 +116,51 @@ class _RegisterPageState extends State<RegisterPage> {
         district.text.isNotEmpty &&
         canton.text.isNotEmpty &&
         homeInfo.text.isNotEmpty) {
-      return true;
+      if (_isAcceptableMail()) {
+        //checks if mail has an @ and if it has something before the @
+        return true;
+      } else {
+        setState(() {
+          badEmail = true;
+        });
+      }
     } else {
-      return false;
+      setState(() {
+        emptySpaces = true;
+      });
     }
+    return false;
   }
 
   register() async {
+    _resetVariables(); //resets the bool variables in case a new error is presented and a old one is solved
     if (fieldsFilled()) {
-      //veridfy if all fields have text
-      if (password.text == passwordConfirm.text) {
-        //verify if both passwords are correct
-        var result = await db.createCliente(Clientes(
-            userMail: userMail.text,
-            password: password.text,
-            name: name.text,
-            lastName: lastName.text,
-            country: country.text,
-            province: province.text,
-            district: district.text,
-            canton: canton.text,
-            infoAdicional: homeInfo.text));
+      //veridfy if all fields have text and checks email
+      if (_isAcceptablePassowrd()) {
+        //verify password constraints
+        if (_isNonExistentUser()) {
+          //checks if the user doesnt exist already
+          var result = await db.createCliente(Clientes(
+              userMail: userMail.text,
+              password: password.text,
+              name: name.text,
+              lastName: lastName.text,
+              country: country.text,
+              province: province.text,
+              district: district.text,
+              canton: canton.text,
+              infoAdicional: homeInfo.text));
 
-        if (result > 0) {
-          if (!mounted) return;
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const LoginPage()));
+          if (result > 0) {
+            if (!mounted) return;
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const LoginPage()));
+          }
         }
+      } else {
+        setState(() {
+          passwordsDifferent = true;
+        });
       }
     }
   }
@@ -150,6 +248,38 @@ class _RegisterPageState extends State<RegisterPage> {
                                     child: const Text("Inicia Sesión"))
                               ],
                             ),
+                            badEmail
+                                ? Text(
+                                    badEmailText,
+                                    style: TextStyle(
+                                      color: Colors.red.shade900,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            passwordsDifferent
+                                ? Text(
+                                    passwordDifferentText,
+                                    style: TextStyle(
+                                      color: Colors.red.shade900,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            emptySpaces
+                                ? Text(
+                                    emptySpacesText,
+                                    style: TextStyle(
+                                      color: Colors.red.shade900,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            adminAttempted
+                                ? Text(
+                                    adminAttemptedText,
+                                    style: TextStyle(
+                                      color: Colors.red.shade900,
+                                    ),
+                                  )
+                                : const SizedBox(),
                           ],
                         ))))));
   }
