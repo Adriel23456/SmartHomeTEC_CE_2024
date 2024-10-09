@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
+import 'package:smart_home_tec_app/SQLite/sql_helper.dart';
 import 'package:smart_home_tec_app/pages/created_objects/button.dart';
 import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
 import 'package:smart_home_tec_app/pages/created_objects/textentry.dart';
@@ -22,6 +24,48 @@ class _RegisterPageState extends State<RegisterPage> {
   final district = TextEditingController();
   final canton = TextEditingController();
   final homeInfo = TextEditingController();
+  final db = DatabaseHelper();
+
+  bool fieldsFilled() {
+    if (userMail.text.isNotEmpty &&
+        password.text.isNotEmpty &&
+        name.text.isNotEmpty &&
+        lastName.text.isNotEmpty &&
+        country.text.isNotEmpty &&
+        province.text.isNotEmpty &&
+        district.text.isNotEmpty &&
+        canton.text.isNotEmpty &&
+        homeInfo.text.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  register() async {
+    if (fieldsFilled()) {
+      //veridfy if all fields have text
+      if (password.text == passwordConfirm.text) {
+        //verify if both passwords are correct
+        var result = await db.createCliente(Clientes(
+            userMail: userMail.text,
+            password: password.text,
+            name: name.text,
+            lastName: lastName.text,
+            country: country.text,
+            province: province.text,
+            district: district.text,
+            canton: canton.text,
+            infoAdicional: homeInfo.text));
+
+        if (result > 0) {
+          if (!mounted) return;
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const LoginPage()));
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             TextEntry(
                                 writtenText: "Confirmar contraseña",
                                 icon: Icons.lock,
-                                controller: password,
+                                controller: passwordConfirm,
                                 passwordVisibility: true),
                             TextEntry(
                                 writtenText: "Pais",
@@ -84,7 +128,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                 writtenText: "Apartamento/Casa",
                                 icon: Icons.add_location_alt_outlined,
                                 controller: homeInfo),
-                            Button(texto: "Registrarse", funcion: () {}),
+                            Button(
+                                texto: "Registrarse",
+                                funcion: () {
+                                  register();
+                                }),
                             Row(
                               children: [
                                 Text(
