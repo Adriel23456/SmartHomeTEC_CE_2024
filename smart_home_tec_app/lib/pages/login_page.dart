@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
+import 'package:smart_home_tec_app/SQLite/sql_helper.dart';
 import 'package:smart_home_tec_app/pages/created_objects/button.dart';
 import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
 import 'package:smart_home_tec_app/pages/created_objects/textentry.dart';
+import 'package:smart_home_tec_app/pages/main_page.dart';
 import 'package:smart_home_tec_app/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,6 +20,21 @@ class _LoginPageState extends State<LoginPage> {
   final password = TextEditingController();
   bool isRemembered = false;
   bool loginCorrect = false;
+  final db = DatabaseHelper();
+
+  login() async {
+    var result = await db.authenticate(
+        Clientes(userMail: userMail.text, password: password.text));
+    if (result == true) {
+      if (!mounted) return;
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const UserPage()));
+    } else {
+      setState(() {
+        loginCorrect = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +73,11 @@ class _LoginPageState extends State<LoginPage> {
                     });
                   }),
             ),
-            Button(texto: "Iniciar Sesión", funcion: () {}),
+            Button(
+                texto: "Iniciar Sesión",
+                funcion: () {
+                  login();
+                }),
             Row(
               children: [
                 Text(

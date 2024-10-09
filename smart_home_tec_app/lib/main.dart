@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_home_tec_app/pages/auth_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MainApp());
 }
 
