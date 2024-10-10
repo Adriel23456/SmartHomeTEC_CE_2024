@@ -10,8 +10,12 @@ namespace SmartHomeTEC_API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "public");
+
             migrationBuilder.CreateTable(
-                name: "Admins",
+                name: "Admin",
+                schema: "public",
                 columns: table => new
                 {
                     Email = table.Column<string>(type: "text", nullable: false),
@@ -19,7 +23,7 @@ namespace SmartHomeTEC_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Admins", x => x.Email);
+                    table.PrimaryKey("PK_Admin", x => x.Email);
                 });
         }
 
@@ -27,7 +31,8 @@ namespace SmartHomeTEC_API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Admins");
+                name: "Admin",
+                schema: "public");
         }
     }
 }

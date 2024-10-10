@@ -11,11 +11,11 @@ namespace SmartHomeTEC_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminsController : ControllerBase
+    public class AdminController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public AdminsController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -24,14 +24,14 @@ namespace SmartHomeTEC_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Admin>>> GetAdmins()
         {
-            return await _context.Admins.ToListAsync();
+            return await _context.Admin.ToListAsync();
         }
 
         // GET: api/Admins/{email}
         [HttpGet("{email}")]
         public async Task<ActionResult<Admin>> GetAdmin(string email)
         {
-            var admin = await _context.Admins.FindAsync(email);
+            var admin = await _context.Admin.FindAsync(email);
 
             if (admin == null)
             {
@@ -45,7 +45,7 @@ namespace SmartHomeTEC_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Admin>> PostAdmin(Admin admin)
         {
-            _context.Admins.Add(admin);
+            _context.Admin.Add(admin);
             try
             {
                 await _context.SaveChangesAsync();
@@ -99,13 +99,13 @@ namespace SmartHomeTEC_API.Controllers
         [HttpDelete("{email}")]
         public async Task<IActionResult> DeleteAdmin(string email)
         {
-            var admin = await _context.Admins.FindAsync(email);
+            var admin = await _context.Admin.FindAsync(email);
             if (admin == null)
             {
                 return NotFound();
             }
 
-            _context.Admins.Remove(admin);
+            _context.Admin.Remove(admin);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -113,7 +113,7 @@ namespace SmartHomeTEC_API.Controllers
 
         private bool AdminExists(string email)
         {
-            return _context.Admins.Any(e => e.Email == email);
+            return _context.Admin.Any(e => e.Email == email);
         }
     }
 }

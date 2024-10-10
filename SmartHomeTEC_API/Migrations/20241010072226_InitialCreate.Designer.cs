@@ -11,7 +11,7 @@ using SmartHomeTEC_API.Data;
 namespace SmartHomeTEC_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241001010038_InitialCreate")]
+    [Migration("20241010072226_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -19,6 +19,7 @@ namespace SmartHomeTEC_API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -35,7 +36,7 @@ namespace SmartHomeTEC_API.Migrations
 
                     b.HasKey("Email");
 
-                    b.ToTable("Admins");
+                    b.ToTable("Admin", "public");
                 });
 #pragma warning restore 612, 618
         }

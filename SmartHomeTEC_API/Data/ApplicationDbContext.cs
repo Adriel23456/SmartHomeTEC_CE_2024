@@ -14,6 +14,13 @@ namespace SmartHomeTEC_API.Data
         {
         }
 
-        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Admin> Admin { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Map the Admin entity to the "Admin" table
+            modelBuilder.HasDefaultSchema("public");
+            modelBuilder.Entity<Admin>().ToTable("Admin");
+        }
     }
 }
