@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Data;
@@ -20,14 +16,14 @@ namespace SmartHomeTEC_API.Controllers
             _context = context;
         }
 
-        // GET: api/Admins
+        // GET: api/Admin
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Admin>>> GetAdmins()
         {
             return await _context.Admin.ToListAsync();
         }
 
-        // GET: api/Admins/{email}
+        // GET: api/Admin/{email}
         [HttpGet("{email}")]
         public async Task<ActionResult<Admin>> GetAdmin(string email)
         {
@@ -41,7 +37,7 @@ namespace SmartHomeTEC_API.Controllers
             return admin;
         }
 
-        // POST: api/Admins
+        // POST: api/Admin
         [HttpPost]
         public async Task<ActionResult<Admin>> PostAdmin(Admin admin)
         {
@@ -65,7 +61,7 @@ namespace SmartHomeTEC_API.Controllers
             return CreatedAtAction(nameof(GetAdmin), new { email = admin.Email }, admin);
         }
 
-        // PUT: api/Admins/{email}
+        // PUT: api/Admin/{email}
         [HttpPut("{email}")]
         public async Task<IActionResult> PutAdmin(string email, Admin admin)
         {
@@ -95,20 +91,24 @@ namespace SmartHomeTEC_API.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Admins/{email}
-        [HttpDelete("{email}")]
-        public async Task<IActionResult> DeleteAdmin(string email)
+        // POST: api/Admin/Login
+        [HttpPost("Login")]
+        public async Task<ActionResult<Admin>> Login(AuthRequest request)
         {
-            var admin = await _context.Admin.FindAsync(email);
-            if (admin == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
 
-            _context.Admin.Remove(admin);
-            await _context.SaveChangesAsync();
+            var admin = await _context.Admin
+                .FirstOrDefaultAsync(a => a.Email == request.Email && a.Password == request.Password);
 
-            return NoContent();
+            if (admin == null)
+            {
+                return Unauthorized("Credenciales inválidas.");
+            }
+
+            return Ok(admin);
         }
 
         private bool AdminExists(string email)

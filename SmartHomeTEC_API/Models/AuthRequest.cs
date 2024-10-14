@@ -2,9 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SmartHomeTEC_API.Models
 {
-    public class Admin
+    public class AuthRequest
     {
-        [Key]
         [Required]
         [EmailAddress]
         public required string Email { get; set; }

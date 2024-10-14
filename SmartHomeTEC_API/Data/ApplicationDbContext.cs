@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Models;
 
@@ -13,14 +9,8 @@ namespace SmartHomeTEC_API.Data
             : base(options)
         {
         }
-
         public DbSet<Admin> Admin { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // Map the Admin entity to the "Admin" table
-            modelBuilder.HasDefaultSchema("public");
-            modelBuilder.Entity<Admin>().ToTable("Admin");
-        }
+        public DbSet<DeviceType> DeviceType { get; set; }
+        public DbSet<Distributor> Distributor { get; set; }
     }
 }
