@@ -105,3 +105,5 @@ C:\Users\Adriel\Desktop\Informacion-de-Prioridad\TEC\2024\Semestre_2\Bases_De_Da
 C:\Users\Adriel\Desktop\Informacion-de-Prioridad\TEC\2024\Semestre_2\Bases_De_Datos\Evaluaciones\Proyectos\Proyecto1\SmartHomeTEC_CE_2024\SmartHomeTEC_API\obj\Debug\net8.0\SmartHomeTEC_API.genruntimeconfig.cache
 C:\Users\Adriel\Desktop\Informacion-de-Prioridad\TEC\2024\Semestre_2\Bases_De_Datos\Evaluaciones\Proyectos\Proyecto1\SmartHomeTEC_CE_2024\SmartHomeTEC_API\obj\Debug\net8.0\ref\SmartHomeTEC_API.dll
 C:\Users\Adriel\Desktop\Informacion-de-Prioridad\TEC\2024\Semestre_2\Bases_De_Datos\Evaluaciones\Proyectos\Proyecto1\SmartHomeTEC_CE_2024\SmartHomeTEC_API\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\Adriel\Desktop\Informacion-de-Prioridad\TEC\2024\Semestre_2\Bases_De_Datos\Evaluaciones\Proyectos\Proyecto1\SmartHomeTEC_CE_2024\SmartHomeTEC_API\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\Adriel\Desktop\Informacion-de-Prioridad\TEC\2024\Semestre_2\Bases_De_Datos\Evaluaciones\Proyectos\Proyecto1\SmartHomeTEC_CE_2024\SmartHomeTEC_API\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

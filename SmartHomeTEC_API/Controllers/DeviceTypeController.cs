@@ -1,6 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Data;
+using SmartHomeTEC_API.DTOs;
 using SmartHomeTEC_API.Models;
 
 namespace SmartHomeTEC_API.Controllers
@@ -10,21 +12,24 @@ namespace SmartHomeTEC_API.Controllers
     public class DeviceTypeController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public DeviceTypeController(ApplicationDbContext context)
+        public DeviceTypeController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/DeviceType
         /// <summary>
         /// Obtiene todos los tipos de dispositivos.
         /// </summary>
-        /// <returns>Lista de DeviceType</returns>
+        /// <returns>Lista de DeviceTypeDTO</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DeviceType>>> GetDeviceTypes()
+        public async Task<ActionResult<IEnumerable<DeviceTypeDTO>>> GetDeviceTypes()
         {
-            return await _context.DeviceType.ToListAsync();
+            var deviceTypes = await _context.DeviceType.ToListAsync();
+            return _mapper.Map<List<DeviceTypeDTO>>(deviceTypes);
         }
 
         // GET: api/DeviceType/{name}
@@ -32,9 +37,9 @@ namespace SmartHomeTEC_API.Controllers
         /// Obtiene un tipo de dispositivo específico por su nombre.
         /// </summary>
         /// <param name="name">Nombre del DeviceType</param>
-        /// <returns>Objeto DeviceType</returns>
+        /// <returns>Objeto DeviceTypeDTO</returns>
         [HttpGet("{name}")]
-        public async Task<ActionResult<DeviceType>> GetDeviceType(string name)
+        public async Task<ActionResult<DeviceTypeDTO>> GetDeviceType(string name)
         {
             var deviceType = await _context.DeviceType.FindAsync(name);
 
@@ -43,28 +48,33 @@ namespace SmartHomeTEC_API.Controllers
                 return NotFound();
             }
 
-            return deviceType;
+            return _mapper.Map<DeviceTypeDTO>(deviceType);
         }
 
         // POST: api/DeviceType
         /// <summary>
         /// Crea un nuevo tipo de dispositivo.
         /// </summary>
-        /// <param name="deviceType">Objeto DeviceType</param>
-        /// <returns>Objeto DeviceType creado</returns>
+        /// <param name="deviceTypeDTO">Objeto DeviceTypeDTO</param>
+        /// <returns>Objeto DeviceTypeDTO creado</returns>
         [HttpPost]
-        public async Task<ActionResult<DeviceType>> PostDeviceType(DeviceType deviceType)
+        public async Task<ActionResult<DeviceTypeDTO>> PostDeviceType(DeviceTypeDTO deviceTypeDTO)
         {
             // Verificar si el DeviceType ya existe
-            if (DeviceTypeExists(deviceType.Name))
+            if (DeviceTypeExists(deviceTypeDTO.Name))
             {
                 return Conflict("El tipo de dispositivo con este nombre ya existe.");
             }
 
+            // Mapear DTO a Entidad
+            var deviceType = _mapper.Map<DeviceType>(deviceTypeDTO);
+
             _context.DeviceType.Add(deviceType);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetDeviceType), new { name = deviceType.Name }, deviceType);
+            var createdDeviceTypeDTO = _mapper.Map<DeviceTypeDTO>(deviceType);
+
+            return CreatedAtAction(nameof(GetDeviceType), new { name = deviceType.Name }, createdDeviceTypeDTO);
         }
 
         // PUT: api/DeviceType/{name}
@@ -72,15 +82,18 @@ namespace SmartHomeTEC_API.Controllers
         /// Actualiza un tipo de dispositivo existente.
         /// </summary>
         /// <param name="name">Nombre del DeviceType a actualizar</param>
-        /// <param name="deviceType">Objeto DeviceType con datos actualizados</param>
+        /// <param name="deviceTypeDTO">Objeto DeviceTypeDTO con datos actualizados</param>
         /// <returns>Estado de la operación</returns>
         [HttpPut("{name}")]
-        public async Task<IActionResult> PutDeviceType(string name, DeviceType deviceType)
+        public async Task<IActionResult> PutDeviceType(string name, DeviceTypeDTO deviceTypeDTO)
         {
-            if (name != deviceType.Name)
+            if (name != deviceTypeDTO.Name)
             {
                 return BadRequest("El nombre del tipo de dispositivo no coincide.");
             }
+
+            // Mapear DTO a Entidad
+            var deviceType = _mapper.Map<DeviceType>(deviceTypeDTO);
 
             _context.Entry(deviceType).State = EntityState.Modified;
 

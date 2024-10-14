@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SmartHomeTEC_API.Models
 {
@@ -21,5 +22,9 @@ namespace SmartHomeTEC_API.Models
 
         [Required]
         public required string Country { get; set; }
+
+        // Propiedad de Navegación
+        [JsonIgnore]
+        public ICollection<Device> Devices { get; set; } = new List<Device>(); // Inicializada
     }
 }

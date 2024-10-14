@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Data;
+using SmartHomeTEC_API.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Configuración de Servicios
 // ===============================
 
+// Agregar AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 // Agregar servicios de controladores
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; // Evita ciclos
+    });
 
 // Configurar la cadena de conexión a PostgreSQL desde appsettings.json
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -50,8 +61,7 @@ app.UseHttpsRedirection();
 // Aplicar la política de CORS definida anteriormente
 app.UseCors("AllowAll");
 
-// Configurar autorización (puedes ajustarlo según tus necesidades)
-app.UseAuthorization();
+// Configurar autorización (eliminado en este caso)
 
 // Mapear los controladores a las rutas de la API
 app.MapControllers();

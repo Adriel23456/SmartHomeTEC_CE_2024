@@ -1,6 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Data;
+using SmartHomeTEC_API.DTOs;
 using SmartHomeTEC_API.Models;
 
 namespace SmartHomeTEC_API.Controllers
@@ -10,21 +12,24 @@ namespace SmartHomeTEC_API.Controllers
     public class DistributorController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public DistributorController(ApplicationDbContext context)
+        public DistributorController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Distributor
         /// <summary>
         /// Obtiene todos los distribuidores.
         /// </summary>
-        /// <returns>Lista de Distributor</returns>
+        /// <returns>Lista de DistributorDTO</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Distributor>>> GetDistributors()
+        public async Task<ActionResult<IEnumerable<DistributorDTO>>> GetDistributors()
         {
-            return await _context.Distributor.ToListAsync();
+            var distributors = await _context.Distributor.ToListAsync();
+            return _mapper.Map<List<DistributorDTO>>(distributors);
         }
 
         // GET: api/Distributor/{legalNum}
@@ -32,9 +37,9 @@ namespace SmartHomeTEC_API.Controllers
         /// Obtiene un distribuidor específico por su número legal.
         /// </summary>
         /// <param name="legalNum">Número legal del Distributor</param>
-        /// <returns>Objeto Distributor</returns>
+        /// <returns>Objeto DistributorDTO</returns>
         [HttpGet("{legalNum}")]
-        public async Task<ActionResult<Distributor>> GetDistributor(string legalNum)
+        public async Task<ActionResult<DistributorDTO>> GetDistributor(string legalNum)
         {
             var distributor = await _context.Distributor.FindAsync(legalNum);
 
@@ -43,28 +48,33 @@ namespace SmartHomeTEC_API.Controllers
                 return NotFound();
             }
 
-            return distributor;
+            return _mapper.Map<DistributorDTO>(distributor);
         }
 
         // POST: api/Distributor
         /// <summary>
         /// Crea un nuevo distribuidor.
         /// </summary>
-        /// <param name="distributor">Objeto Distributor</param>
-        /// <returns>Objeto Distributor creado</returns>
+        /// <param name="distributorDTO">Objeto DistributorDTO</param>
+        /// <returns>Objeto DistributorDTO creado</returns>
         [HttpPost]
-        public async Task<ActionResult<Distributor>> PostDistributor(Distributor distributor)
+        public async Task<ActionResult<DistributorDTO>> PostDistributor(DistributorDTO distributorDTO)
         {
             // Verificar si el Distributor ya existe
-            if (DistributorExists(distributor.LegalNum))
+            if (DistributorExists(distributorDTO.LegalNum))
             {
                 return Conflict("El distribuidor con este número legal ya existe.");
             }
 
+            // Mapear DTO a Entidad
+            var distributor = _mapper.Map<Distributor>(distributorDTO);
+
             _context.Distributor.Add(distributor);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetDistributor), new { legalNum = distributor.LegalNum }, distributor);
+            var createdDistributorDTO = _mapper.Map<DistributorDTO>(distributor);
+
+            return CreatedAtAction(nameof(GetDistributor), new { legalNum = distributor.LegalNum }, createdDistributorDTO);
         }
 
         // PUT: api/Distributor/{legalNum}
@@ -72,15 +82,18 @@ namespace SmartHomeTEC_API.Controllers
         /// Actualiza un distribuidor existente.
         /// </summary>
         /// <param name="legalNum">Número legal del Distributor a actualizar</param>
-        /// <param name="distributor">Objeto Distributor con datos actualizados</param>
+        /// <param name="distributorDTO">Objeto DistributorDTO con datos actualizados</param>
         /// <returns>Estado de la operación</returns>
         [HttpPut("{legalNum}")]
-        public async Task<IActionResult> PutDistributor(string legalNum, Distributor distributor)
+        public async Task<IActionResult> PutDistributor(string legalNum, DistributorDTO distributorDTO)
         {
-            if (legalNum != distributor.LegalNum)
+            if (legalNum != distributorDTO.LegalNum)
             {
                 return BadRequest("El número legal del distribuidor no coincide.");
             }
+
+            // Mapear DTO a Entidad
+            var distributor = _mapper.Map<Distributor>(distributorDTO);
 
             _context.Entry(distributor).State = EntityState.Modified;
 
