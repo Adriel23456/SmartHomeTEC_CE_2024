@@ -38,20 +38,23 @@ namespace SmartHomeTEC_API.Models
         [ForeignKey("DeviceType")]
         public required string DeviceTypeName { get; set; }
 
-        [JsonIgnore]
-        public DeviceType? DeviceType { get; set; } // Navegación
-
         // Foreign Key a Distributor
         [ForeignKey("Distributor")]
         public string? LegalNum { get; set; }
 
-        [JsonIgnore]
-        public Distributor? Distributor { get; set; } // Navegación
-
-        // Propiedad de Navegación hacia Order
+        // Propiedades de Navegación:
         [JsonIgnore]
         public Order? Order { get; set; }
 
+        [JsonIgnore]
+        [Required]
+        public required DeviceType DeviceType { get; set; }
+
+        [JsonIgnore]
+        public Distributor? Distributor { get; set; }
+
+        [JsonIgnore]
+        public Certificate? Certificate { get; set; }
     }
 
     public enum DeviceState

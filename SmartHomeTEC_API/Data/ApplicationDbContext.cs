@@ -1,7 +1,5 @@
-// ----------------------------Data/ApplicationDbContext.cs---------------------------------
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Models;
-using System.Text.Json.Serialization;
 
 namespace SmartHomeTEC_API.Data
 {
@@ -20,6 +18,7 @@ namespace SmartHomeTEC_API.Data
         public DbSet<Client> Client { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<Bill> Bill { get; set; }
+        public DbSet<Certificate> Certificate { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -88,6 +87,38 @@ namespace SmartHomeTEC_API.Data
             modelBuilder.Entity<Order>()
                 .HasIndex(o => o.SerialNumberDevice)
                 .IsUnique();
+
+            // Configurar la clave primaria como SerialNumberDevice
+            modelBuilder.Entity<Certificate>()
+                .HasKey(c => c.SerialNumberDevice);
+            
+            // Configurar la relación uno a uno entre Certificate y Device
+            modelBuilder.Entity<Certificate>()
+                .HasOne(c => c.Device)
+                .WithOne(d => d.Certificate) // Asumiendo que Device tiene SOLO UN Certificate
+                .HasForeignKey<Certificate>(o => o.SerialNumberDevice)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Configurar la relación entre Certificate y DeviceType
+            modelBuilder.Entity<Certificate>()
+                .HasOne(c => c.DeviceType)
+                .WithMany(dt => dt.Certificates)
+                .HasForeignKey(c => c.DeviceTypeName)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            // Configurar la relación entre Certificate y Client
+            modelBuilder.Entity<Certificate>()
+                .HasOne(c => c.Client)
+                .WithMany(cl => cl.Certificates)
+                .HasForeignKey(c => c.ClientEmail)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            // Configurar la relación uno a uno entre Certificate y Bill
+            modelBuilder.Entity<Certificate>()
+                .HasOne(c => c.Bill)
+                .WithOne(b => b.Certificate)
+                .HasForeignKey<Certificate>(c => c.BillNum)
+                .OnDelete(DeleteBehavior.Cascade);
             
         }
     }

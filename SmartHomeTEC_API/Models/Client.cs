@@ -35,8 +35,11 @@ namespace SmartHomeTEC_API.Models
         [Required]
         public required string LastName { get; set; }
 
-        // Propiedades de Navegación hacia Order
+        // Propiedades de Navegación:
         [JsonIgnore]
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+        [JsonIgnore]
+        public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
     }
 }

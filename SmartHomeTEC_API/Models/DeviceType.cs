@@ -29,5 +29,9 @@ namespace SmartHomeTEC_API.Models
         // Propiedad de Navegación hacia Bill
         [JsonIgnore]
         public ICollection<Bill> Bills { get; set; } = new List<Bill>();
+
+        // Propiedad de Navegación hacia Certificate
+        [JsonIgnore]
+        public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
     }
 }

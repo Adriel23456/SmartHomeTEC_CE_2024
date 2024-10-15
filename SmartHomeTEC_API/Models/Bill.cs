@@ -33,5 +33,8 @@ namespace SmartHomeTEC_API.Models
 
         [JsonIgnore]
         public required Order Order { get; set; }
+
+        [JsonIgnore]
+        public Certificate? Certificate { get; set; }
     }
 }

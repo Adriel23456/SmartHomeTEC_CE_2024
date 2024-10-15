@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartHomeTEC_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a38353dd6462f2b2c07eec95a7ccc060808f1bf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+80bcaac5c9cad4beb8d408858a20c903dc2a7ded")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartHomeTEC_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartHomeTEC_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

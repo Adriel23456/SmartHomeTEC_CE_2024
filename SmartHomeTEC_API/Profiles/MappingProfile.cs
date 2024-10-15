@@ -71,6 +71,19 @@ namespace SmartHomeTEC_API.Profiles
                 .ForMember(dest => dest.Price, opt => opt.Ignore())
                 .ForMember(dest => dest.DeviceType, opt => opt.Ignore())
                 .ForMember(dest => dest.Order, opt => opt.Ignore());
+            
+            // Mapeo para CertificateDTO y Certificate
+            CreateMap<Certificate, CertificateDTO>().ReverseMap();
+
+            // Mapeo para CreateCertificateDTO a Certificate
+            CreateMap<CreateCertificateDTO, Certificate>()
+                .ForMember(dest => dest.Brand, opt => opt.Ignore()) // Se asigna en el controlador
+                .ForMember(dest => dest.ClientFullName, opt => opt.Ignore()) // Se asigna en el controlador
+                .ForMember(dest => dest.WarrantyEndDate, opt => opt.Ignore()) // Se calcula en el controlador
+                .ForMember(dest => dest.Bill, opt => opt.Ignore()) // Relación manejada por EF
+                .ForMember(dest => dest.Client, opt => opt.Ignore()) // Relación manejada por EF
+                .ForMember(dest => dest.DeviceType, opt => opt.Ignore()) // Relación manejada por EF
+                .ForMember(dest => dest.Device, opt => opt.Ignore()); // Relación manejada por EF
         }
     }
 }
