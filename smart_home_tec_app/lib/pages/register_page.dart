@@ -34,6 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool unaccceptablePassowrd = false;
   bool userExists = false;
   bool passwordDerived = false;
+  bool passwordShort = false;
 
   void _resetVariables() {
     setState(() {
@@ -57,13 +58,22 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       passwordDerived = false;
     });
+    setState(() {
+      passwordShort = false;
+    });
   }
 
-  bool _isNonExistentUser() {
+  Future<bool> _isExistentUser() async {
     //checks for the mail in the database of clientes
     //if it exists, return false
-
-    return true;
+    var clienteExistance = await db.clienteExists(userMail.text);
+    if (clienteExistance) {
+      setState(() {
+        userExists = true;
+      });
+      return true;
+    }
+    return false;
   }
 
   bool _isAcceptablePassowrd() {
@@ -74,11 +84,23 @@ class _RegisterPageState extends State<RegisterPage> {
           password.text != (userMail.text.split("@"))[0]) {
         //passowrd cant be equal to the mail, name, last name or the mail first part
 
-        if ((password.text.length >= 5)) {
+        if ((password.text.length >= 4)) {
           //password must have 5 or more characters
           return true;
+        } else {
+          setState(() {
+            passwordShort = true;
+          });
         }
+      } else {
+        setState(() {
+          passwordDerived = true;
+        });
       }
+    } else {
+      setState(() {
+        passwordsDifferent = true;
+      });
     }
     return false;
   }
@@ -138,8 +160,8 @@ class _RegisterPageState extends State<RegisterPage> {
       //veridfy if all fields have text and checks email
       if (_isAcceptablePassowrd()) {
         //verify password constraints
-        if (_isNonExistentUser()) {
-          //checks if the user doesnt exist already
+        if (!(await _isExistentUser())) {
+          //checks if the user exists already
           var result = await db.createCliente(Clientes(
               userMail: userMail.text,
               password: password.text,
@@ -159,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       } else {
         setState(() {
-          passwordsDifferent = true;
+          unaccceptablePassowrd = true;
         });
       }
     }
@@ -275,6 +297,38 @@ class _RegisterPageState extends State<RegisterPage> {
                             adminAttempted
                                 ? Text(
                                     adminAttemptedText,
+                                    style: TextStyle(
+                                      color: Colors.red.shade900,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            userExists
+                                ? Text(
+                                    userExistsText,
+                                    style: TextStyle(
+                                      color: Colors.red.shade900,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            passwordDerived
+                                ? Text(
+                                    passwordDerivedText,
+                                    style: TextStyle(
+                                      color: Colors.red.shade900,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            unaccceptablePassowrd
+                                ? Text(
+                                    unacceptablePasswordText,
+                                    style: TextStyle(
+                                      color: Colors.red.shade900,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            passwordShort
+                                ? Text(
+                                    passwordShortText,
                                     style: TextStyle(
                                       color: Colors.red.shade900,
                                     ),

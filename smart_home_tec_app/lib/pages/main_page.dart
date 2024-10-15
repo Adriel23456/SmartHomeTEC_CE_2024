@@ -16,22 +16,30 @@ class _UserPage extends State<UserPage> {
     return Scaffold(
       backgroundColor: colorFondo,
       body: Center(
-            child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 57,
-                      child: CircleAvatar(
-                        radius: 55,
-                        backgroundColor: colorBaseBoton,
-                      ),
+          child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 57,
+                    child: CircleAvatar(
+                      radius: 55,
+                      backgroundColor: colorBaseBoton,
                     ),
-                    Button(texto: "Salir", funcion: (){Navigator.push(context, MaterialPageRoute(builder: (context)=> const LoginPage()));}),
-
-                  ],
-                ))),
+                  ),
+                  Button(texto: "Gestionar mis dispositivos", funcion: () {}),
+                  Button(texto: "Gestionar aposentos", funcion: () {}),
+                  Button(
+                      texto: "Salir",
+                      funcion: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
+                      }),
+                ],
+              ))),
     );
   }
 }

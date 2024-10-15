@@ -39,6 +39,17 @@ class DatabaseHelper {
     }
   }
 
+  Future<bool> clienteExists(String userMail) async {
+    final Database db = await initDB();
+    var result = await db
+        .rawQuery("select * from clientes where userMail = '${userMail}'");
+    if (result.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   //Method for the sign in or register
   Future<int> createCliente(Clientes cliente) async {
     final Database db = await initDB();
