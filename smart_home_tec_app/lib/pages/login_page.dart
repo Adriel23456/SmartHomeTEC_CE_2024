@@ -16,7 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   //definir controles, estos van a obtener el valor de entrada y enviarlo a la base de datos
-  final userMail = TextEditingController();
+  final email = TextEditingController();
   final password = TextEditingController();
   bool isRemembered = false;
   bool loginCorrect = false;
@@ -24,11 +24,12 @@ class _LoginPageState extends State<LoginPage> {
 
   login() async {
     var result = await db.authenticate(
-        Clientes(userMail: userMail.text, password: password.text));
+        Clientes(email: email.text, password: password.text));
     if (result == true) {
       if (!mounted) return;
+      Clientes? clienteDetails = await db.getCliente(email.text);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const UserPage()));
+          context, MaterialPageRoute(builder: (context) => UserPage(clienteData: clienteDetails)));
     } else {
       setState(() {
         loginCorrect = true;
@@ -55,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
             TextEntry(
                 writtenText: "Correo",
                 icon: Icons.account_circle,
-                controller: userMail),
+                controller: email),
             TextEntry(
                 writtenText: "Contraseña",
                 icon: Icons.lock,

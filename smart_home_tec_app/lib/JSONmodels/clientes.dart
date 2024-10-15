@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final clientes = clientesFromJson(jsonString);
-
 import 'dart:convert';
 
 Clientes clientesFromJson(String str) => Clientes.fromJson(json.decode(str));
@@ -9,49 +5,45 @@ Clientes clientesFromJson(String str) => Clientes.fromJson(json.decode(str));
 String clientesToJson(Clientes data) => json.encode(data.toJson());
 
 class Clientes {
-  final String userMail;
+  final String email;
   final String password;
-  final String? name;
-  final String? lastName;
+  final String? region;
+  final String? continent;
   final String? country;
-  final String? province;
-  final String? district;
-  final String? canton;
-  final String? infoAdicional;
+  final String? name;
+  final String? middleName;
+  final String? lastName;
 
   Clientes({
-    required this.userMail,
+    required this.email,
     required this.password,
-    this.name,
-    this.lastName,
+    this.region,
+    this.continent,
     this.country,
-    this.province,
-    this.district,
-    this.canton,
-    this.infoAdicional,
+    this.name,
+    this.middleName,
+    this.lastName
   });
   //los nombres deben ser iguales que los que hay en la base de datos
   factory Clientes.fromJson(Map<String, dynamic> json) => Clientes(
-        userMail: json["userMail"],
+        email: json["email"],
         password: json["password"],
+        region: json["region"],
+        continent: json["continent"],
+        country: json["countrt"],
         name: json["name"],
+        middleName: json["middleName"],
         lastName: json["lastName"],
-        country: json["country"],
-        province: json["province"],
-        district: json["district"],
-        canton: json["canton"],
-        infoAdicional: json["infoAdicional"],
       );
 
   Map<String, dynamic> toJson() => {
-        "userMail": userMail,
+        "email": email,
         "password": password,
-        "name": name,
-        "lastName": lastName,
+        "region": region,
+        "continent": continent,
         "country": country,
-        "province": province,
-        "district": district,
-        "canton": canton,
-        "infoAdicional": infoAdicional,
+        "name": name,
+        "middleName": middleName,
+        "lastName": lastName,
       };
 }

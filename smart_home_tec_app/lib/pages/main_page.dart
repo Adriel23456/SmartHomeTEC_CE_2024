@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
 import 'package:smart_home_tec_app/pages/created_objects/button.dart';
 import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
 import 'package:smart_home_tec_app/pages/login_page.dart';
 
-class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+class UserPage extends StatelessWidget {
+  final Clientes? clienteData;
+  const UserPage({super.key, this.clienteData});
 
-  @override
-  State<UserPage> createState() => _UserPage();
-}
-
-class _UserPage extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +24,14 @@ class _UserPage extends State<UserPage> {
                       radius: 55,
                       backgroundColor: colorBaseBoton,
                     ),
+                  ),
+                  ListTile(leading:Icon(Icons.person,size: 30) ,
+                                subtitle: Text("Nombre Completo: "),
+                                title: Text("${clienteData!.name??""} ${clienteData!.middleName??""} ${clienteData!.lastName??""}",), //el "" se agrega por si la variable es null
+                  ),
+                  ListTile(leading:Icon(Icons.mail,size: 30) ,
+                                subtitle: Text("Correo: "),
+                                title: Text(clienteData!.email,),
                   ),
                   Button(texto: "Gestionar mis dispositivos", funcion: () {}),
                   Button(texto: "Gestionar aposentos", funcion: () {}),

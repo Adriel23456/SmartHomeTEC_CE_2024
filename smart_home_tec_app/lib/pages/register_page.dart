@@ -14,16 +14,15 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final userMail = TextEditingController();
+  final email = TextEditingController();
   final password = TextEditingController();
   final name = TextEditingController();
+  final middleName = TextEditingController();
   final lastName = TextEditingController();
   final passwordConfirm = TextEditingController();
   final country = TextEditingController();
-  final province = TextEditingController();
-  final district = TextEditingController();
-  final canton = TextEditingController();
-  final homeInfo = TextEditingController();
+  final continent = TextEditingController();
+  final region = TextEditingController();
   final db = DatabaseHelper();
 
   //variable for showing error texts
@@ -66,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<bool> _isExistentUser() async {
     //checks for the mail in the database of clientes
     //if it exists, return false
-    var clienteExistance = await db.clienteExists(userMail.text);
+    var clienteExistance = await db.clienteExists(email.text);
     if (clienteExistance) {
       setState(() {
         userExists = true;
@@ -78,10 +77,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool _isAcceptablePassowrd() {
     if (password.text == passwordConfirm.text) {
-      if ((password.text != userMail.text) &&
+      if ((password.text != email.text) &&
           password.text != name.text &&
           password.text != lastName.text &&
-          password.text != (userMail.text.split("@"))[0]) {
+          password.text != (email.text.split("@"))[0]) {
         //passowrd cant be equal to the mail, name, last name or the mail first part
 
         if ((password.text.length >= 4)) {
@@ -106,18 +105,18 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   bool _isAcceptableMail() {
-    if (userMail.text.contains("@") && !(userMail.text.contains(" "))) {
+    if (email.text.contains("@") && !(email.text.contains(" "))) {
       //the mail contains a @ and has no white spaces
-      if ((userMail.text.split("@")[0]).isNotEmpty &&
-          userMail.text.split("@")[1].isNotEmpty) {
+      if ((email.text.split("@")[0]).isNotEmpty &&
+          email.text.split("@")[1].isNotEmpty) {
         //there is text on both side of the @
-        if ((!(userMail.text.split("@")[0]).contains("@")) &&
-            (!(userMail.text.split("@")[1]).contains("@"))) {
+        if ((!(email.text.split("@")[0]).contains("@")) &&
+            (!(email.text.split("@")[1]).contains("@"))) {
           //there is no other @ in the email address
-          if (!(userMail.text.split("@")[1]).contains("admin")) {
+          if (!(email.text.split("@")[1]).contains("admin")) {
             //the user is not tryring to forcefully create an admin account
             return true;
-          } else if ((userMail.text.split("@")[1]).contains("admin")) {
+          } else if ((email.text.split("@")[1]).contains("admin")) {
             setState(() {
               adminAttempted = true;
             });
@@ -129,15 +128,13 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   bool fieldsFilled() {
-    if (userMail.text.isNotEmpty &&
+    if (email.text.isNotEmpty &&
         password.text.isNotEmpty &&
         name.text.isNotEmpty &&
         lastName.text.isNotEmpty &&
         country.text.isNotEmpty &&
-        province.text.isNotEmpty &&
-        district.text.isNotEmpty &&
-        canton.text.isNotEmpty &&
-        homeInfo.text.isNotEmpty) {
+        middleName.text.isNotEmpty &&
+        continent.text.isNotEmpty) {
       if (_isAcceptableMail()) {
         //checks if mail has an @ and if it has something before the @
         return true;
@@ -163,15 +160,14 @@ class _RegisterPageState extends State<RegisterPage> {
         if (!(await _isExistentUser())) {
           //checks if the user exists already
           var result = await db.createCliente(Clientes(
-              userMail: userMail.text,
+              email: email.text,
               password: password.text,
-              name: name.text,
-              lastName: lastName.text,
+              region: region.text,
+              continent: continent.text,
               country: country.text,
-              province: province.text,
-              district: district.text,
-              canton: canton.text,
-              infoAdicional: homeInfo.text));
+              name: name.text,
+              middleName: middleName.text,
+              lastName: lastName.text));
 
           if (result > 0) {
             if (!mounted) return;
@@ -209,11 +205,15 @@ class _RegisterPageState extends State<RegisterPage> {
                             TextEntry(
                                 writtenText: "Correo",
                                 icon: Icons.mail,
-                                controller: userMail),
+                                controller: email),
                             TextEntry(
                                 writtenText: "Nombre",
                                 icon: Icons.account_circle,
                                 controller: name),
+                              TextEntry(
+                                writtenText: "Segundo nombre",
+                                icon: Icons.account_circle,
+                                controller: middleName),
                             TextEntry(
                                 writtenText: "Apellidos",
                                 icon: Icons.account_circle,
@@ -229,25 +229,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                 controller: passwordConfirm,
                                 passwordVisibility: true),
                             TextEntry(
-                                writtenText: "Pais",
+                                writtenText: "Region",
+                                icon: Icons.add_location_alt_outlined,
+                                controller: region),
+                            TextEntry(
+                                writtenText: "País",
                                 icon: Icons.add_location_alt_outlined,
                                 controller: country),
                             TextEntry(
-                                writtenText: "Provincia",
+                                writtenText: "Continente",
                                 icon: Icons.add_location_alt_outlined,
-                                controller: province),
-                            TextEntry(
-                                writtenText: "Districo",
-                                icon: Icons.add_location_alt_outlined,
-                                controller: district),
-                            TextEntry(
-                                writtenText: "Canton",
-                                icon: Icons.add_location_alt_outlined,
-                                controller: canton),
-                            TextEntry(
-                                writtenText: "Apartamento/Casa",
-                                icon: Icons.add_location_alt_outlined,
-                                controller: homeInfo),
+                                controller: continent),
                             Button(
                                 texto: "Registrarse",
                                 funcion: () {
