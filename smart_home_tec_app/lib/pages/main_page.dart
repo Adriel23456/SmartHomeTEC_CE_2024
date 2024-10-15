@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
 import 'package:smart_home_tec_app/pages/created_objects/button.dart';
 import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
+import 'package:smart_home_tec_app/pages/gestion_aposentos_page.dart';
 import 'package:smart_home_tec_app/pages/login_page.dart';
 
 class UserPage extends StatelessWidget {
@@ -25,23 +26,41 @@ class UserPage extends StatelessWidget {
                       backgroundColor: colorBaseBoton,
                     ),
                   ),
-                  ListTile(leading:Icon(Icons.person,size: 30) ,
-                                subtitle: Text("Nombre Completo: "),
-                                title: Text("${clienteData!.name??""} ${clienteData!.middleName??""} ${clienteData!.lastName??""}",), //el "" se agrega por si la variable es null
+                  ListTile(
+                    leading: Icon(Icons.person, size: 30),
+                    title: Text("Nombre Completo: "),
+                    subtitle: Text(
+                      "${clienteData!.name ?? ""} ${clienteData!.middleName ?? ""} ${clienteData!.lastName ?? ""}",
+                    ), //el "" se agrega por si la variable es null
                   ),
-                  ListTile(leading:Icon(Icons.mail,size: 30) ,
-                                subtitle: Text("Correo: "),
-                                title: Text(clienteData!.email,),
+                  ListTile(
+                    leading: Icon(Icons.mail, size: 30),
+                    title: Text("Correo: "),
+                    subtitle: Text(
+                      clienteData!.email,
+                    ),
                   ),
                   Button(texto: "Gestionar mis dispositivos", funcion: () {}),
-                  Button(texto: "Gestionar aposentos", funcion: () {}),
                   Button(
-                      texto: "Salir",
+                      texto: "Gestionar aposentos",
                       funcion: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const LoginPage()));
+                                builder: (context) => GestionAposentosPage(
+                                      clienteData: clienteData,
+                                    )));
+                      }),
+                  Button(
+                      texto: "Salir",
+                      funcion: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                          (Route<dynamic> route) => false,
+                        ); //removes all previous widgets
                       }),
                 ],
               ))),

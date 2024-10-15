@@ -20,29 +20,29 @@ class DatabaseHelper {
   ''';
   String chamber = '''
   CREATE TABLE chamber (
-  chamberID INT PRIMARY KEY,
+  chamberID INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   clientEmail TEXT
   )
   ''';
   String device = '''
   CREATE TABLE device (
-  serialNumber INT PRIMARY KEY,
+  serialNumber INTEGER PRIMARY KEY,
   price TEXT,
   state TEXT,
   brand TEXT,
-  amountAvailable INT,
+  amountAvailable INTEGER,
   electricalConsumption TEXT,
   name TEXT,
   description TEXT,
   deviceTypeName TEXT,
-  legalNum INT
+  legalNum INTEGER
   )
   ''';
   String assignedDevice = '''
   CREATE TABLE assigneddevice (
-  assignedID INT PRIMARY KEY,
-  serialNumberDevice INT,
+  assignedID INTEGER PRIMARY KEY,
+  serialNumberDevice INTEGER,
   clientEmail TEXT,
   state TEXT
   )
@@ -50,23 +50,22 @@ class DatabaseHelper {
   //RESETS ALL DATABASES
   Future<void> deleteAllDatabases() async {
     final dbPath = await getDatabasesPath();
-    
+
     // Delete the "clientes.db" database
     final clienteDbPath = join(dbPath, clienteDatabaseName);
     await deleteDatabase(clienteDbPath);
-    
+
     // Delete the "chambers.db" database
     final chamberDbPath = join(dbPath, chamberDatabaseName);
     await deleteDatabase(chamberDbPath);
   }
   //---------------
 
-
   Future<Database> initClientesDB() async {
     final dbpath = await getDatabasesPath();
     final path = join(dbpath, clienteDatabaseName);
 
-    return openDatabase(path, version: 1, onCreate: (db, version) async {
+    return openDatabase(path, version: 2, onCreate: (db, version) async {
       await db.execute(clientes);
     });
   }
@@ -80,12 +79,11 @@ class DatabaseHelper {
     });
   }
 
-
   //chamber taable methods
   Future<bool> chamberExists(String chamberName, String clientEmail) async {
-    final Database db = await initClientesDB();
-    var result = await db
-        .rawQuery("select * from chamber where name = '${chamberName}' AND clientEmail = '${clientEmail}'");
+    final Database db = await initChamberDB();
+    var result = await db.rawQuery(
+        "select * from chamber where name = '${chamberName}' AND clientEmail = '${clientEmail}'");
     if (result.isNotEmpty) {
       return true;
     } else {
@@ -95,10 +93,9 @@ class DatabaseHelper {
 
   //registering a chamber
   Future<int> createChamber(Chamber chamber) async {
-    final Database db = await initClientesDB();
+    final Database db = await initChamberDB();
     return db.insert("chamber", chamber.toJson());
   }
-
 
   //client table methods
   //Method for the login
@@ -115,8 +112,8 @@ class DatabaseHelper {
 
   Future<bool> clienteExists(String email) async {
     final Database db = await initClientesDB();
-    var result = await db
-        .rawQuery("select * from clientes where email = '${email}'");
+    var result =
+        await db.rawQuery("select * from clientes where email = '${email}'");
     if (result.isNotEmpty) {
       return true;
     } else {

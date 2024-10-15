@@ -133,8 +133,8 @@ class _RegisterPageState extends State<RegisterPage> {
         name.text.isNotEmpty &&
         lastName.text.isNotEmpty &&
         country.text.isNotEmpty &&
-        middleName.text.isNotEmpty &&
-        continent.text.isNotEmpty) {
+        continent.text.isNotEmpty &&
+        region.text.isNotEmpty) {
       if (_isAcceptableMail()) {
         //checks if mail has an @ and if it has something before the @
         return true;
@@ -159,6 +159,12 @@ class _RegisterPageState extends State<RegisterPage> {
         //verify password constraints
         if (!(await _isExistentUser())) {
           //checks if the user exists already
+          String? middleNameText;
+          if (middleName.text.isEmpty) {
+            middleNameText = null;
+          } else {
+            middleNameText = middleName.text;
+          }
           var result = await db.createCliente(Clientes(
               email: email.text,
               password: password.text,
@@ -166,7 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
               continent: continent.text,
               country: country.text,
               name: name.text,
-              middleName: middleName.text,
+              middleName: middleNameText,
               lastName: lastName.text));
 
           if (result > 0) {
@@ -210,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 writtenText: "Nombre",
                                 icon: Icons.account_circle,
                                 controller: name),
-                              TextEntry(
+                            TextEntry(
                                 writtenText: "Segundo nombre",
                                 icon: Icons.account_circle,
                                 controller: middleName),

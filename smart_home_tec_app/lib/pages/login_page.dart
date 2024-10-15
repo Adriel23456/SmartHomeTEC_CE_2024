@@ -24,17 +24,19 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _deleteDatabases() async {
     await db.deleteAllDatabases(); // Call the method to delete all databases
     // Optionally, you could also initialize the databases again here if needed
-    print('Databases deleted.');
   }
+
   login() async {
-    await _deleteDatabases();
-    var result = await db.authenticate(
-        Clientes(email: email.text, password: password.text));
+    //await _deleteDatabases();
+    var result = await db
+        .authenticate(Clientes(email: email.text, password: password.text));
     if (result == true) {
       if (!mounted) return;
       Clientes? clienteDetails = await db.getCliente(email.text);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => UserPage(clienteData: clienteDetails)));
+          context,
+          MaterialPageRoute(
+              builder: (context) => UserPage(clienteData: clienteDetails)));
     } else {
       setState(() {
         loginCorrect = true;

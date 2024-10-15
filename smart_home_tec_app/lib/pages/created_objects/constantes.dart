@@ -13,3 +13,5 @@ const userExistsText = "Este correo ya esta registrado";
 const passwordDerivedText =
     "La contraseña no puede ser igual al nombre o correo";
 const passwordShortText = "La contraseña debe tener almenos 5 caracteres";
+const repeatedChamberNameText =
+    "El usuario ya tiene registrado un aposento con este nombre";
