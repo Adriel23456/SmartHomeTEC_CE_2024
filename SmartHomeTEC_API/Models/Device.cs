@@ -47,5 +47,17 @@ namespace SmartHomeTEC_API.Models
 
         [JsonIgnore]
         public Distributor? Distributor { get; set; } // Navegación
+
+        // Propiedad de Navegación hacia Order
+        [JsonIgnore]
+        public Order? Order { get; set; }
+
+    }
+
+    public enum DeviceState
+    {
+        AdminRegistered,
+        StoreAvailable,
+        Local
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartHomeTEC_API.Data;
@@ -11,9 +12,11 @@ using SmartHomeTEC_API.Data;
 namespace SmartHomeTEC_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241014232258_AddOrderEntityAndRelations")]
+    partial class AddOrderEntityAndRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,42 +37,6 @@ namespace SmartHomeTEC_API.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("Admin");
-                });
-
-            modelBuilder.Entity("SmartHomeTEC_API.Models.Bill", b =>
-                {
-                    b.Property<int>("BillNum")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BillNum"));
-
-                    b.Property<string>("BillDate")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("BillTime")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("DeviceTypeName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("OrderID")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("BillNum");
-
-                    b.HasIndex("DeviceTypeName");
-
-                    b.HasIndex("OrderID")
-                        .IsUnique();
-
-                    b.ToTable("Bill");
                 });
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Client", b =>
@@ -249,29 +216,9 @@ namespace SmartHomeTEC_API.Migrations
 
                     b.HasIndex("DeviceTypeName");
 
-                    b.HasIndex("SerialNumberDevice")
-                        .IsUnique();
+                    b.HasIndex("SerialNumberDevice");
 
                     b.ToTable("Order");
-                });
-
-            modelBuilder.Entity("SmartHomeTEC_API.Models.Bill", b =>
-                {
-                    b.HasOne("SmartHomeTEC_API.Models.DeviceType", "DeviceType")
-                        .WithMany("Bills")
-                        .HasForeignKey("DeviceTypeName")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SmartHomeTEC_API.Models.Order", "Order")
-                        .WithOne("Bill")
-                        .HasForeignKey("SmartHomeTEC_API.Models.Bill", "OrderID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DeviceType");
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Device", b =>
@@ -307,8 +254,8 @@ namespace SmartHomeTEC_API.Migrations
                         .IsRequired();
 
                     b.HasOne("SmartHomeTEC_API.Models.Device", "Device")
-                        .WithOne("Order")
-                        .HasForeignKey("SmartHomeTEC_API.Models.Order", "SerialNumberDevice")
+                        .WithMany("Orders")
+                        .HasForeignKey("SerialNumberDevice")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -326,13 +273,11 @@ namespace SmartHomeTEC_API.Migrations
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Device", b =>
                 {
-                    b.Navigation("Order");
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.DeviceType", b =>
                 {
-                    b.Navigation("Bills");
-
                     b.Navigation("Devices");
 
                     b.Navigation("Orders");
@@ -341,12 +286,6 @@ namespace SmartHomeTEC_API.Migrations
             modelBuilder.Entity("SmartHomeTEC_API.Models.Distributor", b =>
                 {
                     b.Navigation("Devices");
-                });
-
-            modelBuilder.Entity("SmartHomeTEC_API.Models.Order", b =>
-                {
-                    b.Navigation("Bill")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

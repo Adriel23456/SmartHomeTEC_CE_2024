@@ -1,6 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Data;
+using SmartHomeTEC_API.DTOs;
 using SmartHomeTEC_API.Models;
 
 namespace SmartHomeTEC_API.Controllers
@@ -10,10 +12,12 @@ namespace SmartHomeTEC_API.Controllers
     public class AdminController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Admin
@@ -91,6 +95,11 @@ namespace SmartHomeTEC_API.Controllers
             return NoContent();
         }
 
+        private bool AdminExists(string email)
+        {
+            return _context.Admin.Any(e => e.Email == email);
+        }
+
         // POST: api/Admin/Login
         [HttpPost("Login")]
         public async Task<ActionResult<Admin>> Login(AuthRequest request)
@@ -108,12 +117,8 @@ namespace SmartHomeTEC_API.Controllers
                 return Unauthorized("Credenciales inválidas.");
             }
 
+            var AdminAuthDTO = _mapper.Map<AdminAuthDTO>(admin);
             return Ok(admin);
-        }
-
-        private bool AdminExists(string email)
-        {
-            return _context.Admin.Any(e => e.Email == email);
         }
     }
 }

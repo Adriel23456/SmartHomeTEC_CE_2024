@@ -18,8 +18,16 @@ namespace SmartHomeTEC_API.Models
         [Range(0, int.MaxValue, ErrorMessage = "Los días de garantía deben ser un número no negativo.")]
         public required int WarrantyDays { get; set; }
 
-        // Propiedad de Navegación
+        // Propiedad de Navegación hacia Device
         [JsonIgnore]
         public ICollection<Device> Devices { get; set; } = new List<Device>(); // Inicializada
+
+        // Propiedad de Navegación hacia Order
+        [JsonIgnore]
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+        // Propiedad de Navegación hacia Bill
+        [JsonIgnore]
+        public ICollection<Bill> Bills { get; set; } = new List<Bill>();
     }
 }
