@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartHomeTEC_API.Data;
@@ -11,9 +12,11 @@ using SmartHomeTEC_API.Data;
 namespace SmartHomeTEC_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015071057_CreateBillWithCertificate2")]
+    partial class CreateBillWithCertificate2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,41 +155,6 @@ namespace SmartHomeTEC_API.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("Client");
-                });
-
-            modelBuilder.Entity("SmartHomeTEC_API.Models.DeliveryAddress", b =>
-                {
-                    b.Property<int?>("AddressID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("AddressID"));
-
-                    b.Property<string>("ApartmentOrHouse")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Canton")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClientEmail")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("District")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Province")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("AddressID");
-
-                    b.HasIndex("ClientEmail");
-
-                    b.ToTable("DeliveryAddress");
                 });
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Device", b =>
@@ -385,17 +353,6 @@ namespace SmartHomeTEC_API.Migrations
                     b.Navigation("DeviceType");
                 });
 
-            modelBuilder.Entity("SmartHomeTEC_API.Models.DeliveryAddress", b =>
-                {
-                    b.HasOne("SmartHomeTEC_API.Models.Client", "Client")
-                        .WithMany("DeliveryAddresses")
-                        .HasForeignKey("ClientEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-                });
-
             modelBuilder.Entity("SmartHomeTEC_API.Models.Device", b =>
                 {
                     b.HasOne("SmartHomeTEC_API.Models.DeviceType", "DeviceType")
@@ -449,8 +406,6 @@ namespace SmartHomeTEC_API.Migrations
             modelBuilder.Entity("SmartHomeTEC_API.Models.Client", b =>
                 {
                     b.Navigation("Certificates");
-
-                    b.Navigation("DeliveryAddresses");
 
                     b.Navigation("Orders");
                 });

@@ -21,9 +21,9 @@ namespace SmartHomeTEC_API.Models
         public string? ClientFullName { get; set; }
 
         [Required]
-        public required string WarrantyStartDate { get; set; } // Formato: "yyyy-MM-dd"
+        public required string WarrantyStartDate { get; set; }
 
-        public string? WarrantyEndDate { get; set; } // Formato: "yyyy-MM-dd"
+        public string? WarrantyEndDate { get; set; }
 
         [Required]
         [ForeignKey("Bill")]
@@ -34,21 +34,17 @@ namespace SmartHomeTEC_API.Models
         [EmailAddress]
         public required string ClientEmail { get; set; }
 
-        // Propiedades de Navegación
+        // Propiedades de Navegación:
         [JsonIgnore]
-        [Required]
-        public required Bill Bill { get; set; }
+        public Bill? Bill { get; set; }
 
         [JsonIgnore]
-        [Required]
-        public required Client Client { get; set; }
+        public Client? Client { get; set; }
 
         [JsonIgnore]
-        [Required]
-        public required DeviceType DeviceType { get; set; }
+        public DeviceType? DeviceType { get; set; }
 
         [JsonIgnore]
-        [Required]
-        public required Device Device { get; set; }
+        public Device? Device { get; set; }
     }
 }

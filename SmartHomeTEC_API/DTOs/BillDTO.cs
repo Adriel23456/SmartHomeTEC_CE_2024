@@ -4,20 +4,11 @@ namespace SmartHomeTEC_API.DTOs
 {
     public class BillDTO
     {
-        public int BillNum { get; set; }
-
-        [Required]
+        public int? BillNum { get; set; }
         public required string BillDate { get; set; }
-
-        [Required]
         public required string BillTime { get; set; }
-
-        public decimal Price { get; set; }
-
-        [Required]
+        public decimal? Price { get; set; }
         public required string DeviceTypeName { get; set; }
-
-        [Required]
         public required int OrderID { get; set; }
     }
 }

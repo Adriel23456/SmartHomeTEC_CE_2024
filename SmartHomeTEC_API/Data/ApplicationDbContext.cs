@@ -19,6 +19,7 @@ namespace SmartHomeTEC_API.Data
         public DbSet<Order> Order { get; set; }
         public DbSet<Bill> Bill { get; set; }
         public DbSet<Certificate> Certificate { get; set; }
+        public DbSet<DeliveryAddress> DeliveryAddress { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -120,6 +121,12 @@ namespace SmartHomeTEC_API.Data
                 .HasForeignKey<Certificate>(c => c.BillNum)
                 .OnDelete(DeleteBehavior.Cascade);
             
+            // Configurar la relación entre Client y DeliveryAddress
+            modelBuilder.Entity<DeliveryAddress>()
+                .HasOne(da => da.Client)
+                .WithMany(c => c.DeliveryAddresses)
+                .HasForeignKey(da => da.ClientEmail)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

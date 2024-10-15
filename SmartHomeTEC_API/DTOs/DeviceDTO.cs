@@ -4,7 +4,7 @@ namespace SmartHomeTEC_API.DTOs
     {
         public required string SerialNumber { get; set; }
         public required decimal Price { get; set; }
-        public required string State { get; set; } // Usaremos string para el enumerado
+        public required string State { get; set; }
         public required string Brand { get; set; }
         public int? AmountAvailable { get; set; }
         public double? ElectricalConsumption { get; set; }

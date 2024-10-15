@@ -8,7 +8,7 @@ namespace SmartHomeTEC_API.Models
     public class Bill
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Generado por la base de datos
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BillNum { get; set; }
 
         [Required]
@@ -17,7 +17,7 @@ namespace SmartHomeTEC_API.Models
         [Required]
         public required string BillTime { get; set; }
 
-        public decimal Price { get; set; } // Copiado de Order.TotalPrice
+        public decimal Price { get; set; }
 
         [Required]
         [ForeignKey("DeviceType")]
@@ -27,12 +27,12 @@ namespace SmartHomeTEC_API.Models
         [ForeignKey("Order")]
         public required int OrderID { get; set; }
 
-        // Propiedades de Navegación
+        // Propiedades de Navegación:
         [JsonIgnore]
-        public required DeviceType DeviceType { get; set; }
+        public DeviceType? DeviceType { get; set; }
 
         [JsonIgnore]
-        public required Order Order { get; set; }
+        public Order? Order { get; set; }
 
         [JsonIgnore]
         public Certificate? Certificate { get; set; }

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace SmartHomeTEC_API.Models
 {
-    [Table("Client")] // Especifica el nombre exacto de la tabla en la base de datos
+    [Table("Client")]
     public class Client
     {
         [Key]
@@ -30,7 +30,7 @@ namespace SmartHomeTEC_API.Models
         [Required]
         public required string FirstName { get; set; }
 
-        public string? MiddleName { get; set; } // Campo opcional
+        public string? MiddleName { get; set; }
 
         [Required]
         public required string LastName { get; set; }
@@ -41,5 +41,7 @@ namespace SmartHomeTEC_API.Models
 
         [JsonIgnore]
         public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
+        [JsonIgnore]
+        public ICollection<DeliveryAddress> DeliveryAddresses { get; set; } = new List<DeliveryAddress>();
     }
 }

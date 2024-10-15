@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace SmartHomeTEC_API.Models
 {
-    [Table("Device")] // Especifica el nombre exacto de la tabla en la base de datos
+    [Table("Device")]
     public class Device
     {
         [Key]
@@ -22,7 +22,7 @@ namespace SmartHomeTEC_API.Models
         [Required]
         public required string Brand { get; set; }
 
-        public int? AmountAvailable { get; set; } // Campo opcional
+        public int? AmountAvailable { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "El consumo eléctrico debe ser un valor positivo.")]
         public double? ElectricalConsumption { get; set; }
@@ -33,7 +33,6 @@ namespace SmartHomeTEC_API.Models
         [Required]
         public required string Description { get; set; }
 
-        // Foreign Key a DeviceType
         [Required]
         [ForeignKey("DeviceType")]
         public required string DeviceTypeName { get; set; }
@@ -47,8 +46,7 @@ namespace SmartHomeTEC_API.Models
         public Order? Order { get; set; }
 
         [JsonIgnore]
-        [Required]
-        public required DeviceType DeviceType { get; set; }
+        public DeviceType? DeviceType { get; set; }
 
         [JsonIgnore]
         public Distributor? Distributor { get; set; }

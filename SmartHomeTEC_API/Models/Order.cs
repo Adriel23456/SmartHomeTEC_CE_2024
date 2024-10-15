@@ -41,7 +41,7 @@ namespace SmartHomeTEC_API.Models
         [EmailAddress]
         public required string ClientEmail { get; set; }
 
-        // Propiedades de Navegación
+        // Propiedades de Navegación:
         [JsonIgnore]
         public Device? Device { get; set; }
 
@@ -52,7 +52,7 @@ namespace SmartHomeTEC_API.Models
         public Client? Client { get; set; }
 
         [JsonIgnore]
-        public required Bill Bill { get; set; } // Ahora es no nullable
+        public Bill? Bill { get; set; }
     }
 
     public enum OrderState

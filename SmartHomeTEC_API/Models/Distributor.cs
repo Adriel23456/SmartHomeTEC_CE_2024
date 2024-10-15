@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace SmartHomeTEC_API.Models
 {
-    [Table("Distributor")] // Especifica el nombre exacto de la tabla en la base de datos
+    [Table("Distributor")]
     public class Distributor
     {
         [Key]
@@ -23,8 +23,8 @@ namespace SmartHomeTEC_API.Models
         [Required]
         public required string Country { get; set; }
 
-        // Propiedad de Navegación
+        // Propiedades de Navegación:
         [JsonIgnore]
-        public ICollection<Device> Devices { get; set; } = new List<Device>(); // Inicializada
+        public ICollection<Device> Devices { get; set; } = new List<Device>();
     }
 }

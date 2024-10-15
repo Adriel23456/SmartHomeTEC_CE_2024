@@ -8,11 +8,14 @@ namespace SmartHomeTEC_API.Profiles
     {
         public MappingProfile()
         {
-            // DeviceType Mappings
+            // Individual Mappings
             CreateMap<DeviceType, DeviceTypeDTO>().ReverseMap();
-
-            // Distributor Mappings
             CreateMap<Distributor, DistributorDTO>().ReverseMap();
+            CreateMap<Client, ClientDTO>().ReverseMap();
+            CreateMap<Client, ClientAuthDTO>().ReverseMap();
+            CreateMap<Admin, AdminAuthDTO>().ReverseMap();
+            CreateMap<Bill, BillDTO>().ReverseMap();
+            CreateMap<DeliveryAddress, DeliveryAddressDTO>().ReverseMap();
 
             // Device Mappings
             CreateMap<Device, DeviceDTO>()
@@ -30,15 +33,6 @@ namespace SmartHomeTEC_API.Profiles
                 .ForMember(dest => dest.State, opt => opt.MapFrom(src => Enum.Parse<DeviceState>(src.State)))
                 .ForMember(dest => dest.DeviceType, opt => opt.Ignore()) // Evita sobreescribir la navegación
                 .ForMember(dest => dest.Distributor, opt => opt.Ignore()); // Evita sobreescribir la navegación
-
-            // Client Mappings
-            CreateMap<Client, ClientDTO>().ReverseMap();
-
-            // ClientAuthDTO Mappings
-            CreateMap<Client, ClientAuthDTO>().ReverseMap();
-
-            // AdminAuthDTO Mappings
-            CreateMap<Admin, AdminAuthDTO>().ReverseMap();
             
             // Mapeo para OrderDTO y Order
             CreateMap<Order, OrderDTO>()
@@ -61,9 +55,6 @@ namespace SmartHomeTEC_API.Profiles
                 .ForMember(dest => dest.DeviceType, opt => opt.Ignore())
                 .ForMember(dest => dest.Bill, opt => opt.Ignore())
                 .ForMember(dest => dest.Client, opt => opt.Ignore());
-            
-            // Mapeo para BillDTO y Bill
-            CreateMap<Bill, BillDTO>().ReverseMap();
 
             // Mapeo para CreateBillDTO a Bill
             CreateMap<CreateBillDTO, Bill>()
@@ -84,6 +75,17 @@ namespace SmartHomeTEC_API.Profiles
                 .ForMember(dest => dest.Client, opt => opt.Ignore()) // Relación manejada por EF
                 .ForMember(dest => dest.DeviceType, opt => opt.Ignore()) // Relación manejada por EF
                 .ForMember(dest => dest.Device, opt => opt.Ignore()); // Relación manejada por EF
+            
+            // Mapeo para BillWithCertificateDTO
+            CreateMap<Bill, BillWithCertificateDTO>()
+                .ForMember(dest => dest.Bill, opt => opt.MapFrom(src => src))
+                .ForMember(dest => dest.Certificate, opt => opt.MapFrom(src => src.Certificate));
+
+            // DeliveryAddress Mappings
+            CreateMap<CreateDeliveryAddressDTO, DeliveryAddress>()
+                .ForMember(dest => dest.AddressID, opt => opt.Ignore())
+                .ForMember(dest => dest.Client, opt => opt.Ignore());
+            
         }
     }
 }
