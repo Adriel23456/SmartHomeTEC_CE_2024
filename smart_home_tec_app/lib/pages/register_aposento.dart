@@ -41,6 +41,7 @@ class _RegisterAposento extends State<RegisterAposento> {
   registerChamber() async {
     _resetChamberVariables();
     if (!(await _isExistentChamber())) {
+      //checks if the chamber already exists for the user
       var result = await db.createChamber(Chamber(
           name: chamberName.text, clientEmail: widget.clienteData!.email));
       if (result > 0) {
@@ -76,10 +77,14 @@ class _RegisterAposento extends State<RegisterAposento> {
                   writtenText: "Nombre",
                   icon: Icons.mail,
                   controller: chamberName),
-              Button(texto: "Registrar aposento", funcion: () {}),
+              Button(
+                  texto: "Registrar aposento",
+                  funcion: () {
+                    registerChamber();
+                  }),
               repeatedChamberName
                   ? Text(
-                      badEmailText,
+                      repeatedChamberNameText,
                       style: TextStyle(
                         color: Colors.red.shade900,
                       ),
