@@ -21,8 +21,13 @@ class _LoginPageState extends State<LoginPage> {
   bool isRemembered = false;
   bool loginCorrect = false;
   final db = DatabaseHelper();
-
+  Future<void> _deleteDatabases() async {
+    await db.deleteAllDatabases(); // Call the method to delete all databases
+    // Optionally, you could also initialize the databases again here if needed
+    print('Databases deleted.');
+  }
   login() async {
+    await _deleteDatabases();
     var result = await db.authenticate(
         Clientes(email: email.text, password: password.text));
     if (result == true) {

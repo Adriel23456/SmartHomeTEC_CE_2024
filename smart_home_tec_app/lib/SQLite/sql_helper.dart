@@ -47,6 +47,20 @@ class DatabaseHelper {
   state TEXT
   )
   ''';
+  //RESETS ALL DATABASES
+  Future<void> deleteAllDatabases() async {
+    final dbPath = await getDatabasesPath();
+    
+    // Delete the "clientes.db" database
+    final clienteDbPath = join(dbPath, clienteDatabaseName);
+    await deleteDatabase(clienteDbPath);
+    
+    // Delete the "chambers.db" database
+    final chamberDbPath = join(dbPath, chamberDatabaseName);
+    await deleteDatabase(chamberDbPath);
+  }
+  //---------------
+
 
   Future<Database> initClientesDB() async {
     final dbpath = await getDatabasesPath();
