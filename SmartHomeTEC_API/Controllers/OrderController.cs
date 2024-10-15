@@ -1,10 +1,10 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Data;
 using SmartHomeTEC_API.DTOs;
 using SmartHomeTEC_API.Models;
+using System.Globalization;
 
 namespace SmartHomeTEC_API.Controllers
 {
@@ -374,6 +374,157 @@ namespace SmartHomeTEC_API.Controllers
             return CreatedAtAction(nameof(GetOrder), new { orderID = order.OrderID }, createdOrderDTO);
         }
 
+
+        // POST: api/Order/WithBill/WithCertificate
+        /// <summary>
+        /// Crea una nueva orden, genera una factura asociada y crea un certificado.
+        /// </summary>
+        /// <param name="createOrderDTO">Objeto CreateOrderDTO con los datos de la orden.</param>
+        /// <returns>Objeto OrderDTO creado junto con la factura y el certificado asociados.</returns>
+        [HttpPost("WithBill/WithCertificate")]
+        public async Task<ActionResult<OrderDTO>> PostOrderWithBillWithCertificate([FromBody] CreateOrderDTO createOrderDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Validar el estado de la orden
+            if (!Enum.TryParse<OrderState>(createOrderDTO.State, out var orderState))
+            {
+                return BadRequest("Estado de la orden inválido. Valores permitidos: Ordered, Paid, Received.");
+            }
+
+            // Verificar si el Device existe
+            var device = await _context.Device.FindAsync(createOrderDTO.SerialNumberDevice);
+            if (device == null)
+            {
+                return BadRequest("El dispositivo especificado no existe.");
+            }
+
+            // Verificar si el DeviceType existe
+            var deviceType = await _context.DeviceType.FindAsync(createOrderDTO.DeviceTypeName);
+            if (deviceType == null)
+            {
+                return BadRequest("El tipo de dispositivo especificado no existe.");
+            }
+
+            // Verificar si el Client existe
+            var client = await _context.Client.FindAsync(createOrderDTO.ClientEmail);
+            if (client == null)
+            {
+                return BadRequest("El cliente especificado no existe.");
+            }
+
+            // Verificar si el Device ya tiene una Order
+            var existingOrderForDevice = await _context.Order
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.SerialNumberDevice == createOrderDTO.SerialNumberDevice);
+            if (existingOrderForDevice != null)
+            {
+                return BadRequest("Este dispositivo ya está asociado a una orden.");
+            }
+
+            // Calcular OrderClientNum
+            int orderClientNum = 1;
+            var clientOrdersCount = await _context.Order.CountAsync(o => o.ClientEmail == createOrderDTO.ClientEmail);
+            if (clientOrdersCount > 0)
+            {
+                orderClientNum = clientOrdersCount + 1;
+            }
+
+            // Obtener Brand del Device
+            string brand = device.Brand;
+
+            // Calcular TotalPrice
+            decimal totalPrice = device.Price;
+
+            // Mapear DTO a Entidad Order
+            var order = _mapper.Map<Order>(createOrderDTO);
+            order.State = orderState;
+            order.OrderClientNum = orderClientNum;
+            order.Brand = brand;
+            order.TotalPrice = totalPrice;
+
+            // Iniciar una transacción para asegurar atomicidad
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Añadir y guardar la Order
+                    _context.Order.Add(order);
+                    await _context.SaveChangesAsync();
+
+                    // Crear la factura asociada
+                    var bill = new Bill
+                    {
+                        BillDate = order.OrderDate, // Asume que Order tiene OrderDate
+                        BillTime = order.OrderTime, // Asume que Order tiene OrderTime
+                        DeviceTypeName = order.DeviceTypeName,
+                        OrderID = order.OrderID,
+                        Price = (decimal)order.TotalPrice,
+                        DeviceType = deviceType, // Asignar la propiedad de navegación
+                        Order = order // Asignar la propiedad de navegación
+                    };
+
+                    _context.Bill.Add(bill);
+                    await _context.SaveChangesAsync();
+
+                    // Verificar y parsear OrderDate a DateTime
+                    if (!DateTime.TryParseExact(order.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedOrderDate))
+                    {
+                        return BadRequest("El formato de OrderDate es inválido. Debe ser 'yyyy-MM-dd'.");
+                    }
+
+                    // Crear el certificado asociado
+                    var certificate = new Certificate
+                    {
+                        SerialNumberDevice = order.SerialNumberDevice,
+                        DeviceTypeName = order.DeviceTypeName,
+                        WarrantyStartDate = parsedOrderDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                        BillNum = bill.BillNum,
+                        ClientEmail = order.ClientEmail,
+                        Brand = device.Brand,
+                        ClientFullName = client.FullName,
+                        Bill = bill,
+                        Client = client,
+                        DeviceType = deviceType,
+                        Device = device
+                    };
+
+                    // Calcular WarrantyEndDate
+                    if (!DateTime.TryParseExact(certificate.WarrantyStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime warrantyStartDate))
+                    {
+                        return BadRequest("El formato de WarrantyStartDate es inválido. Debe ser 'yyyy-MM-dd'.");
+                    }
+
+                    DateTime warrantyEndDate = warrantyStartDate.AddDays(deviceType.WarrantyDays);
+                    certificate.WarrantyEndDate = warrantyEndDate.ToString("yyyy-MM-dd");
+
+                    _context.Certificate.Add(certificate);
+                    await _context.SaveChangesAsync();
+
+                    // Asignar el certificado al bill
+                    bill.Certificate = certificate;
+                    _context.Bill.Update(bill);
+                    await _context.SaveChangesAsync();
+
+                    // Confirmar la transacción
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    // En caso de error, revertir la transacción y retornar error
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, $"Error al crear la orden, la factura y el certificado: {ex.Message}");
+                }
+            }
+
+            // Mapear la entidad Order creada a OrderDTO para la respuesta
+            var createdOrderDTO = _mapper.Map<OrderDTO>(order);
+
+            return CreatedAtAction(nameof(GetOrder), new { orderID = order.OrderID }, createdOrderDTO);
+        }
 
 
         /// <summary>
