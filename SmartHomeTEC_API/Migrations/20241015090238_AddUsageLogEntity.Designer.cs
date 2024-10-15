@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartHomeTEC_API.Data;
@@ -11,9 +12,11 @@ using SmartHomeTEC_API.Data;
 namespace SmartHomeTEC_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015090238_AddUsageLogEntity")]
+    partial class AddUsageLogEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,63 +143,6 @@ namespace SmartHomeTEC_API.Migrations
                     b.HasIndex("DeviceTypeName");
 
                     b.ToTable("Certificate");
-                });
-
-            modelBuilder.Entity("SmartHomeTEC_API.Models.Chamber", b =>
-                {
-                    b.Property<int>("ChamberID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ChamberID"));
-
-                    b.Property<string>("ClientEmail")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("ChamberID");
-
-                    b.HasIndex("ClientEmail", "Name")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Chamber_ClientEmail_Name");
-
-                    b.ToTable("Chamber");
-                });
-
-            modelBuilder.Entity("SmartHomeTEC_API.Models.ChamberAssociation", b =>
-                {
-                    b.Property<int>("AssociationID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AssociationID"));
-
-                    b.Property<int>("AssignedID")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("AssociationStartDate")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ChamberID")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("WarrantyEndDate")
-                        .HasColumnType("text");
-
-                    b.HasKey("AssociationID");
-
-                    b.HasIndex("AssignedID")
-                        .IsUnique();
-
-                    b.HasIndex("ChamberID");
-
-                    b.ToTable("ChamberAssociation");
                 });
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Client", b =>
@@ -531,36 +477,6 @@ namespace SmartHomeTEC_API.Migrations
                     b.Navigation("DeviceType");
                 });
 
-            modelBuilder.Entity("SmartHomeTEC_API.Models.Chamber", b =>
-                {
-                    b.HasOne("SmartHomeTEC_API.Models.Client", "Client")
-                        .WithMany("Chambers")
-                        .HasForeignKey("ClientEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("SmartHomeTEC_API.Models.ChamberAssociation", b =>
-                {
-                    b.HasOne("SmartHomeTEC_API.Models.AssignedDevice", "AssignedDevice")
-                        .WithOne("ChamberAssociation")
-                        .HasForeignKey("SmartHomeTEC_API.Models.ChamberAssociation", "AssignedID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SmartHomeTEC_API.Models.Chamber", "Chamber")
-                        .WithMany("ChamberAssociations")
-                        .HasForeignKey("ChamberID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssignedDevice");
-
-                    b.Navigation("Chamber");
-                });
-
             modelBuilder.Entity("SmartHomeTEC_API.Models.DeliveryAddress", b =>
                 {
                     b.HasOne("SmartHomeTEC_API.Models.Client", "Client")
@@ -638,8 +554,6 @@ namespace SmartHomeTEC_API.Migrations
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.AssignedDevice", b =>
                 {
-                    b.Navigation("ChamberAssociation");
-
                     b.Navigation("UsageLogs");
                 });
 
@@ -648,18 +562,11 @@ namespace SmartHomeTEC_API.Migrations
                     b.Navigation("Certificate");
                 });
 
-            modelBuilder.Entity("SmartHomeTEC_API.Models.Chamber", b =>
-                {
-                    b.Navigation("ChamberAssociations");
-                });
-
             modelBuilder.Entity("SmartHomeTEC_API.Models.Client", b =>
                 {
                     b.Navigation("AssignedDevices");
 
                     b.Navigation("Certificates");
-
-                    b.Navigation("Chambers");
 
                     b.Navigation("DeliveryAddresses");
 

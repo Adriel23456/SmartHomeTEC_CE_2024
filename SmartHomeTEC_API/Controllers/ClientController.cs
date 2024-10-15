@@ -69,11 +69,41 @@ namespace SmartHomeTEC_API.Controllers
             // Mapear DTO a Entidad
             var client = _mapper.Map<Client>(clientDTO);
 
-            _context.Client.Add(client);
-            await _context.SaveChangesAsync();
+            // Iniciar una transacción para asegurar que el cliente y las cámaras se creen juntos
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                _context.Client.Add(client);
+                await _context.SaveChangesAsync();
+
+                // Nombres predefinidos para las cámaras
+                var chamberNames = new List<string> { "dormitorio", "cocina", "sala", "comedor" };
+
+                // Crear y añadir las cámaras
+                foreach (var name in chamberNames)
+                {
+                    var chamber = new Chamber
+                    {
+                        Name = name,
+                        ClientEmail = client.Email
+                    };
+                    _context.Chamber.Add(chamber);
+                }
+
+                await _context.SaveChangesAsync();
+
+                // Confirmar la transacción
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                // En caso de error, revertir la transacción
+                await transaction.RollbackAsync();
+                return StatusCode(500, $"Ocurrió un error al crear el cliente: {ex.Message}");
+            }
 
             var createdClientDTO = _mapper.Map<ClientDTO>(client);
-
             return CreatedAtAction(nameof(GetClient), new { email = client.Email }, createdClientDTO);
         }
 

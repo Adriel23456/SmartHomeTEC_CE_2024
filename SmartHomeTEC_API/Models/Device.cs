@@ -53,6 +53,8 @@ namespace SmartHomeTEC_API.Models
 
         [JsonIgnore]
         public Certificate? Certificate { get; set; }
+        [JsonIgnore]
+        public ICollection<AssignedDevice> AssignedDevices { get; set; } = new List<AssignedDevice>();
     }
 
     public enum DeviceState

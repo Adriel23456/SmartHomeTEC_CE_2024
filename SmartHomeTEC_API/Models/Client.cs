@@ -43,5 +43,11 @@ namespace SmartHomeTEC_API.Models
         public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
         [JsonIgnore]
         public ICollection<DeliveryAddress> DeliveryAddresses { get; set; } = new List<DeliveryAddress>();
+        [JsonIgnore]
+        public ICollection<AssignedDevice> AssignedDevices { get; set; } = new List<AssignedDevice>();
+        [JsonIgnore]
+        public ICollection<UsageLog> UsageLogs { get; set; } = new List<UsageLog>();
+        [JsonIgnore]
+        public ICollection<Chamber> Chambers { get; set; } = new List<Chamber>();
     }
 }

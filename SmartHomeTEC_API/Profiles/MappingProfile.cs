@@ -16,6 +16,10 @@ namespace SmartHomeTEC_API.Profiles
             CreateMap<Admin, AdminAuthDTO>().ReverseMap();
             CreateMap<Bill, BillDTO>().ReverseMap();
             CreateMap<DeliveryAddress, DeliveryAddressDTO>().ReverseMap();
+            CreateMap<AssignedDevice, AssignedDeviceDTO>().ReverseMap();
+            CreateMap<UsageLog, UsageLogDTO>().ReverseMap();
+            CreateMap<Chamber, ChamberDTO>().ReverseMap();
+            CreateMap<ChamberAssociation, ChamberAssociationDTO>().ReverseMap();
 
             // Device Mappings
             CreateMap<Device, DeviceDTO>()
@@ -86,6 +90,49 @@ namespace SmartHomeTEC_API.Profiles
                 .ForMember(dest => dest.AddressID, opt => opt.Ignore())
                 .ForMember(dest => dest.Client, opt => opt.Ignore());
             
+            // AssignedDevice Mappings
+            CreateMap<CreateAssignedDeviceDTO, AssignedDevice>()
+                .ForMember(dest => dest.AssignedID, opt => opt.Ignore())
+                .ForMember(dest => dest.Device, opt => opt.Ignore())
+                .ForMember(dest => dest.Client, opt => opt.Ignore());
+
+            CreateMap<UpdateAssignedDeviceDTO, AssignedDevice>()
+                .ForMember(dest => dest.AssignedID, opt => opt.Ignore())
+                .ForMember(dest => dest.SerialNumberDevice, opt => opt.Ignore())
+                .ForMember(dest => dest.Device, opt => opt.Ignore())
+                .ForMember(dest => dest.Client, opt => opt.Ignore());
+            
+            // UsageLog Mappings
+            CreateMap<CreateUsageLogDTO, UsageLog>()
+                .ForMember(dest => dest.LogID, opt => opt.Ignore())
+                .ForMember(dest => dest.TotalHours, opt => opt.Ignore())
+                .ForMember(dest => dest.Client, opt => opt.Ignore())
+                .ForMember(dest => dest.AssignedDevice, opt => opt.Ignore());
+
+            CreateMap<UpdateUsageLogDTO, UsageLog>()
+                .ForMember(dest => dest.LogID, opt => opt.Ignore())
+                .ForMember(dest => dest.StartDate, opt => opt.Ignore())
+                .ForMember(dest => dest.StartTime, opt => opt.Ignore())
+                .ForMember(dest => dest.TotalHours, opt => opt.Ignore())
+                .ForMember(dest => dest.Client, opt => opt.Ignore())
+                .ForMember(dest => dest.AssignedDevice, opt => opt.Ignore());
+            
+            // Chamber Mappings
+            CreateMap<CreateChamberDTO, Chamber>()
+                .ForMember(dest => dest.ChamberID, opt => opt.Ignore())
+                .ForMember(dest => dest.Client, opt => opt.Ignore());
+            
+            // ChamberAssociation Mappings
+            CreateMap<CreateChamberAssociationDTO, ChamberAssociation>()
+                .ForMember(dest => dest.AssociationID, opt => opt.Ignore())
+                .ForMember(dest => dest.WarrantyEndDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Chamber, opt => opt.Ignore())
+                .ForMember(dest => dest.AssignedDevice, opt => opt.Ignore());
+
+            CreateMap<UpdateChamberAssociationDTO, ChamberAssociation>()
+                .ForMember(dest => dest.AssociationID, opt => opt.Ignore())
+                .ForMember(dest => dest.Chamber, opt => opt.Ignore())
+                .ForMember(dest => dest.AssignedDevice, opt => opt.Ignore());
         }
     }
 }

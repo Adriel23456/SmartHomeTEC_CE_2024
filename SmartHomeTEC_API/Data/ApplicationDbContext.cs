@@ -20,6 +20,10 @@ namespace SmartHomeTEC_API.Data
         public DbSet<Bill> Bill { get; set; }
         public DbSet<Certificate> Certificate { get; set; }
         public DbSet<DeliveryAddress> DeliveryAddress { get; set; }
+        public DbSet<AssignedDevice> AssignedDevice { get; set; }
+        public DbSet<UsageLog> UsageLog { get; set; }
+        public DbSet<Chamber> Chamber { get; set; }
+        public DbSet<ChamberAssociation> ChamberAssociation { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -126,6 +130,65 @@ namespace SmartHomeTEC_API.Data
                 .HasOne(da => da.Client)
                 .WithMany(c => c.DeliveryAddresses)
                 .HasForeignKey(da => da.ClientEmail)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Configurar la relación entre Client y AssignedDevice
+            modelBuilder.Entity<AssignedDevice>()
+                .HasOne(ad => ad.Client)
+                .WithMany(c => c.AssignedDevices)
+                .HasForeignKey(ad => ad.ClientEmail)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar la relación entre Device y AssignedDevice
+            modelBuilder.Entity<AssignedDevice>()
+                .HasOne(ad => ad.Device)
+                .WithMany(d => d.AssignedDevices)
+                .HasForeignKey(ad => ad.SerialNumberDevice)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configurar clave primaria de AssignedDevice
+            modelBuilder.Entity<AssignedDevice>()
+                .HasKey(ad => ad.AssignedID);
+            
+            // Configurar la relación entre AssignedDevice y UsageLog
+            modelBuilder.Entity<UsageLog>()
+                .HasOne(ul => ul.AssignedDevice)
+                .WithMany(ad => ad.UsageLogs)
+                .HasForeignKey(ul => ul.AssignedID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar la relación entre Client y UsageLog
+            modelBuilder.Entity<UsageLog>()
+                .HasOne(ul => ul.Client)
+                .WithMany(c => c.UsageLogs)
+                .HasForeignKey(ul => ul.ClientEmail)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Configurar la relación entre Client y Chamber
+            modelBuilder.Entity<Chamber>()
+                .HasOne(c => c.Client)
+                .WithMany(cl => cl.Chambers)
+                .HasForeignKey(c => c.ClientEmail)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Añadir restricción única para (ClientEmail, Name)
+            modelBuilder.Entity<Chamber>()
+                .HasIndex(c => new { c.ClientEmail, c.Name })
+                .IsUnique()
+                .HasDatabaseName("IX_Chamber_ClientEmail_Name");
+            
+            // Configurar la relación entre ChamberAssociation y Chamber
+            modelBuilder.Entity<ChamberAssociation>()
+                .HasOne(ca => ca.Chamber)
+                .WithMany(c => c.ChamberAssociations)
+                .HasForeignKey(ca => ca.ChamberID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar la relación entre ChamberAssociation y AssignedDevice
+            modelBuilder.Entity<ChamberAssociation>()
+                .HasOne(ca => ca.AssignedDevice)
+                .WithOne(ad => ad.ChamberAssociation)
+                .HasForeignKey<ChamberAssociation>(ca => ca.AssignedID)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
