@@ -6,6 +6,8 @@ import 'package:sqflite/sqflite.dart';
 class DatabaseHelper {
   final clienteDatabaseName = "clientes.db";
   final chamberDatabaseName = "chambers.db";
+  final deviceDatabaseName = "device.db";
+  final assignedDeviceDatabaseName = "assigneddevice.db";
   String clientes = '''
   CREATE TABLE clientes (
   email TEXT PRIMARY KEY,
@@ -76,6 +78,14 @@ class DatabaseHelper {
 
     return openDatabase(path, version: 1, onCreate: (db, version) async {
       await db.execute(chamber);
+    });
+  }
+
+  Future<Database> initDeviceDB() async{
+    final dbpath = await getDatabasesPath();
+    final path = join(dbpath, deviceDatabaseName);
+    return openDatabase(path, version:1,onCreate: (db,version) async {
+      await db.execute(device);
     });
   }
 

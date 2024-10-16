@@ -75,7 +75,7 @@ class _RegisterAposento extends State<RegisterAposento> {
               ),
               TextEntry(
                   writtenText: "Nombre",
-                  icon: Icons.mail,
+                  icon: Icons.home,
                   controller: chamberName),
               Button(
                   texto: "Registrar aposento",
