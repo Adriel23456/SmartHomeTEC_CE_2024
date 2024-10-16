@@ -81,12 +81,32 @@ class DatabaseHelper {
     });
   }
 
-  Future<Database> initDeviceDB() async{
+  Future<Database> initDeviceDB() async {
     final dbpath = await getDatabasesPath();
     final path = join(dbpath, deviceDatabaseName);
-    return openDatabase(path, version:1,onCreate: (db,version) async {
+    return openDatabase(path, version: 1, onCreate: (db, version) async {
       await db.execute(device);
     });
+  }
+
+  Future<Database> initAssignedDeviceDB() async {
+    final dbpath = await getDatabasesPath();
+    final path = join(dbpath, assignedDeviceDatabaseName);
+    return openDatabase(path, version: 1, onCreate: (db, version) async {
+      await db.execute(assignedDevice);
+    });
+  }
+
+  //Device methods
+  Future<bool> deviceExists(String serialNumber) async {
+    final Database db = await initDeviceDB();
+    var result = await db.rawQuery(
+        "select * from assigneddevice where serialNumberDevice = '${serialNumber}'");
+    if (result.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   //chamber taable methods
