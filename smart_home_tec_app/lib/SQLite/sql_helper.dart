@@ -101,9 +101,21 @@ class DatabaseHelper {
   Future<List<String>> getChambers(String clienteEmail) async {
     final Database db = await initChamberDB();
     // Query the chamber table to find all chambers for the given clientEmail
-    final List<Map<String, dynamic>> chambers = await db.query("chamber", columns: ["name"], where: "clientEmail = ?",whereArgs: [clienteEmail],);
+    final List<Map<String, dynamic>> chambers = await db.query(
+      "chamber",
+      columns: ["name"],
+      where: "clientEmail = ?",
+      whereArgs: [clienteEmail],
+    );
 
     return chambers.map((chamber) => chamber["name"] as String).toList();
+  }
+
+  //delete chamber from database
+  Future<void> deleteChamber(String name, String clientEmail) async {
+    final Database db = await initChamberDB();
+    await db.delete("chamber",
+        where: "name = ? AND clientEmail = ?", whereArgs: [name, clientEmail]);
   }
 
   //client table methods

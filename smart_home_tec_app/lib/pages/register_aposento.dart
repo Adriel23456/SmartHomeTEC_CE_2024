@@ -48,7 +48,7 @@ class _RegisterAposento extends State<RegisterAposento> {
         if (!mounted) return;
         int count = 0;
         Navigator.popUntil(context, (route) {
-          return count++ == 2;
+          return count++ == 1;
         });
       }
     }
