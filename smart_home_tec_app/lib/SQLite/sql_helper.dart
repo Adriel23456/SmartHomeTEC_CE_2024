@@ -97,6 +97,15 @@ class DatabaseHelper {
     return db.insert("chamber", chamber.toJson());
   }
 
+  //return all the chambers for an user
+  Future<List<String>> getChambers(String clienteEmail) async {
+    final Database db = await initChamberDB();
+    // Query the chamber table to find all chambers for the given clientEmail
+    final List<Map<String, dynamic>> chambers = await db.query("chamber", columns: ["name"], where: "clientEmail = ?",whereArgs: [clienteEmail],);
+
+    return chambers.map((chamber) => chamber["name"] as String).toList();
+  }
+
   //client table methods
   //Method for the login
   Future<bool> authenticate(Clientes cliente) async {
