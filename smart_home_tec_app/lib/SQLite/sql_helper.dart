@@ -1,4 +1,5 @@
 import 'package:path/path.dart';
+import 'package:smart_home_tec_app/JSONmodels/assigned_device.dart';
 import 'package:smart_home_tec_app/JSONmodels/chamber.dart';
 import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
 import 'package:sqflite/sqflite.dart';
@@ -8,6 +9,10 @@ class DatabaseHelper {
   final chamberDatabaseName = "chambers.db";
   final deviceDatabaseName = "device.db";
   final assignedDeviceDatabaseName = "assigneddevice.db";
+  final chamberAsssociationDatabaseName = "chamberassociation.db";
+  final certificateDatabaseName = "certificate.db";
+  final deviceTypeDatabaseName = "devicetype.db";
+
   String clientes = '''
   CREATE TABLE clientes (
   email TEXT PRIMARY KEY,
@@ -30,7 +35,7 @@ class DatabaseHelper {
   String device = '''
   CREATE TABLE device (
   serialNumber INTEGER PRIMARY KEY,
-  price TEXT,
+  price INTEGER,
   state TEXT,
   brand TEXT,
   amountAvailable INTEGER,
@@ -47,6 +52,37 @@ class DatabaseHelper {
   serialNumberDevice INTEGER,
   clientEmail TEXT,
   state TEXT
+  )
+  ''';
+  //asignedID es el id del dispositivo asignado
+  String chamberAssociation = '''
+  CREATE TABLE ChamberAssociation (
+  associationID INTEGER PRIMARY KEY AUTOINCREMENT,
+  associationStartDate INTEGER,
+  warrantyEndDate TEXT,
+  chamberID INT
+  assignedID INT
+  )
+  ''';
+  //serialNumberDevice is associated to serialNumber on device table
+  String certificate = '''
+  CREATE TABLE Certificate (
+  serialNumberDevice INTEGER PRIMARY KEY,
+  brand TEXT,
+  deviceTypeName TEXT,
+  clientFullName TEXT,
+  warrantyEndDate TEXT,
+  warrantyStartDate TEXT,
+  billNum INT,
+  clientEmail TEXT
+  )
+  ''';
+  //name is associated to deviceTypeName in Certificate table and device table
+  String deviceType = '''
+  CREATE TABLE DeviceType (
+  name TEXT PRIMARY KEY,
+  description TEXT,
+  warrantyDays INT
   )
   ''';
   //RESETS ALL DATABASES
@@ -97,11 +133,106 @@ class DatabaseHelper {
     });
   }
 
-  //Device methods
-  Future<bool> deviceExists(String serialNumber) async {
+  Future<Database> initChamberAssociationDB() async {
+    final dbpath = await getDatabasesPath();
+    final path = join(dbpath, chamberAsssociationDatabaseName);
+
+    return openDatabase(path, version: 1, onCreate: (db, version) async {
+      await db.execute(chamberAssociation);
+    });
+  }
+
+  Future<Database> initCertificateDB() async {
+    final dbpath = await getDatabasesPath();
+    final path = join(dbpath, certificateDatabaseName);
+
+    return openDatabase(path, version: 1, onCreate: (db, version) async {
+      await db.execute(certificate);
+    });
+  }
+
+  Future<Database> initDeviceTypeDB() async {
+    final dbpath = await getDatabasesPath();
+    final path = join(dbpath, deviceTypeDatabaseName);
+
+    return openDatabase(path, version: 1, onCreate: (db, version) async {
+      await db.execute(deviceType);
+    });
+  }
+  //Generate 5 mock devices if table is empty
+    // Generates 5 random devices and fills the device, certificate, and deviceType tables.
+  Future<void> generateRandomDevices() async {
+    final Database dbDevice = await initDeviceDB();
+    final Database dbCertificate = await initCertificateDB();
+    final Database dbDeviceType = await initDeviceTypeDB();
+
+    // If the device table is empty, insert random data
+    var result = await dbDevice.query("device");
+    if (result.isEmpty) {
+      // Generate 5 random devices
+      List<Map<String, dynamic>> devices = List.generate(5, (index) {
+        return {
+          'serialNumber': index + 1,
+          'price': (100 + index * 10),
+          'state': 'New',
+          'brand': 'Brand${index + 1}',
+          'amountAvailable': (5 + index),
+          'electricalConsumption': '${(100 + index * 10)}W',
+          'name': 'Device${index + 1}',
+          'description': 'Description for Device${index + 1}',
+          'deviceTypeName': 'Type${index + 1}',
+          'legalNum': 1000 + index,
+        };
+      });
+
+      // Insert devices into the device table
+      for (var device in devices) {
+        await dbDevice.insert('device', device);
+      }
+
+      // Generate 5 certificates for the devices
+      List<Map<String, dynamic>> certificates = devices.map((device) {
+        return {
+          'serialNumberDevice': device['serialNumber'],
+          'brand': device['brand'],
+          'deviceTypeName': device['deviceTypeName'],
+          'clientFullName': 'Client Full Name',
+          'warrantyEndDate': '2025-12-31',
+          'warrantyStartDate': '2023-01-01',
+          'billNum': 123456 + device['serialNumber'],
+          'clientEmail': 'client${device['serialNumber']}@example.com',
+        };
+      }).toList();
+
+      // Insert certificates into the certificate table
+      for (var certificate in certificates) {
+        await dbCertificate.insert('Certificate', certificate);
+      }
+
+      // Generate 5 device types
+      List<Map<String, dynamic>> deviceTypes = List.generate(5, (index) {
+        return {
+          'name': 'Type${index + 1}',
+          'description': 'Description for Type${index + 1}',
+          'warrantyDays': (365 + index * 30),
+        };
+      });
+
+      // Insert device types into the deviceType table
+      for (var deviceType in deviceTypes) {
+        await dbDeviceType.insert('DeviceType', deviceType);
+      }
+    }
+  }
+
+
+  //Device methods/
+  //Checks if the device exists in devices table
+  Future<bool> deviceExists(int serialNumber) async {
+    await generateRandomDevices(); //if table is empty, generate mock data
     final Database db = await initDeviceDB();
     var result = await db.rawQuery(
-        "select * from assigneddevice where serialNumberDevice = '${serialNumber}'");
+        "select * from device where serialNumber = '${serialNumber}'");
     if (result.isNotEmpty) {
       return true;
     } else {
@@ -109,7 +240,89 @@ class DatabaseHelper {
     }
   }
 
+  //checks if the device is not assigned to an user
+  Future<bool> deviceAvailability(int serialNumber) async {
+    final Database db = await initAssignedDeviceDB();
+    var result = await db.rawQuery(
+        "select * from assigneddevice where serialNumberDevice = '${serialNumber}' AND state = Present");
+    if(result.isEmpty){
+      return true;
+    }
+    return false;
+
+  }
+
+  //find the first next unused number id
+  Future<int> getNewAssignedID() async {
+    final Database db = await initAssignedDeviceDB();
+    var result = await db.rawQuery("select max(assignedID) as maxID from assigneddevice");
+    
+    int maxID = result[0]['maxID'] != null ? (result[0]['maxID'] as int) : 0;
+    return maxID + 1;
+  }
+  //adds a device to the assigneddevice table, if there is an error it returns false
+  Future<bool> createDispositivo(AssignedDevice assignedDeviceNew) async{
+    final dbAssignedDevice = await initAssignedDeviceDB();
+
+    //checks if the device exists
+    bool result = await deviceExists(assignedDeviceNew.serialNumberDevice);
+    if(result){
+      //if the device exists, check if it is not assigned to someone
+      if(await deviceAvailability(assignedDeviceNew.serialNumberDevice)){//if the device is available
+        //this case is if there is no present user
+        //get the ID for the device
+        int newAssignedID = await getNewAssignedID();
+        assignedDeviceNew.assignedId=newAssignedID;
+        var result =await  dbAssignedDevice.insert("assigneddevice", assignedDeviceNew.toJson());
+        //adds the other data to other tables
+
+        
+        if(result>0){
+          return true;
+        }else{
+          return false; 
+        }
+      }else{
+        return false;
+      }
+    }else{
+      return false;
+    }
+
+  }
+
+  //return all the devices for an user
+  Future<List<String>> getDevices(String clienteEmail) async {
+    final Database db = await initAssignedDeviceDB();
+    // Query the chamber table to find all chambers for the given clientEmail
+    final List<Map<String, dynamic>> devicesNames = await db.query(
+      "assigneddevice",
+      columns: ["serialNumberDevice"],
+      where: "clientEmail = ? AND state = ?",
+      whereArgs: [clienteEmail,'Present'],
+    );
+
+    // Extract the list of serialNumberDevice (as int)
+    List<int> assignedDevicesTempList = devicesNames.map((assignedDevice) => assignedDevice["serialNumberDevice"] as int).toList();
+
+    final Database dbDevices = await initDeviceDB();
+    List<Map<String, dynamic>> devicesReturn = [];
+    for (int object in assignedDevicesTempList) {
+      var result = await dbDevices.query(
+        "device",
+        columns: ["name"],
+        where: "serialNumber = ?",
+        whereArgs: [object],
+      );
+      devicesReturn.addAll(result);
+    }
+
+    // Return the list of device names
+    return devicesReturn.map((device) => device["name"] as String).toList();
+  }
+
   //chamber taable methods
+  //Checks if chamber already exists for the user
   Future<bool> chamberExists(String chamberName, String clientEmail) async {
     final Database db = await initChamberDB();
     var result = await db.rawQuery(

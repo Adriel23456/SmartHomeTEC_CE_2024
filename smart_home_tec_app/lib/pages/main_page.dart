@@ -3,6 +3,7 @@ import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
 import 'package:smart_home_tec_app/pages/created_objects/button.dart';
 import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
 import 'package:smart_home_tec_app/pages/gestion_aposentos_page.dart';
+import 'package:smart_home_tec_app/pages/gestion_dispositivos_page.dart';
 import 'package:smart_home_tec_app/pages/login_page.dart';
 
 class UserPage extends StatelessWidget {
@@ -40,7 +41,14 @@ class UserPage extends StatelessWidget {
                       clienteData!.email,
                     ),
                   ),
-                  Button(texto: "Gestionar mis dispositivos", funcion: () {}),
+                  Button(texto: "Gestionar mis dispositivos", funcion: () {
+                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GestionDispositivosPage(
+                                      clienteData: clienteData,
+                                    )));
+                  }),
                   Button(
                       texto: "Gestionar aposentos",
                       funcion: () {

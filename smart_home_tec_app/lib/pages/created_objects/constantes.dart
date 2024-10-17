@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 const colorBaseBoton = Color(0xFF0055bd);
 const colorFondo =
     Color(0xFFd9d9d9); //dentro en vez de # para el hexa, se pone 0xFF
+const constantPadding = EdgeInsets.symmetric(vertical: 20);
 const badEmailText = "El correo ingesado no es valido";
 const passwordDifferentText = "Las contraseñas no concuerdan";
 const emptySpacesText = "Rellene todos los espacios porfavor";
@@ -15,3 +16,6 @@ const passwordDerivedText =
 const passwordShortText = "La contraseña debe tener almenos 5 caracteres";
 const repeatedChamberNameText =
     "El usuario ya tiene registrado un aposento con este nombre";
+const errorDeviceText = "Error al registrat el dispositivo";
+const notIntegerDeviceText="El numero serial debe ser un numero";
+const badChamberNameText ="El nombre del aposento no es correcto para este usuario";

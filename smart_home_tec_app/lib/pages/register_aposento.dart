@@ -62,7 +62,7 @@ class _RegisterAposento extends State<RegisterAposento> {
           child: Center(
         child: SingleChildScrollView(
             child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
+          padding: constantPadding,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
