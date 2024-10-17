@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "B6OVFSBttIWwwHRveOKBrCM1IbQjg3TJdgX60dDysjk=",
+  "Source": "SmartHomeTEC_API",
+  "BasePath": "_content/SmartHomeTEC_API",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

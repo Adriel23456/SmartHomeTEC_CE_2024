@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SmartHomeTEC_API.Data;
 using SmartHomeTEC_API.Profiles;
@@ -10,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Configuración de Servicios
 // ===============================
 
+// Configurar IIS
+builder.WebHost.UseIIS();
+
 // Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -18,14 +20,14 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; // Evita ciclos
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-// Configurar la cadena de conexión a PostgreSQL desde appsettings.json
+// Configurar la cadena de conexión a PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configurar CORS para permitir cualquier origen, método y encabezado
+// Configurar CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -34,7 +36,7 @@ builder.Services.AddCors(options =>
                         .AllowAnyHeader());
 });
 
-// Agregar servicios de Swagger/OpenAPI para documentación y pruebas
+// Agregar servicios de Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -48,22 +50,27 @@ var app = builder.Build();
 // 3. Configuración del Middleware
 // ===============================
 
-// Configurar el middleware de Swagger solo en entorno de desarrollo
-if (app.Environment.IsDevelopment())
+// Usar Swagger en todos los entornos
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartHomeTEC API V1");
+    c.RoutePrefix = string.Empty; // Esto hace que Swagger UI esté disponible en la raíz
+});
+
+// Configurar HTTPS
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
 }
 
-// Redirigir HTTP a HTTPS
 app.UseHttpsRedirection();
 
-// Aplicar la política de CORS definida anteriormente
+// Aplicar CORS
 app.UseCors("AllowAll");
+app.UseAuthorization();
 
-// Configurar autorización (eliminado en este caso)
-
-// Mapear los controladores a las rutas de la API
+// Mapear controladores
 app.MapControllers();
 
 // ===============================
