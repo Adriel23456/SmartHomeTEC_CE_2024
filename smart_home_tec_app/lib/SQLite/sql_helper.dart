@@ -171,7 +171,7 @@ class DatabaseHelper {
     final Database dbDeviceType = await initDeviceTypeDB();
 
     // If the device table is empty, insert random data
-    var result = await dbDevice.query("device");
+    var result = await dbDevice.query(deviceTableName);
     if (result.isEmpty) {
       // Generate 5 device types
       List<Map<String, dynamic>> deviceTypes = List.generate(5, (index) {
@@ -184,7 +184,7 @@ class DatabaseHelper {
 
       // Insert device types into the deviceType table
       for (var deviceType in deviceTypes) {
-        await dbDeviceType.insert('DeviceType', deviceType);
+        await dbDeviceType.insert(deviceTypeTableName, deviceType);
       }
 
       // Generate 10 random devices, assigning one of the 5 device types to each
@@ -205,7 +205,7 @@ class DatabaseHelper {
 
       // Insert devices into the device table
       for (var device in devices) {
-        await dbDevice.insert('device', device);
+        await dbDevice.insert(deviceTableName, device);
       }
     }
   }
@@ -218,7 +218,7 @@ class DatabaseHelper {
     await generateRandomDevices(); //if table is empty, generate mock data
     final Database db = await initDeviceDB();
     var result = await db.rawQuery(
-        "select * from device where serialNumber = '${serialNumber}'");
+        "select * from '$deviceTableName' where serialNumber = '$serialNumber'");
     if (result.isNotEmpty) {
       return true;
     } else {
@@ -229,7 +229,7 @@ class DatabaseHelper {
   //checks if the device is not assigned to an user
   Future<bool> deviceAvailability(int serialNumber) async {
     final Database db = await initAssignedDeviceDB();
-    var result = await db.query(deviceTypeDatabaseName,
+    var result = await db.query(deviceTypeTableName,
     where: "serialNumberDevice = ? AND state = ?",
     whereArgs: [serialNumber,'Present']);
     if(result.isEmpty){
@@ -242,7 +242,7 @@ class DatabaseHelper {
     await generateRandomDevices(); //if table is empty, generate mock data
     final Database db = await initDeviceTypeDB();
     var result = await db.rawQuery(
-        "select * from DeviceType where name = '${deviceTypeName}'");
+        "select * from '$deviceTypeTableName' where name = '${deviceTypeName}'");
     if (result.isNotEmpty) {
       return true;
     } else {
@@ -255,7 +255,7 @@ class DatabaseHelper {
   Future<int> getDeviceTypeWarrantyDays(String deviceTypeName) async {
     final Database db = await initDeviceTypeDB();
     var result = await db.query(
-      "DeviceType", 
+      deviceTypeTableName, 
       columns: ["warrantyDays"], 
       where: "name = ?", 
       whereArgs: [deviceTypeName]
@@ -276,7 +276,7 @@ class DatabaseHelper {
   Future<int> getChamberId(String chamberName, String clientEmail)async{
     Database db = await initChamberDB();
     var result = await db.query(
-      "chamber"
+      chamberTableName
       ,columns: ["chamberID"],
       where: "name = ? AND clientEmail = ?",
       whereArgs: [chamberName,clientEmail]);
@@ -291,7 +291,7 @@ class DatabaseHelper {
   //find the first next unused number id
   Future<int> getNewAssignedID() async {
     final Database db = await initAssignedDeviceDB();
-    var result = await db.rawQuery("select max(assignedID) as maxID from assigneddevice");
+    var result = await db.rawQuery("select max(assignedID) as maxID from '$assignedDeviceTableName'");
     
     int maxID = result[0]['maxID'] != null ? (result[0]['maxID'] as int) : 0;
     return maxID + 1;
@@ -316,7 +316,7 @@ class DatabaseHelper {
         //get the ID for the device
         int newAssignedID = await getNewAssignedID();
         assignedDeviceNew.assignedId=newAssignedID;
-        var result =await  dbAssignedDevice.insert("assigneddevice", assignedDeviceNew.toJson());
+        var result =await  dbAssignedDevice.insert(assignedDeviceTableName, assignedDeviceNew.toJson());
         //adds the other data to other tables
         Database dbCertificate = await initCertificateDB();
         Database dbChamberAssociation = await initChamberAssociationDB();
@@ -343,8 +343,8 @@ class DatabaseHelper {
           assignedID: newAssignedID
           );
         //add the classes to the corresponding tables
-        var resultCertificate = await dbCertificate.insert("Certificate", cerftificateAdd.toJson());
-        var resultChamberAssociation = await dbChamberAssociation.insert("ChamberAssociation", chamberAssociationAdd.toJson());
+        var resultCertificate = await dbCertificate.insert(certificateTableName, cerftificateAdd.toJson());
+        var resultChamberAssociation = await dbChamberAssociation.insert(chamberAssociationTableName, chamberAssociationAdd.toJson());
 
         if(result > 0 && resultCertificate>0 && resultChamberAssociation >0){
           return true;
@@ -365,7 +365,7 @@ class DatabaseHelper {
     final Database db = await initAssignedDeviceDB();
     // Query the chamber table to find all chambers for the given clientEmail
     final List<Map<String, dynamic>> devicesNames = await db.query(
-      "assigneddevice",
+      assignedDeviceTableName,
       columns: ["serialNumberDevice"],
       where: "clientEmail = ? AND state = ?",
       whereArgs: [clienteEmail,'Present'],
@@ -378,7 +378,7 @@ class DatabaseHelper {
     List<Map<String, dynamic>> devicesReturn = [];
     for (int object in assignedDevicesTempList) {
       var result = await dbDevices.query(
-        "device",
+        deviceTableName,
         columns: ["name"],
         where: "serialNumber = ?",
         whereArgs: [object],
@@ -395,7 +395,7 @@ class DatabaseHelper {
   Future<bool> chamberExists(String chamberName, String clientEmail) async {
     final Database db = await initChamberDB();
     var result = await db.rawQuery(
-        "select * from chamber where name = '${chamberName}' AND clientEmail = '${clientEmail}'");
+        "select * from '$chamberTableName' where name = '${chamberName}' AND clientEmail = '${clientEmail}'");
     if (result.isNotEmpty) {
       return true;
     } else {
@@ -406,7 +406,7 @@ class DatabaseHelper {
   //registering a chamber
   Future<int> createChamber(Chamber chamber) async {
     final Database db = await initChamberDB();
-    return db.insert("chamber", chamber.toJson());
+    return db.insert(chamberTableName, chamber.toJson());
   }
 
   //return all the chambers for an user
@@ -414,7 +414,7 @@ class DatabaseHelper {
     final Database db = await initChamberDB();
     // Query the chamber table to find all chambers for the given clientEmail
     final List<Map<String, dynamic>> chambers = await db.query(
-      "chamber",
+      chamberTableName,
       columns: ["name"],
       where: "clientEmail = ?",
       whereArgs: [clienteEmail],
@@ -426,7 +426,7 @@ class DatabaseHelper {
   //delete chamber from database
   Future<void> deleteChamber(String name, String clientEmail) async {
     final Database db = await initChamberDB();
-    await db.delete("chamber",
+    await db.delete(chamberTableName,
         where: "name = ? AND clientEmail = ?", whereArgs: [name, clientEmail]);
   }
 
@@ -435,7 +435,7 @@ class DatabaseHelper {
   Future<bool> authenticate(Clientes cliente) async {
     final Database db = await initClientesDB();
     var result = await db.rawQuery(
-        "select * from clientes where email = '${cliente.email}' AND password = '${cliente.password}'");
+        "select * from '$clientTableName' where email = '${cliente.email}' AND password = '${cliente.password}'");
     if (result.isNotEmpty) {
       return true;
     } else {
@@ -446,7 +446,7 @@ class DatabaseHelper {
   Future<bool> clienteExists(String email) async {
     final Database db = await initClientesDB();
     var result =
-        await db.rawQuery("select * from clientes where email = '${email}'");
+        await db.rawQuery("select * from '$clientTableName' where email = '${email}'");
     if (result.isNotEmpty) {
       return true;
     } else {
@@ -457,14 +457,14 @@ class DatabaseHelper {
   //Method for the sign in or register
   Future<int> createCliente(Clientes cliente) async {
     final Database db = await initClientesDB();
-    return db.insert("clientes", cliente.toJson());
+    return db.insert(clientTableName, cliente.toJson());
   }
 
   //Get the user info
   Future<Clientes?> getCliente(String email) async {
     final Database db = await initClientesDB();
     var result =
-        await db.query("clientes", where: "email = ?", whereArgs: [email]);
+        await db.query(clientTableName, where: "email = ?", whereArgs: [email]);
     return result.isNotEmpty ? Clientes.fromJson(result.first) : null;
   }
 }
