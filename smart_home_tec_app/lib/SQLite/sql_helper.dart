@@ -238,6 +238,7 @@ class DatabaseHelper {
 
   }
   Future<bool> deviceTypeExists(String deviceTypeName)async{
+    await generateRandomDevices(); //if table is empty, generate mock data
     final Database db = await initDeviceTypeDB();
     var result = await db.rawQuery(
         "select * from DeviceType where name = '${deviceTypeName}'");
