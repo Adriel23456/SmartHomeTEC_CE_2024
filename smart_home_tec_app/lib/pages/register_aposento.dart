@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_home_tec_app/JSONmodels/chamber.dart';
 import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
-import 'package:smart_home_tec_app/SQLite/sql_helper.dart';
+import 'package:smart_home_tec_app/SQLite/database_service.dart';
 import 'package:smart_home_tec_app/pages/created_objects/button.dart';
 import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
 import 'package:smart_home_tec_app/pages/created_objects/textentry.dart';
