@@ -9,9 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Configuración de Servicios
 // ===============================
 
-// Configurar IIS
-builder.WebHost.UseIIS();
-
 // Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -58,6 +55,9 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty; // Esto hace que Swagger UI esté disponible en la raíz
 });
 
+// Aplicar CORS
+app.UseCors("AllowAll");
+
 // Configurar HTTPS
 if (!app.Environment.IsDevelopment())
 {
@@ -65,10 +65,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Aplicar CORS
-app.UseCors("AllowAll");
-app.UseAuthorization();
 
 // Mapear controladores
 app.MapControllers();

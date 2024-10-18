@@ -2,7 +2,7 @@ namespace SmartHomeTEC_API.DTOs
 {
     public class DeviceDTO
     {
-        public required string SerialNumber { get; set; }
+        public required int SerialNumber { get; set; }
         public required decimal Price { get; set; }
         public required string State { get; set; }
         public required string Brand { get; set; }

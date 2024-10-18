@@ -117,7 +117,8 @@ namespace SmartHomeTEC_API.Migrations
                 name: "Device",
                 columns: table => new
                 {
-                    SerialNumber = table.Column<string>(type: "text", nullable: false),
+                    SerialNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     State = table.Column<string>(type: "text", nullable: false),
                     Brand = table.Column<string>(type: "text", nullable: false),
@@ -151,7 +152,7 @@ namespace SmartHomeTEC_API.Migrations
                 {
                     AssignedID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SerialNumberDevice = table.Column<string>(type: "text", nullable: false),
+                    SerialNumberDevice = table.Column<int>(type: "integer", nullable: false),
                     ClientEmail = table.Column<string>(type: "text", nullable: false),
                     State = table.Column<string>(type: "text", nullable: false)
                 },
@@ -183,7 +184,7 @@ namespace SmartHomeTEC_API.Migrations
                     OrderDate = table.Column<string>(type: "text", nullable: false),
                     OrderClientNum = table.Column<int>(type: "integer", nullable: true),
                     Brand = table.Column<string>(type: "text", nullable: true),
-                    SerialNumberDevice = table.Column<string>(type: "text", nullable: false),
+                    SerialNumberDevice = table.Column<int>(type: "integer", nullable: false),
                     DeviceTypeName = table.Column<string>(type: "text", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "numeric", nullable: true),
                     ClientEmail = table.Column<string>(type: "text", nullable: false)
@@ -303,7 +304,7 @@ namespace SmartHomeTEC_API.Migrations
                 name: "Certificate",
                 columns: table => new
                 {
-                    SerialNumberDevice = table.Column<string>(type: "text", nullable: false),
+                    SerialNumberDevice = table.Column<int>(type: "integer", nullable: false),
                     Brand = table.Column<string>(type: "text", nullable: true),
                     DeviceTypeName = table.Column<string>(type: "text", nullable: false),
                     ClientFullName = table.Column<string>(type: "text", nullable: true),

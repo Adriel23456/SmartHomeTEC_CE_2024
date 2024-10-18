@@ -13,7 +13,7 @@ namespace SmartHomeTEC_API.Models
 
         [Required]
         [ForeignKey("Device")]
-        public required string SerialNumberDevice { get; set; }
+        public required int SerialNumberDevice { get; set; }
 
         [Required]
         [ForeignKey("Client")]

@@ -102,7 +102,7 @@ namespace SmartHomeTEC_API.Controllers
         /// <param name="deviceDTO">Objeto DeviceDTO con datos actualizados</param>
         /// <returns>Estado de la operación</returns>
         [HttpPut("{serialNumber}")]
-        public async Task<IActionResult> PutDevice(string serialNumber, DeviceDTO deviceDTO)
+        public async Task<IActionResult> PutDevice(int serialNumber, DeviceDTO deviceDTO)
         {
             if (serialNumber != deviceDTO.SerialNumber)
             {
@@ -175,7 +175,7 @@ namespace SmartHomeTEC_API.Controllers
         /// <param name="serialNumber">Número de serie del Device</param>
         /// <returns>Objeto DeviceDetailDTO</returns>
         [HttpGet("Details/{serialNumber}")]
-        public async Task<ActionResult<DeviceDetailDTO>> GetDeviceDetails(string serialNumber)
+        public async Task<ActionResult<DeviceDetailDTO>> GetDeviceDetails(int serialNumber)
         {
             var device = await _context.Device
                 .Include(d => d.DeviceType)
@@ -196,7 +196,7 @@ namespace SmartHomeTEC_API.Controllers
         /// </summary>
         /// <param name="serialNumber">Número de serie del Device</param>
         /// <returns>Booleano indicando si existe</returns>
-        private bool DeviceExists(string serialNumber)
+        private bool DeviceExists(int serialNumber)
         {
             return _context.Device.Any(e => e.SerialNumber == serialNumber);
         }

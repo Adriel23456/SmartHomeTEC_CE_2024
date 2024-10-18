@@ -7,7 +7,7 @@ namespace SmartHomeTEC_API.DTOs
         public int AssignedID { get; set; }
 
         [Required]
-        public required string SerialNumberDevice { get; set; }
+        public required int SerialNumberDevice { get; set; }
 
         [Required]
         [EmailAddress]

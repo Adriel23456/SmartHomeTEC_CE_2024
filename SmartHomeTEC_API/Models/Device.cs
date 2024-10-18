@@ -9,7 +9,7 @@ namespace SmartHomeTEC_API.Models
     {
         [Key]
         [Required]
-        public required string SerialNumber { get; set; }
+        public required int SerialNumber { get; set; }
 
         [Required]
         [Range(0, double.MaxValue, ErrorMessage = "El precio debe ser un número no negativo.")]

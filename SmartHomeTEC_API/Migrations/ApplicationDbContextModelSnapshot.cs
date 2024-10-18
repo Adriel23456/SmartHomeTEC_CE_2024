@@ -2,6 +2,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartHomeTEC_API.Data;
 
 #nullable disable
@@ -46,9 +48,8 @@ namespace SmartHomeTEC_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("SerialNumberDevice")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("SerialNumberDevice")
+                        .HasColumnType("integer");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -101,8 +102,8 @@ namespace SmartHomeTEC_API.Migrations
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Certificate", b =>
                 {
-                    b.Property<string>("SerialNumberDevice")
-                        .HasColumnType("text");
+                    b.Property<int>("SerialNumberDevice")
+                        .HasColumnType("integer");
 
                     b.Property<int>("BillNum")
                         .HasColumnType("integer");
@@ -275,8 +276,11 @@ namespace SmartHomeTEC_API.Migrations
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Device", b =>
                 {
-                    b.Property<string>("SerialNumber")
-                        .HasColumnType("text");
+                    b.Property<int>("SerialNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SerialNumber"));
 
                     b.Property<int?>("AmountAvailable")
                         .HasColumnType("integer");
@@ -392,9 +396,8 @@ namespace SmartHomeTEC_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("SerialNumberDevice")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("SerialNumberDevice")
+                        .HasColumnType("integer");
 
                     b.Property<string>("State")
                         .IsRequired()

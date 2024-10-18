@@ -10,7 +10,7 @@ namespace SmartHomeTEC_API.Models
         [Key]
         [ForeignKey("Device")]
         [Required]
-        public required string SerialNumberDevice { get; set; }
+        public required int SerialNumberDevice { get; set; }
 
         public string? Brand { get; set; }
 

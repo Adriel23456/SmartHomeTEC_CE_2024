@@ -46,7 +46,7 @@ namespace SmartHomeTEC_API.Controllers
         /// <param name="serialNumberDevice">Serial Number del Dispositivo</param>
         /// <returns>Objeto CertificateDTO</returns>
         [HttpGet("{serialNumberDevice}")]
-        public async Task<ActionResult<CertificateDTO>> GetCertificate(string serialNumberDevice)
+        public async Task<ActionResult<CertificateDTO>> GetCertificate(int serialNumberDevice)
         {
             var certificate = await _context.Certificate
                 .Include(c => c.Bill)
@@ -153,7 +153,7 @@ namespace SmartHomeTEC_API.Controllers
         /// <param name="createCertificateDTO">Objeto CreateCertificateDTO con datos actualizados</param>
         /// <returns>Estado de la operación</returns>
         [HttpPut("{serialNumberDevice}")]
-        public async Task<IActionResult> PutCertificate(string serialNumberDevice, [FromBody] CreateCertificateDTO createCertificateDTO)
+        public async Task<IActionResult> PutCertificate(int serialNumberDevice, [FromBody] CreateCertificateDTO createCertificateDTO)
         {
             if (serialNumberDevice != createCertificateDTO.SerialNumberDevice)
             {
@@ -261,7 +261,7 @@ namespace SmartHomeTEC_API.Controllers
         /// </summary>
         /// <param name="serialNumberDevice">Serial Number del Dispositivo</param>
         /// <returns>Booleano indicando si existe</returns>
-        private bool CertificateExists(string serialNumberDevice)
+        private bool CertificateExists(int serialNumberDevice)
         {
             return _context.Certificate.Any(e => e.SerialNumberDevice == serialNumberDevice);
         }

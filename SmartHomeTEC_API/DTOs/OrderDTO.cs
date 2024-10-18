@@ -10,7 +10,7 @@ namespace SmartHomeTEC_API.DTOs
         public required string OrderDate { get; set; }
         public int? OrderClientNum { get; set; }
         public string? Brand { get; set; }
-        public required string SerialNumberDevice { get; set; }
+        public required int SerialNumberDevice { get; set; }
         public required string DeviceTypeName { get; set; }
         public decimal? TotalPrice { get; set; }
         [EmailAddress]

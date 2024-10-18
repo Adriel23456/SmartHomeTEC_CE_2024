@@ -4,7 +4,7 @@ namespace SmartHomeTEC_API.DTOs
 {
     public class CreateCertificateDTO
     {
-        public required string SerialNumberDevice { get; set; }
+        public required int SerialNumberDevice { get; set; }
         public required string DeviceTypeName { get; set; }
         public required string WarrantyStartDate { get; set; }
         public required int BillNum { get; set; }

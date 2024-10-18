@@ -265,7 +265,7 @@ namespace SmartHomeTEC_API.Controllers
             // Crear el certificado asociado
 
             // Obtener datos necesarios del Order
-            string serialNumberDevice = order.SerialNumberDevice;
+            int serialNumberDevice = order.SerialNumberDevice;
             string clientEmail = order.ClientEmail;
 
             // Verificar que el Device exista
