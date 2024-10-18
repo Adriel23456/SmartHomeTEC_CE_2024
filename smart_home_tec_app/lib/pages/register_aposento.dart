@@ -16,7 +16,7 @@ class RegisterAposento extends StatefulWidget {
 
 class _RegisterAposento extends State<RegisterAposento> {
   final chamberName = TextEditingController();
-  final db = DatabaseHelper();
+  final db = DatabaseService();
 
   bool repeatedChamberName = false;
 

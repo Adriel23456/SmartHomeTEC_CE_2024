@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
-import 'package:smart_home_tec_app/SQLite/sql_helper.dart';
+import 'package:smart_home_tec_app/SQLite/database_service.dart';
 import 'package:smart_home_tec_app/pages/asociar_dispositivo_nuevo.dart';
 import 'package:smart_home_tec_app/pages/created_objects/button.dart';
 import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
@@ -17,7 +17,8 @@ class GestionDispositivosPage extends StatefulWidget {
 //en cada uno se podra seleccionar si se enciende o se apaga el dispositivo
 class _GestionPage extends State<GestionDispositivosPage> {
   List<String> devicesNames =[];
-  final db = DatabaseHelper();
+  List<bool> devicePowerStates = []; // To track the on/off state of each device
+  final db = DatabaseService();
 
   @override
   void initState() {
@@ -30,8 +31,25 @@ class _GestionPage extends State<GestionDispositivosPage> {
       List<String> devices = await db.getDevices(widget.clienteData!.email);
       setState(() {
         devicesNames = devices;
+        devicePowerStates = List<bool>.filled(devicesNames.length, false);
       });
     }
+  }
+
+  _powerDevice(int index){
+    setState(() {
+      // Toggle the device power state
+      devicePowerStates[index] = !devicePowerStates[index];
+    });
+    //send to database service the info that the device is on
+  }
+
+  _loadDeviceInfo(){
+
+  }
+  
+  _transferDevice(){
+
   }
 
 
@@ -69,11 +87,35 @@ class _GestionPage extends State<GestionDispositivosPage> {
                               itemBuilder: (context, index) {
                                 return ListTile(
                                   title: Text(devicesNames[index]),
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () {
-                                      //await _deleteChamber(chamberNames[index]);
-                                    },
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,  // Ensures the Row takes the minimum space it needs
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: const Icon(Icons.people_outline, color: Colors.red),
+                                        onPressed: () {
+                                          // transfer between users icon
+                                          _transferDevice();
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.power_settings_new,
+                                          color: devicePowerStates[index]
+                                              ? Colors.green
+                                              : Colors.grey, // Change color based on state
+                                        ),
+                                        onPressed: () {
+                                          _powerDevice(index);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.info, color: Colors.grey),
+                                        onPressed: () {
+                                          // Opens a widget that displays the device info
+                                          _loadDeviceInfo();
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 );
                               },

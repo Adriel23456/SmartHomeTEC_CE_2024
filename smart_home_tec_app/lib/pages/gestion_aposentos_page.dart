@@ -15,7 +15,7 @@ class GestionAposentosPage extends StatefulWidget {
 
 class _GestionAposentosState extends State<GestionAposentosPage> {
   List<String> chamberNames = [];
-  final db = DatabaseHelper();
+  final db = DatabaseService();
 
   @override
   void initState() {

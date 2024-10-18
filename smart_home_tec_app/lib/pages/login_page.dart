@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   final password = TextEditingController();
   bool isRemembered = false;
   bool loginCorrect = false;
-  final db = DatabaseHelper();
+  final db = DatabaseService();
   Future<void> _deleteDatabases() async {
     await db.deleteAllDatabases(); // Call the method to delete all databases
     // Optionally, you could also initialize the databases again here if needed

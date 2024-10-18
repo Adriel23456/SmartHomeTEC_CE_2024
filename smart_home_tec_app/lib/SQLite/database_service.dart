@@ -8,7 +8,7 @@ import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
 import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
+class DatabaseService {
   final clienteDatabaseName = "clientes.db";
   final chamberDatabaseName = "chambers.db";
   final deviceDatabaseName = "device.db";
@@ -213,6 +213,17 @@ class DatabaseHelper {
 
 
   //Device methods/
+  //turns on and off a device and ads it to the log
+  Future<bool> devicePower(int serialNumber, Clientes clientData, bool state)async{
+    final Database db = await initDeviceDB();
+    if(state){ //if on, log that the device is on
+      return true;
+    }else{ //if set to off, log what happens when turned off
+      return false;
+    }
+
+  }
+
   //Checks if the device exists in devices table
   Future<bool> deviceExists(int serialNumber) async {
     await generateRandomDevices(); //if table is empty, generate mock data
@@ -238,6 +249,8 @@ class DatabaseHelper {
     return false;
 
   }
+
+  //checks if the deviceTypeExists
   Future<bool> deviceTypeExists(String deviceTypeName)async{
     await generateRandomDevices(); //if table is empty, generate mock data
     final Database db = await initDeviceTypeDB();

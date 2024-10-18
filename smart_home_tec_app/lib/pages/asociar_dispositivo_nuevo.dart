@@ -21,7 +21,7 @@ class _AsociarDispositivoNuevo extends State<AsociarDispositivoNuevo>{
   final brand = TextEditingController();
   final consumption = TextEditingController();
   final chamberName = TextEditingController();
-  final db = DatabaseHelper();
+  final db = DatabaseService();
 
   bool error=false;
   bool emptySpaces=false;
@@ -71,6 +71,7 @@ class _AsociarDispositivoNuevo extends State<AsociarDispositivoNuevo>{
   }
 
   _registerDevice() async {
+    _resetDeviceVariables();
     if(_deviceFieldsFilled()){
       if(_checkSerialInt()) {
         if( await _checkChamberName()){

@@ -23,7 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final country = TextEditingController();
   final continent = TextEditingController();
   final region = TextEditingController();
-  final db = DatabaseHelper();
+  final db = DatabaseService();
 
   //variable for showing error texts
   bool badEmail = false;
