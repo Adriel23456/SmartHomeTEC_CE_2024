@@ -229,8 +229,9 @@ class DatabaseHelper {
   //checks if the device is not assigned to an user
   Future<bool> deviceAvailability(int serialNumber) async {
     final Database db = await initAssignedDeviceDB();
-    var result = await db.rawQuery(
-        "select * from assigneddevice where serialNumberDevice = '${serialNumber}' AND state = Present");
+    var result = await db.query(deviceTypeDatabaseName,
+    where: "serialNumberDevice = ? AND state = ?",
+    whereArgs: [serialNumber,'Present']);
     if(result.isEmpty){
       return true;
     }
