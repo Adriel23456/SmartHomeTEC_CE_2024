@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-//colores del projecto
+//project colors
 const colorBaseBoton = Color(0xFF0055bd);
 const colorFondo =
     Color(0xFFd9d9d9); //dentro en vez de # para el hexa, se pone 0xFF
 const constantPadding = EdgeInsets.symmetric(vertical: 20);
+
+//Error conditionals constants
 const badEmailText = "El correo ingesado no es valido";
 const passwordDifferentText = "Las contraseñas no concuerdan";
 const emptySpacesText = "Rellene todos los espacios porfavor";
@@ -19,3 +21,13 @@ const repeatedChamberNameText =
 const errorDeviceText = "Error al registrat el dispositivo";
 const notIntegerDeviceText="El numero serial debe ser un numero";
 const badChamberNameText ="El nombre del aposento no es correcto para este usuario";
+const badDeviceTypeNameText = "El nombre del tipo de dispositivo no existe";
+
+//DB tables constants
+const clientTableName="Clientes";
+const chamberTableName="Chamber";
+const deviceTableName="Device";
+const assignedDeviceTableName="AssignedDevice";
+const chamberAssociationTableName="ChamberAssociation";
+const certificateTableName="Certificate";
+const deviceTypeTableName="DeviceType";

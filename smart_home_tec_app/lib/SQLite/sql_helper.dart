@@ -1,7 +1,11 @@
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:smart_home_tec_app/JSONmodels/assigned_device.dart';
+import 'package:smart_home_tec_app/JSONmodels/certificate.dart';
 import 'package:smart_home_tec_app/JSONmodels/chamber.dart';
+import 'package:smart_home_tec_app/JSONmodels/chamber_association.dart';
 import 'package:smart_home_tec_app/JSONmodels/clientes.dart';
+import 'package:smart_home_tec_app/pages/created_objects/constantes.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
@@ -12,9 +16,10 @@ class DatabaseHelper {
   final chamberAsssociationDatabaseName = "chamberassociation.db";
   final certificateDatabaseName = "certificate.db";
   final deviceTypeDatabaseName = "devicetype.db";
+  final projectDatabaseName= "smarthomesqlitedb.db"; //will later replace the previous dbs
 
   String clientes = '''
-  CREATE TABLE clientes (
+  CREATE TABLE '$clientTableName' (
   email TEXT PRIMARY KEY,
   password TEXT,
   region TEXT,
@@ -26,14 +31,14 @@ class DatabaseHelper {
   )
   ''';
   String chamber = '''
-  CREATE TABLE chamber (
+  CREATE TABLE '$chamberTableName' (
   chamberID INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   clientEmail TEXT
   )
   ''';
   String device = '''
-  CREATE TABLE device (
+  CREATE TABLE '$deviceTableName' (
   serialNumber INTEGER PRIMARY KEY,
   price INTEGER,
   state TEXT,
@@ -47,7 +52,7 @@ class DatabaseHelper {
   )
   ''';
   String assignedDevice = '''
-  CREATE TABLE assigneddevice (
+  CREATE TABLE '$assignedDeviceTableName' (
   assignedID INTEGER PRIMARY KEY,
   serialNumberDevice INTEGER,
   clientEmail TEXT,
@@ -56,9 +61,9 @@ class DatabaseHelper {
   ''';
   //asignedID es el id del dispositivo asignado
   String chamberAssociation = '''
-  CREATE TABLE ChamberAssociation (
+  CREATE TABLE '$chamberAssociationTableName' (
   associationID INTEGER PRIMARY KEY AUTOINCREMENT,
-  associationStartDate INTEGER,
+  associationStartDate TEXT,
   warrantyEndDate TEXT,
   chamberID INT
   assignedID INT
@@ -66,7 +71,7 @@ class DatabaseHelper {
   ''';
   //serialNumberDevice is associated to serialNumber on device table
   String certificate = '''
-  CREATE TABLE Certificate (
+  CREATE TABLE '$certificateTableName' (
   serialNumberDevice INTEGER PRIMARY KEY,
   brand TEXT,
   deviceTypeName TEXT,
@@ -79,7 +84,7 @@ class DatabaseHelper {
   ''';
   //name is associated to deviceTypeName in Certificate table and device table
   String deviceType = '''
-  CREATE TABLE DeviceType (
+  CREATE TABLE '$deviceTypeTableName' (
   name TEXT PRIMARY KEY,
   description TEXT,
   warrantyDays INT
@@ -160,55 +165,14 @@ class DatabaseHelper {
     });
   }
   //Generate 5 mock devices if table is empty
-    // Generates 5 random devices and fills the device, certificate, and deviceType tables.
+    // Generates 5 random devices for the device table
   Future<void> generateRandomDevices() async {
     final Database dbDevice = await initDeviceDB();
-    final Database dbCertificate = await initCertificateDB();
     final Database dbDeviceType = await initDeviceTypeDB();
 
     // If the device table is empty, insert random data
     var result = await dbDevice.query("device");
     if (result.isEmpty) {
-      // Generate 5 random devices
-      List<Map<String, dynamic>> devices = List.generate(5, (index) {
-        return {
-          'serialNumber': index + 1,
-          'price': (100 + index * 10),
-          'state': 'New',
-          'brand': 'Brand${index + 1}',
-          'amountAvailable': (5 + index),
-          'electricalConsumption': '${(100 + index * 10)}W',
-          'name': 'Device${index + 1}',
-          'description': 'Description for Device${index + 1}',
-          'deviceTypeName': 'Type${index + 1}',
-          'legalNum': 1000 + index,
-        };
-      });
-
-      // Insert devices into the device table
-      for (var device in devices) {
-        await dbDevice.insert('device', device);
-      }
-
-      // Generate 5 certificates for the devices
-      List<Map<String, dynamic>> certificates = devices.map((device) {
-        return {
-          'serialNumberDevice': device['serialNumber'],
-          'brand': device['brand'],
-          'deviceTypeName': device['deviceTypeName'],
-          'clientFullName': 'Client Full Name',
-          'warrantyEndDate': '2025-12-31',
-          'warrantyStartDate': '2023-01-01',
-          'billNum': 123456 + device['serialNumber'],
-          'clientEmail': 'client${device['serialNumber']}@example.com',
-        };
-      }).toList();
-
-      // Insert certificates into the certificate table
-      for (var certificate in certificates) {
-        await dbCertificate.insert('Certificate', certificate);
-      }
-
       // Generate 5 device types
       List<Map<String, dynamic>> deviceTypes = List.generate(5, (index) {
         return {
@@ -222,8 +186,30 @@ class DatabaseHelper {
       for (var deviceType in deviceTypes) {
         await dbDeviceType.insert('DeviceType', deviceType);
       }
+
+      // Generate 10 random devices, assigning one of the 5 device types to each
+      List<Map<String, dynamic>> devices = List.generate(10, (index) {
+        return {
+          'serialNumber': index + 1,
+          'price': (100 + index * 10),
+          'state': 'New',
+          'brand': 'Brand${index + 1}',
+          'amountAvailable': (5 + index),
+          'electricalConsumption': '${(100 + index * 10)}W',
+          'name': 'Device${index + 1}',
+          'description': 'Description for Device${index + 1}',
+          'deviceTypeName': 'Type${(index % 5) + 1}',  // Assign one of the 5 device types
+          'legalNum': 1000 + index,
+        };
+      });
+
+      // Insert devices into the device table
+      for (var device in devices) {
+        await dbDevice.insert('device', device);
+      }
     }
   }
+
 
 
   //Device methods/
@@ -251,6 +237,54 @@ class DatabaseHelper {
     return false;
 
   }
+  Future<bool> deviceTypeExists(String deviceTypeName)async{
+    final Database db = await initDeviceTypeDB();
+    var result = await db.rawQuery(
+        "select * from DeviceType where name = '${deviceTypeName}'");
+    if (result.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+
+
+  }
+  //gets the warranty days of the device
+  Future<int> getDeviceTypeWarrantyDays(String deviceTypeName) async {
+    final Database db = await initDeviceTypeDB();
+    var result = await db.query(
+      "DeviceType", 
+      columns: ["warrantyDays"], 
+      where: "name = ?", 
+      whereArgs: [deviceTypeName]
+    );
+    if (result.isNotEmpty) {
+      return result.first["warrantyDays"] as int;  
+    } else {
+      return -1; 
+    }
+  }
+
+  //get todays date
+  String getFormatedDate(DateTime date) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    return formatter.format(date);
+  }
+
+  Future<int> getChamberId(String chamberName, String clientEmail)async{
+    Database db = await initChamberDB();
+    var result = await db.query(
+      "chamber"
+      ,columns: ["chamberID"],
+      where: "name = ? AND clientEmail = ?",
+      whereArgs: [chamberName,clientEmail]);
+    if(result.isNotEmpty){
+      return result.first["chamberID"] as int;
+    }else{
+      return -1;
+    }
+  }
+
 
   //find the first next unused number id
   Future<int> getNewAssignedID() async {
@@ -261,7 +295,14 @@ class DatabaseHelper {
     return maxID + 1;
   }
   //adds a device to the assigneddevice table, if there is an error it returns false
-  Future<bool> createDispositivo(AssignedDevice assignedDeviceNew) async{
+  Future<bool> createDispositivo(
+    AssignedDevice assignedDeviceNew,
+    String deviceTypeInput,
+    String descriptionInput,
+    String brandInput,
+    String consumptionInput,
+    String chamberNameInput,
+    Clientes clientData) async{
     final dbAssignedDevice = await initAssignedDeviceDB();
 
     //checks if the device exists
@@ -275,9 +316,35 @@ class DatabaseHelper {
         assignedDeviceNew.assignedId=newAssignedID;
         var result =await  dbAssignedDevice.insert("assigneddevice", assignedDeviceNew.toJson());
         //adds the other data to other tables
+        Database dbCertificate = await initCertificateDB();
+        Database dbChamberAssociation = await initChamberAssociationDB();
+        //get warranty days from device type table
+        DateTime today = DateTime.now();
+        int warrantyDaysDevice=await getDeviceTypeWarrantyDays(deviceTypeInput);
+        String warrantyEndDateDevice=getFormatedDate(today.add(Duration(days: warrantyDaysDevice)));
+        //create the certificate model
+        Certificate cerftificateAdd = Certificate(
+          serialNumberDevice: assignedDeviceNew.serialNumberDevice,
+          brand: brandInput,
+          deviceTypeName: deviceTypeInput,
+          clientFullName: "${clientData.name ?? ""} ${clientData.middleName ?? ""} ${clientData.lastName ?? ""}",
+          warrantyEndDate: warrantyEndDateDevice,
+          warrantyStartDate: getFormatedDate(today),
+          billNum: null,
+          clientEmail: clientData.email
+          );
+        ChamberAssociation chamberAssociationAdd = ChamberAssociation(
+          associationID: 1,
+          associationStartDate: getFormatedDate(today),//today
+          warrantyEndDate: warrantyEndDateDevice,
+          chamberID: await getChamberId(chamberNameInput, clientData.email), //get the chamber id
+          assignedID: newAssignedID
+          );
+        //add the classes to the corresponding tables
+        var resultCertificate = await dbCertificate.insert("Certificate", cerftificateAdd.toJson());
+        var resultChamberAssociation = await dbChamberAssociation.insert("ChamberAssociation", chamberAssociationAdd.toJson());
 
-        
-        if(result>0){
+        if(result > 0 && resultCertificate>0 && resultChamberAssociation >0){
           return true;
         }else{
           return false; 

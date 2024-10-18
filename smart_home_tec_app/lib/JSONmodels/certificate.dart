@@ -1,29 +1,49 @@
 import 'dart:convert';
 
-DeviceType deviceTypeFromJson(String str) => DeviceType.fromJson(json.decode(str));
+Certificate certificateFromJson(String str) => Certificate.fromJson(json.decode(str));
 
-String deviceTypeToJson(DeviceType data) => json.encode(data.toJson());
+String certificateToJson(Certificate data) => json.encode(data.toJson());
 
-class DeviceType {
-  final String name;
-  final String? description;
-  final int? warrantyDays;
+class Certificate {
+  final int serialNumberDevice;
+  final String brand;
+  final String deviceTypeName;
+  final String clientFullName;
+  final String warrantyEndDate;
+  final String warrantyStartDate;
+  final int? billNum;
+  final String clientEmail;
 
-  DeviceType({
-    required this.name,
-    this.description,
-    this.warrantyDays,
+  Certificate({
+    required this.serialNumberDevice,
+    required this.brand,
+    required this.deviceTypeName,
+    required this.clientFullName,
+    required this.warrantyEndDate,
+    required this.warrantyStartDate,
+    this.billNum,
+    required this.clientEmail,
   });
 
-  factory DeviceType.fromJson(Map<String, dynamic> json) => DeviceType(
-        name: json["name"],
-        description: json["description"],
-        warrantyDays: json["warrantyDays"],
+  factory Certificate.fromJson(Map<String, dynamic> json) => Certificate(
+        serialNumberDevice: json["serialNumberDevice"],
+        brand: json["brand"],
+        deviceTypeName: json["deviceTypeName"],
+        clientFullName: json["clientFullName"],
+        warrantyEndDate: json["warrantyEndDate"],
+        warrantyStartDate: json["warrantyStartDate"],
+        billNum: json["billNum"],
+        clientEmail: json["clientEmail"],
       );
 
   Map<String, dynamic> toJson() => {
-        "name": name,
-        "description": description,
-        "warrantyDays": warrantyDays,
+        "serialNumberDevice": serialNumberDevice,
+        "brand": brand,
+        "deviceTypeName": deviceTypeName,
+        "clientFullName": clientFullName,
+        "warrantyEndDate": warrantyEndDate,
+        "warrantyStartDate": warrantyStartDate,
+        "billNum": billNum,
+        "clientEmail": clientEmail,
       };
 }

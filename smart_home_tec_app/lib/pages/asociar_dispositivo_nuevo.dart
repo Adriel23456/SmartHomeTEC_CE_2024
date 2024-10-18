@@ -27,6 +27,7 @@ class _AsociarDispositivoNuevo extends State<AsociarDispositivoNuevo>{
   bool emptySpaces=false;
   bool notInteger=false;
   bool badChamberName=false;
+  bool badDeviceTypeName=false;
 
   _resetDeviceVariables(){
     setState(() {
@@ -40,6 +41,9 @@ class _AsociarDispositivoNuevo extends State<AsociarDispositivoNuevo>{
     });
     setState(() {
       badChamberName=false;
+    });
+    setState(() {
+      badDeviceTypeName=false;
     });
     
   }
@@ -62,20 +66,40 @@ class _AsociarDispositivoNuevo extends State<AsociarDispositivoNuevo>{
     return await db.chamberExists(chamberName.text, widget.clienteData!.email);
   }
 
+  Future<bool> _checkDeviceTypeExistance() async {
+    return await db.deviceTypeExists(deviceType.text);
+  }
+
   _registerDevice() async {
     if(_deviceFieldsFilled()){
       if(_checkSerialInt()) {
         if( await _checkChamberName()){
-          var res = await db.createDispositivo(AssignedDevice(serialNumberDevice: int.parse(serialNumber.text), clientEmail: widget.clienteData!.email, state: 'Present'));
-          if(res){
-            if (!mounted) return;
-              int count = 0;
-              Navigator.popUntil(context, (route) {
-                return count++ == 1;
+          if( await _checkDeviceTypeExistance()){
+            var res = await db.createDispositivo(AssignedDevice(
+              serialNumberDevice: int.parse(serialNumber.text), 
+              clientEmail: widget.clienteData!.email, 
+              state: 'Present'),
+              deviceType.text,
+              description.text,
+              brand.text,
+              consumption.text,
+              chamberName.text,
+              widget.clienteData!
+              );
+            if(res){
+              if (!mounted) return;
+                int count = 0;
+                Navigator.popUntil(context, (route) {
+                  return count++ == 1;
+                });
+            }else{
+              setState(() {
+                error=true;
               });
+            }
           }else{
             setState(() {
-              error=true;
+              badDeviceTypeName=true;
             });
           }
         }else{
@@ -162,6 +186,12 @@ class _AsociarDispositivoNuevo extends State<AsociarDispositivoNuevo>{
                           ):const SizedBox(),
                         badChamberName
                           ? Text(badChamberNameText,
+                            style:TextStyle(
+                            color: Colors.red.shade900,
+                            ),
+                          ):const SizedBox(),
+                        badDeviceTypeName
+                          ? Text(badDeviceTypeNameText,
                             style:TextStyle(
                             color: Colors.red.shade900,
                             ),

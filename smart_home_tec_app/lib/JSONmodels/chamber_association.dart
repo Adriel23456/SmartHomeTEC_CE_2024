@@ -6,17 +6,17 @@ String chamberAssociationToJson(ChamberAssociation data) => json.encode(data.toJ
 
 class ChamberAssociation {
   final int associationID;
-  final int associationStartDate;
-  final String? warrantyEndDate;
-  final int? chamberID;
-  final int? assignedID;
+  final String associationStartDate;
+  final String warrantyEndDate;
+  final int chamberID;
+  final int assignedID;
 
   ChamberAssociation({
     required this.associationID,
     required this.associationStartDate,
-    this.warrantyEndDate,
-    this.chamberID,
-    this.assignedID,
+    required this.warrantyEndDate,
+    required this.chamberID,
+    required this.assignedID,
   });
 
   factory ChamberAssociation.fromJson(Map<String, dynamic> json) => ChamberAssociation(
