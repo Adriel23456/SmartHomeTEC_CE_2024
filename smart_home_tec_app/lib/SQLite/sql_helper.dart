@@ -65,7 +65,7 @@ class DatabaseHelper {
   associationID INTEGER PRIMARY KEY AUTOINCREMENT,
   associationStartDate TEXT,
   warrantyEndDate TEXT,
-  chamberID INT
+  chamberID INT,
   assignedID INT
   )
   ''';
@@ -229,7 +229,7 @@ class DatabaseHelper {
   //checks if the device is not assigned to an user
   Future<bool> deviceAvailability(int serialNumber) async {
     final Database db = await initAssignedDeviceDB();
-    var result = await db.query(deviceTypeTableName,
+    var result = await db.query(assignedDeviceTableName,
     where: "serialNumberDevice = ? AND state = ?",
     whereArgs: [serialNumber,'Present']);
     if(result.isEmpty){
