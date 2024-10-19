@@ -39,7 +39,7 @@ namespace SmartHomeTEC_API.Controllers
         /// <param name="legalNum">Número legal del Distributor</param>
         /// <returns>Objeto DistributorDTO</returns>
         [HttpGet("{legalNum}")]
-        public async Task<ActionResult<DistributorDTO>> GetDistributor(string legalNum)
+        public async Task<ActionResult<DistributorDTO>> GetDistributor(int legalNum)
         {
             var distributor = await _context.Distributor.FindAsync(legalNum);
 
@@ -85,7 +85,7 @@ namespace SmartHomeTEC_API.Controllers
         /// <param name="distributorDTO">Objeto DistributorDTO con datos actualizados</param>
         /// <returns>Estado de la operación</returns>
         [HttpPut("{legalNum}")]
-        public async Task<IActionResult> PutDistributor(string legalNum, DistributorDTO distributorDTO)
+        public async Task<IActionResult> PutDistributor(int legalNum, DistributorDTO distributorDTO)
         {
             if (legalNum != distributorDTO.LegalNum)
             {
@@ -121,9 +121,30 @@ namespace SmartHomeTEC_API.Controllers
         /// </summary>
         /// <param name="legalNum">Número legal del Distributor</param>
         /// <returns>Booleano indicando si existe</returns>
-        private bool DistributorExists(string legalNum)
+        private bool DistributorExists(int legalNum)
         {
             return _context.Distributor.Any(e => e.LegalNum == legalNum);
+        }
+
+        // DELETE: api/Distributor/{legalNum}
+        /// <summary>
+        /// Elimina un distribuidor específico por su número legal.
+        /// </summary>
+        /// <param name="legalNum">Número legal del distribuidor a eliminar</param>
+        /// <returns>Estado de la operación</returns>
+        [HttpDelete("{legalNum}")]
+        public async Task<IActionResult> DeleteDistributor(int legalNum)
+        {
+            var distributor = await _context.Distributor.FindAsync(legalNum);
+            if (distributor == null)
+            {
+                return NotFound("El distribuidor no existe.");
+            }
+
+            _context.Distributor.Remove(distributor);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

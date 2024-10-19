@@ -9,7 +9,7 @@ namespace SmartHomeTEC_API.Models
     {
         [Key]
         [Required]
-        public required string LegalNum { get; set; }
+        public required int LegalNum { get; set; }
 
         [Required]
         public required string Name { get; set; }

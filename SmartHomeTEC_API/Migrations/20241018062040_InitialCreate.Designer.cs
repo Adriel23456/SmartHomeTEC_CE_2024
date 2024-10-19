@@ -12,7 +12,7 @@ using SmartHomeTEC_API.Data;
 namespace SmartHomeTEC_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241018003916_InitialCreate")]
+    [Migration("20241018062040_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -303,8 +303,8 @@ namespace SmartHomeTEC_API.Migrations
                     b.Property<double?>("ElectricalConsumption")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("LegalNum")
-                        .HasColumnType("text");
+                    b.Property<int?>("LegalNum")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -345,8 +345,11 @@ namespace SmartHomeTEC_API.Migrations
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Distributor", b =>
                 {
-                    b.Property<string>("LegalNum")
-                        .HasColumnType("text");
+                    b.Property<int>("LegalNum")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LegalNum"));
 
                     b.Property<string>("Continent")
                         .IsRequired()

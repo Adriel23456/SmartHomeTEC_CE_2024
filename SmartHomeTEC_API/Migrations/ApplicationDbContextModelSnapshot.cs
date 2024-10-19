@@ -300,8 +300,8 @@ namespace SmartHomeTEC_API.Migrations
                     b.Property<double?>("ElectricalConsumption")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("LegalNum")
-                        .HasColumnType("text");
+                    b.Property<int?>("LegalNum")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -342,8 +342,11 @@ namespace SmartHomeTEC_API.Migrations
 
             modelBuilder.Entity("SmartHomeTEC_API.Models.Distributor", b =>
                 {
-                    b.Property<string>("LegalNum")
-                        .HasColumnType("text");
+                    b.Property<int>("LegalNum")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LegalNum"));
 
                     b.Property<string>("Continent")
                         .IsRequired()

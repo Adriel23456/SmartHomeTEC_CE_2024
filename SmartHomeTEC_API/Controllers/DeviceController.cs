@@ -39,7 +39,7 @@ namespace SmartHomeTEC_API.Controllers
         /// <param name="serialNumber">Número de serie del Device</param>
         /// <returns>Objeto DeviceDTO</returns>
         [HttpGet("{serialNumber}")]
-        public async Task<ActionResult<DeviceDTO>> GetDevice(string serialNumber)
+        public async Task<ActionResult<DeviceDTO>> GetDevice(int serialNumber)
         {
             var device = await _context.Device.FindAsync(serialNumber);
 
@@ -74,7 +74,7 @@ namespace SmartHomeTEC_API.Controllers
             }
 
             // Verificar si el Distributor existe (si se proporciona)
-            if (!string.IsNullOrEmpty(deviceDTO.LegalNum))
+            if (deviceDTO.LegalNum.HasValue)
             {
                 var distributor = await _context.Distributor.FindAsync(deviceDTO.LegalNum);
                 if (distributor == null)
@@ -117,7 +117,7 @@ namespace SmartHomeTEC_API.Controllers
             }
 
             // Verificar si el Distributor existe (si se proporciona)
-            if (!string.IsNullOrEmpty(deviceDTO.LegalNum))
+            if (deviceDTO.LegalNum.HasValue)
             {
                 var distributor = await _context.Distributor.FindAsync(deviceDTO.LegalNum);
                 if (distributor == null)
@@ -199,6 +199,27 @@ namespace SmartHomeTEC_API.Controllers
         private bool DeviceExists(int serialNumber)
         {
             return _context.Device.Any(e => e.SerialNumber == serialNumber);
+        }
+
+        // DELETE: api/Device/{serialNumber}
+        /// <summary>
+        /// Elimina un dispositivo específico por su número de serie.
+        /// </summary>
+        /// <param name="serialNumber">Número de serie del dispositivo a eliminar</param>
+        /// <returns>Estado de la operación</returns>
+        [HttpDelete("{serialNumber}")]
+        public async Task<IActionResult> DeleteDevice(int serialNumber)
+        {
+            var device = await _context.Device.FindAsync(serialNumber);
+            if (device == null)
+            {
+                return NotFound("El dispositivo no existe.");
+            }
+
+            _context.Device.Remove(device);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

@@ -39,7 +39,7 @@ namespace SmartHomeTEC_API.Models
 
         // Foreign Key a Distributor
         [ForeignKey("Distributor")]
-        public string? LegalNum { get; set; }
+        public int? LegalNum { get; set; }
 
         // Propiedades de Navegación:
         [JsonIgnore]

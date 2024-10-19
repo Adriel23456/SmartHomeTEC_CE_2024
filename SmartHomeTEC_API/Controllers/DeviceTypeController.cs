@@ -116,6 +116,27 @@ namespace SmartHomeTEC_API.Controllers
             return NoContent();
         }
 
+        // DELETE: api/DeviceType/{name}
+        /// <summary>
+        /// Elimina un tipo de dispositivo específico por su nombre.
+        /// </summary>
+        /// <param name="name">Nombre del tipo de dispositivo a eliminar</param>
+        /// <returns>Estado de la operación</returns>
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> DeleteDeviceType(string name)
+        {
+            var deviceType = await _context.DeviceType.FindAsync(name);
+            if (deviceType == null)
+            {
+                return NotFound("El tipo de dispositivo no existe.");
+            }
+
+            _context.DeviceType.Remove(deviceType);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         /// <summary>
         /// Verifica si un DeviceType existe por su nombre.
         /// </summary>

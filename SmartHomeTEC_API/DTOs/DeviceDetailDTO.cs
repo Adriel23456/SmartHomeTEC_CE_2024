@@ -11,7 +11,7 @@ namespace SmartHomeTEC_API.DTOs
         public required string Name { get; set; }
         public required string Description { get; set; }
         public required string DeviceTypeName { get; set; }
-        public required string LegalNum { get; set; }
+        public int? LegalNum { get; set; }
         public required DeviceTypeDTO DeviceType { get; set; }
         public required DistributorDTO Distributor { get; set; }
     }

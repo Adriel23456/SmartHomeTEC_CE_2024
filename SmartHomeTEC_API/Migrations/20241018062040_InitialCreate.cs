@@ -59,7 +59,8 @@ namespace SmartHomeTEC_API.Migrations
                 name: "Distributor",
                 columns: table => new
                 {
-                    LegalNum = table.Column<string>(type: "text", nullable: false),
+                    LegalNum = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Region = table.Column<string>(type: "text", nullable: false),
                     Continent = table.Column<string>(type: "text", nullable: false),
@@ -127,7 +128,7 @@ namespace SmartHomeTEC_API.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     DeviceTypeName = table.Column<string>(type: "text", nullable: false),
-                    LegalNum = table.Column<string>(type: "text", nullable: true)
+                    LegalNum = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
