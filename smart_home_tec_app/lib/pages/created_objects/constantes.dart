@@ -31,3 +31,4 @@ const assignedDeviceTableName="AssignedDevice";
 const chamberAssociationTableName="ChamberAssociation";
 const certificateTableName="Certificate";
 const deviceTypeTableName="DeviceType";
+const usageLogTableName="UsageLog";
