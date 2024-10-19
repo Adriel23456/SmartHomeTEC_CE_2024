@@ -1,0 +1,73 @@
+<mat-toolbar color="primary">
+  <span>Dashboard</span>
+  <span class="spacer"></span>
+</mat-toolbar>
+
+<div class="dashboard-container">
+  <!-- Primera fila de tarjetas -->
+  <div class="cards-row">
+    <div class="card stat-card">
+      <div class="card-header stat-title">
+        Cantidad promedio de dispositivos por usuario
+      </div>
+      <div class="card-body">
+        <p class="stat-number">{{ avgDevicesPerUser }}</p>
+      </div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="card-header stat-title">
+        Cantidad total de dispositivos gestionados
+      </div>
+      <div class="card-body">
+        <p class="stat-number">{{ totalManagedDevices }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Dispositivos por Región -->
+  <div class="table-card mt-4">
+    <div class="card-header fixed-title">
+      Dispositivos por Región
+    </div>
+    <div class="card-body table-container">
+      <table class="table table-striped table-bordered mat-table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" class="equal-width">Región</th>
+            <th scope="col" class="equal-width">Cantidad de Dispositivos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let device of devicesByRegion">
+            <td class="equal-width">{{ device.region }}</td>
+            <td class="equal-width">{{ device.deviceCount }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+
+  <!-- Tabla de Dispositivos Registrados -->
+  <div class="table-card mt-4">
+    <div class="card-header fixed-title">
+      Dispositivos Registrados
+    </div>
+    <div class="card-body table-container">
+      <table class="table table-striped table-bordered mat-table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" class="equal-width">Nombre</th>
+            <th scope="col" class="equal-width">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let device of devices">
+            <td class="equal-width">{{ device.name }}</td>
+            <td class="equal-width">{{ device.state }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

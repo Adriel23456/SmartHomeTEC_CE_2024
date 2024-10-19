@@ -1,0 +1,52 @@
+<mat-toolbar color="primary">
+    <span>Administración de Distribuidores</span>
+    <span class="spacer"></span>
+    <button mat-button-stroked (click)="addDistributor()">
+      <mat-icon>add</mat-icon>
+      Agregar distribuidor
+    </button>
+  </mat-toolbar>
+  
+  <div class="distributor-management-container">
+    <div class="table-container">
+      <table mat-table [dataSource]="distributors" class="mat-elevation-z8">
+        <!-- Cédula Jurídica -->
+        <ng-container matColumnDef="legalNum">
+          <th mat-header-cell *matHeaderCellDef> Cédula Jurídica </th>
+          <td mat-cell *matCellDef="let distributor"> {{ distributor.legalNum }} </td>
+        </ng-container>
+  
+        <!-- Nombre -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+          <td mat-cell *matCellDef="let distributor"> {{ distributor.name }} </td>
+        </ng-container>
+  
+        <!-- Región -->
+        <ng-container matColumnDef="region">
+          <th mat-header-cell *matHeaderCellDef> Región </th>
+          <td mat-cell *matCellDef="let distributor"> {{ distributor.region }} </td>
+        </ng-container>
+  
+        <!-- Botón de Editar -->
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef> Editar </th>
+          <td mat-cell *matCellDef="let distributor">
+            <button mat-button (click)="editDistributor(distributor)">Editar</button>
+          </td>
+        </ng-container>
+  
+        <!-- Botón de Borrar -->
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef> Eliminar </th>
+          <td mat-cell *matCellDef="let distributor">
+            <button mat-button color="warn" (click)="onDelete(distributor)">Borrar</button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="['legalNum', 'name', 'region', 'edit', 'delete']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['legalNum', 'name', 'region', 'edit', 'delete'];"></tr>
+      </table>
+    </div>
+  </div>
+  

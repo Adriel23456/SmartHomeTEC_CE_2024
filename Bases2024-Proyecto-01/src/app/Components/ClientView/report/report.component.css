@@ -1,0 +1,37 @@
+h1 {
+  font-size: 28px; /* Aumentar el tamaño del texto del título */
+  margin-bottom: 20px; /* Espacio debajo del título */
+  color: #2b3b5c; /* Color del título */
+  text-align: center; /* Centrar el título */
+}
+
+mat-dialog-content {
+  padding: 40px; /* Aumentar el espacio interior del contenido del diálogo */
+  font-size: 18px; /* Aumentar el tamaño de fuente del contenido */
+  text-align: center; /* Centrar el texto en el contenido */
+  color: #333; /* Color del texto */
+  max-height: 70vh; /* Establecer altura máxima del contenido */
+  overflow-y: auto; /* Permitir desplazamiento vertical si el contenido excede la altura */
+}
+
+mat-dialog-actions {
+  display: flex; /* Usar flexbox para alinear los botones */
+  flex-direction: column; /* Disponer los botones en columna */
+  align-items: center; /* Centrar los botones horizontalmente */
+  margin-top: 30px; /* Espacio encima de los botones */
+}
+
+/* Estilos para los botones en los reportes */
+.action-buttons-reports {
+  display: flex;
+  flex-direction: column; /* Alinear botones en columna (verticalmente) */
+  gap: 16px; /* Espacio uniforme entre los botones */
+  width: 100%; /* Hacer que los botones ocupen el ancho disponible */
+  padding: 0 16px; /* Añadir un pequeño padding a los lados */
+}
+
+.action-buttons-reports button {
+  width: 100%; /* Hacer que cada botón ocupe todo el ancho del contenedor */
+  max-width: 400px; /* Añadir un máximo ancho para que no sean demasiado largos */
+  margin: 0 auto; /* Centrar los botones */
+}

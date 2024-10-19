@@ -1,0 +1,40 @@
+.full-width {
+    width: 100%;
+  }
+  
+.mat-form-field {
+margin-bottom: 16px; /* Separación entre los campos */
+}
+
+.mat-input-element {
+border-radius: 8px; /* Bordes redondeados para los inputs */
+}
+
+.mat-form-field-infix {
+border-radius: 8px;
+}
+
+/* Redondeo para los campos de texto */
+textarea.mat-input-element {
+border-radius: 8px;
+}
+
+/* Estilos para los botones */
+.action-buttons-create {
+  display: flex;
+  justify-content: space-between; /* Distribuir los botones uniformemente */
+  width: 100%;
+  margin-top: 16px; /* Espacio sobre los botones */
+}
+
+.action-buttons-create button {
+  flex-grow: 1;
+  margin: 0 8px; /* Espacio entre los botones */
+}
+
+.center-title {
+  text-align: center; /* Centra el texto */
+  margin-bottom: 16px; /* Espacio inferior para separarlo del contenido */
+  font-weight: 500;
+}
+

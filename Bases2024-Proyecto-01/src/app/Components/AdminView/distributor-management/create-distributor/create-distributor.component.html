@@ -1,0 +1,55 @@
+<h1 mat-dialog-title class="center-title">Crear Distribuidor</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="createDistributorForm">
+    
+    <!-- Campo para ingresar el nombre del distribuidor -->
+    <mat-form-field class="full-width">
+      <mat-label>Nombre del Distribuidor</mat-label>
+      <input matInput formControlName="name" class="mat-input-element">
+      <mat-error *ngIf="createDistributorForm.get('name')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Campo para ingresar la cédula jurídica -->
+    <mat-form-field class="full-width">
+      <mat-label>Cédula Jurídica</mat-label>
+      <input matInput formControlName="legalNum" type="number" class="mat-input-element">
+      <mat-error *ngIf="createDistributorForm.get('legalNum')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Desplegable para seleccionar la región -->
+    <mat-form-field class="full-width">
+      <mat-label>Seleccionar Región</mat-label>
+      <mat-select formControlName="region" (selectionChange)="onRegionSelected($event.value)">
+        <mat-option *ngFor="let region of regions" [value]="region.region">
+          {{ region.region }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="createDistributorForm.get('region')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Campo para mostrar el país, deshabilitado -->
+    <mat-form-field class="full-width">
+      <mat-label>País</mat-label>
+      <input matInput formControlName="country" class="mat-input-element">
+    </mat-form-field>
+
+    <!-- Campo para mostrar el continente, deshabilitado -->
+    <mat-form-field class="full-width">
+      <mat-label>Continente</mat-label>
+      <input matInput formControlName="continent" class="mat-input-element">
+    </mat-form-field>
+    
+  </form>
+</div>
+
+<div mat-dialog-actions class="action-buttons-create">
+  <button mat-raised-button color="primary" (click)="onSave()">Guardar</button>
+  <button mat-raised-button color="warn" (click)="onCancel()">Cancelar</button>
+</div>

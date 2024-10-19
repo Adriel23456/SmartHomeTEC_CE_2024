@@ -1,0 +1,80 @@
+<h1 mat-dialog-title class="center-title">Editar Cliente</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="editUserForm">
+    
+    <mat-form-field class="full-width">
+      <mat-label>Primer Nombre</mat-label>
+      <input matInput formControlName="firstName">
+      <mat-error *ngIf="editUserForm.get('firstName')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Segundo Nombre</mat-label>
+      <input matInput formControlName="middleName">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Apellidos</mat-label>
+      <input matInput formControlName="lastName">
+      <mat-error *ngIf="editUserForm.get('lastName')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email">
+      <mat-error *ngIf="editUserForm.get('email')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+      <mat-error *ngIf="editUserForm.get('email')?.hasError('email')">
+        Debe ingresar un correo electrónico válido.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Contraseña</mat-label>
+      <input matInput formControlName="password" type="password">
+      <mat-error *ngIf="editUserForm.get('password')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+      <mat-error *ngIf="editUserForm.get('password')?.hasError('minlength')">
+        La contraseña debe tener al menos 6 caracteres.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Región</mat-label>
+      <mat-select formControlName="region" (selectionChange)="onRegionSelected($event.value)">
+        <mat-option *ngFor="let region of regions" [value]="region.region">{{ region.region }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="editUserForm.get('region')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>País</mat-label>
+      <input matInput formControlName="country" readoly> <!-- Campo deshabilitado -->
+      <mat-error *ngIf="editUserForm.get('country')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Continente</mat-label>
+      <input matInput formControlName="continent" readoly> <!-- Campo deshabilitado -->
+      <mat-error *ngIf="editUserForm.get('continent')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions class="action-buttons-edit">
+  <button mat-raised-button color="primary" (click)="onSave()">Guardar</button>
+  <button mat-raised-button color="warn" (click)="onCancel()">Cancelar</button>
+</div>

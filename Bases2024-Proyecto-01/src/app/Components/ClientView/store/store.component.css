@@ -1,0 +1,108 @@
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre los elementos */
+}
+
+.product-item {
+  border: 1px solid #2b3b5c; /* Borde alrededor del producto */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 16px; /* Espacio interno */
+  text-align: center; /* Centrar texto */
+  width: 303px; /* Ancho fijo */
+}
+
+
+.product-name {
+  font-size: 1.2em; /* Tamaño de fuente del nombre */
+  margin: 10px 0; /* Espaciado superior e inferior */
+}
+
+.product-location {
+  color: #666; /* Color del texto  */
+}
+
+/* Estilo del botón mat-fab extendido */
+button[mat-fab] {
+  
+background-color: #2b3b5c; /* Color de fondo azul oscuro */
+color: #fff; /* Color del texto y del ícono */
+border-radius: 10px; /* Bordes redondeados para darle un aspecto más suave */
+padding: 1% 24px; /* Espaciado interno del botón (vertical y horizontal) */
+font-size: 18px; /* Tamaño del texto */
+
+/* Sombra para darle profundidad al botón */
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+
+/* Transiciones suaves cuando cambian el color, la sombra o el tamaño */
+transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Estilo para el ícono dentro del botón */
+button[mat-fab] mat-icon {
+margin: 16px;
+bottom: 0; 
+font-size: 18px; /* Tamaño más grande del ícono */
+margin-right: 5px; /* Espacio entre el ícono y el texto del botón */
+}
+
+/* Efecto al pasar el mouse sobre el botón (hover) */
+button[mat-fab]:hover {
+background-color: #004499; /* Cambia el color de fondo a un azul más oscuro al hacer hover */
+}
+
+/* Efecto cuando el botón es presionado (active) */
+button[mat-fab]:active {
+transform: scale(0.98); /* Hace que el botón se reduzca ligeramente para dar sensación de clic */
+
+/* Reduce la sombra cuando el botón es presionado */
+box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.search-field {
+width: 450px;
+position: fixed;
+top: 55px;
+right: 10px;
+}
+
+mat-toolbar {
+  color: white;
+  background-color: #2B3B5C;
+  border-radius: 0;
+  margin-bottom: 16px;
+}
+
+/* Estilo para los botones en el toolbar */
+mat-toolbar button {
+  font-size: medium;
+  font-weight: bold;
+  height: 40px;
+  width: 200px;
+  background-color: #30426a; /* Color de fondo deseado */
+  color: white; /* Color del texto */
+  border-radius: 5px; /* Bordes redondeados */
+  border: 12; /*quita borde*/
+  margin-left: 5px; /* Espacio entre botones */
+  margin-right: 5px; /* Espacio entre botones */
+  transition: background-color 0.3s ease; /* Transición suave para el efecto hover */
+  display: flex; /* Usar flex para alinear el icono y el texto */
+  align-items: center; /* Centrar verticalmente */
+  padding: 0 10px; /* Espacio interno alrededor del texto */
+}
+
+/* Efecto hover */
+mat-toolbar button:hover {
+background-color: #425a8b; 
+}
+
+mat-toolbar mat-icon {
+margin-right: 8px; /* Espacio entre el icono y el texto */
+font-size: 20px;
+color: white;
+}
+
+/* Espaciador */
+.spacer {
+flex: 1 1 auto;
+}

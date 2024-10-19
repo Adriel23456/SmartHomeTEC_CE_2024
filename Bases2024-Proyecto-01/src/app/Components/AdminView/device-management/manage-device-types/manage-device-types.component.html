@@ -1,0 +1,27 @@
+<h1 mat-dialog-title class="center-title">Gestionar Tipos de Dispositivos</h1>
+
+<div mat-dialog-content>
+  <!-- Menú desplegable para seleccionar tipo -->
+  <mat-form-field class="full-width">
+    <mat-label>Seleccionar tipo de dispositivo</mat-label>
+    <mat-select [(ngModel)]="selectedDeviceType" class="select-scroll">
+      <mat-option *ngFor="let type of deviceTypes" [value]="type">
+        {{ type.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions class="action-buttons">
+  <button mat-raised-button color="primary" (click)="onCreateType()">Crear tipo</button>
+
+  <button mat-raised-button color="primary" [disabled]="!selectedDeviceType" (click)="onEditType()">
+    Editar
+  </button>
+
+  <button mat-raised-button color="warn" [disabled]="!selectedDeviceType" (click)="onDeleteType(selectedDeviceType!)">
+    Eliminar
+  </button>
+
+  <button mat-raised-button color="warn" (click)="onCancel()">Cancelar</button>
+</div>

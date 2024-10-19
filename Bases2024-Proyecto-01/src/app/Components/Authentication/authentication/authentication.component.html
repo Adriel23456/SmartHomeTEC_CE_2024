@@ -1,0 +1,23 @@
+<div class="dialog-container">
+  <div mat-dialog-content class="authentication-container">
+    <h1 mat-dialog-title class="center-title">Smart Home TEC</h1>
+  
+    <form (submit)="onLogin()" class="login-form">
+      <div class="form-group">
+        <input type="email" [(ngModel)]="email" name="email" required placeholder="Correo Electrónico">
+      </div>
+      <div class="form-group">
+        <input type="password" [(ngModel)]="password" name="password" required placeholder="Contraseña">
+      </div>
+
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" type="submit">Iniciar Sesión</button>
+      </div>
+    </form>
+  
+    <!-- Mensaje en la parte inferior con opción de registro -->
+    <div class="register-container">
+      <p>¿No tienes cuenta? <a (click)="onRegister()">Registrarse</a></p>
+    </div>
+  </div>
+</div>

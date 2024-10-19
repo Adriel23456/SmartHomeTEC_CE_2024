@@ -1,0 +1,42 @@
+<mat-toolbar color="primary">
+  <span>Tienda en línea</span>
+
+  <!-- Agregar un espacio flexible para que los botones estén alineados a la derecha -->
+  <span class="spacer"></span>
+  <button mat-button-stroked (click)="openDialogReports()">Reportes del Usuario</button>
+  <button mat-button-stroked (click)="openDialogEditUser()">Editar Usuario</button>
+</mat-toolbar>
+
+<div class="product-list">
+<div class="product-item" *ngFor="let device of filteredProducts">
+  <h3 class="product-name">{{ device.name }}</h3>
+  <p class="product-location">
+    Precio ${{ device.price }}<br><br> {{ device.description}}
+  </p>
+  <button mat-fab extended (click)="generateFact(device)">
+    <mat-icon>credit_card</mat-icon>
+    Comprar
+  </button>
+</div>
+</div>
+
+<mat-form-field class="search-field" appearance="fill">
+<mat-label>Buscar producto</mat-label>
+<input
+  matInput
+  type="text"
+  [(ngModel)]="searchTerm"
+  (input)="searchFunction()"
+  id="search-field"
+  
+/>
+<button
+  matSuffix
+  mat-icon-button
+  aria-label="Clear"
+  (click)="clearSearch()"
+  *ngIf="searchTerm"
+>
+  <mat-icon>close</mat-icon>
+</button>
+</mat-form-field>

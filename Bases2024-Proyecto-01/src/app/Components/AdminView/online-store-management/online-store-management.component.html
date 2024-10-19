@@ -1,0 +1,77 @@
+<mat-toolbar color="primary">
+    <span>Administración de la tienda en línea</span>
+  
+    <span class="spacer"></span>
+  
+    <button mat-button-stroked (click)="fileInput.click()">
+      <mat-icon>upload</mat-icon>
+      Cargar archivo
+    </button>
+  
+    <input type="file" #fileInput (change)="onFileChange($event)" accept=".xlsx, .xls" style="display: none;" />
+    
+    <button mat-button-stroked (click)="createAssignment()" [disabled]="!isFileLoaded">
+        <mat-icon>add</mat-icon>
+        Asignar Producto
+    </button>
+
+    <!-- Botón para guardar cambios -->
+    <button mat-button-stroked (click)="onSave()" [disabled]="!isFileLoaded">
+      <mat-icon>save</mat-icon>
+      Guardar Cambios
+    </button>
+
+</mat-toolbar>
+  
+  <div class="admin-store-management">
+    <div class="table-container">
+      <table mat-table [dataSource]="assignments" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef> Dispositivo </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.deviceName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="serialNumber">
+            <th mat-header-cell *matHeaderCellDef> Número de serie </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.serialNumber }}
+            </td>
+          </ng-container>
+  
+        <ng-container matColumnDef="distributorName">
+          <th mat-header-cell *matHeaderCellDef> Distribuidor </th>
+          <td mat-cell *matCellDef="let element"> {{ element.distributorName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="distributorLegalNum">
+            <th mat-header-cell *matHeaderCellDef> Cédula Jurídica </th>
+            <td mat-cell *matCellDef="let element"> {{ element.legalNum }} </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef> Editar </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="primary" (click)="onEdit(element)">
+              Editar
+            </button>
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef> Eliminar </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="warn" (click)="onDelete(element.idAssignment, element.distributorName, element.deviceName)">
+              Borrar
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="['deviceName', 'serialNumber', 'distributorName', 'distributorLegalNum', 'edit', 'delete']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['deviceName', 'serialNumber', 'distributorName', 'distributorLegalNum', 'edit', 'delete']"></tr>
+      </table>
+    </div>
+  </div>
+  

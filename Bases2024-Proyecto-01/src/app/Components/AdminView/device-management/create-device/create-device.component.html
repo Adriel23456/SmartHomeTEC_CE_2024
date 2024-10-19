@@ -1,0 +1,104 @@
+<h1 mat-dialog-title class="center-title">Crear Nuevo Dispositivo</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="createDeviceForm">
+    <mat-form-field class="full-width">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name">
+      <mat-error *ngIf="createDeviceForm.get('name')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Numero de serie</mat-label>
+      <input matInput formControlName="serialNumber" type="number">
+      <mat-error *ngIf="createDeviceForm.get('serialNumber')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+      <mat-error *ngIf="createDeviceForm.get('serialNumber')?.hasError('min')">
+        El numero de serie debe ser mayor a 0.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Menú desplegable para seleccionar tipo de dispositivo -->
+    <mat-form-field class="full-width">
+      <mat-label>Seleccionar tipo de dispositivo</mat-label>
+      <mat-select formControlName="deviceTypeName" class="select-scroll">
+        <mat-option *ngFor="let type of deviceTypes" [value]="type.name">
+          {{ type.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="createDeviceForm.get('deviceTypeName')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Marca</mat-label>
+      <input matInput formControlName="brand">
+      <mat-error *ngIf="createDeviceForm.get('brand')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Descripción</mat-label>
+      <input matInput formControlName="description">
+      <mat-error *ngIf="createDeviceForm.get('description')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Precio</mat-label>
+      <input matInput formControlName="price" type="number">
+      <mat-error *ngIf="createDeviceForm.get('price')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+      <mat-error *ngIf="createDeviceForm.get('price')?.hasError('min')">
+        El precio debe ser un número positivo.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Menú desplegable para seleccionar estado de dispositivo -->
+    <mat-form-field class="full-width">
+      <mat-label>Seleccionar estado del dispositivo</mat-label>
+      <mat-select formControlName="state" class="select-scroll">
+        <mat-option *ngFor="let state of productStates" [value]="state.state">
+          {{ state.state }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="createDeviceForm.get('state')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Cantidad Disponible</mat-label>
+      <input matInput formControlName="amountAvailable" type="number">
+      <mat-error *ngIf="createDeviceForm.get('amountAvailable')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+      <mat-error *ngIf="createDeviceForm.get('amountAvailable')?.hasError('min')">
+        La cantidad disponible debe ser un número positivo.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Consumo eléctrico (W)</mat-label>
+      <input matInput formControlName="electricalConsumption" type="number">
+      <mat-error *ngIf="createDeviceForm.get('electricalConsumption')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+      <mat-error *ngIf="createDeviceForm.get('electricalConsumption')?.hasError('min')">
+        El consumo eléctrico debe ser mayor a 0.
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions class="action-buttons-create">
+  <button mat-raised-button color="primary" (click)="onSave()">Crear</button>
+  <button mat-raised-button color="warn" (click)="onCancel()">Cancelar</button>
+</div>

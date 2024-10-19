@@ -1,0 +1,137 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+mat-toolbar {
+  color: white;
+  background-color: #2B3B5C;
+  border-radius: 0;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.cards-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap; /* Para ajustar en pantallas pequeñas */
+}
+
+/* Modernización de las tarjetas */
+.stat-card {
+  flex: 1;
+  min-width: 48%; /* Esto asegura que ocupen el 48% del ancho disponible */
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  background-color: white;
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  overflow: hidden; /* Para mantener el borde redondeado en el header */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efecto de hover */
+}
+
+.stat-card:hover {
+  transform: translateY(-5px); /* Efecto de elevación en hover */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* Sombra más fuerte en hover */
+}
+
+/* Encabezado de las tarjetas */
+.stat-title {
+  background-color: #30426a;
+  color: white;
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.stat-number {
+  font-size: 2.5em;
+  margin: 0;
+  padding: 20px;
+  color: #333; /* Color del número */
+}
+
+/* Tabla */
+.table-card {
+  width: 100%;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px; /* Bordes redondeados para la tabla */
+  overflow: hidden; /* Para mantener el borde redondeado */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.fixed-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0; /* Eliminar márgenes */
+  padding: 10px; /* Mantener el padding */
+  color: white;
+  background-color: #30426a; /* Color de encabezado de la tabla */
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Contenedor de la tabla */
+.table-container {
+  max-height: 250px;
+  overflow-y: auto; /* Permitir desplazamiento vertical */
+  margin-top: 0; /* Ajustar el margen superior */
+  background-color: white; /* Color de fondo de la tabla */
+  border-radius: 0 0 10px 10px; /* Bordes redondeados en la parte inferior */
+}
+
+/* Estilos para la tabla */
+.mat-table {
+  width: 100%;
+  border-collapse: collapse; /* Quitar el espacio entre celdas */
+  position: relative; /* Necesario para que el sticky funcione correctamente */
+}
+
+/* Estilos para los encabezados de la tabla */
+.mat-table th {
+  background-color: #30426a; /* Color de encabezado de la tabla */
+  color: white; /* Color del texto del encabezado */
+  font-weight: bold;
+  padding: 12px 15px; /* Espaciado interno */
+  position: sticky; /* Mantener el encabezado en su lugar */
+  top: 0; /* Fijar en la parte superior */
+  z-index: 10; /* Asegurar que esté por encima de las filas */
+}
+
+/* Estilos para las celdas */
+.mat-table th,
+.mat-table td {
+  padding: 12px 15px; /* Espaciado interno */
+  text-align: left; /* Alineación a la izquierda */
+  border-bottom: 1px solid #e0e0e0; /* Línea de separación entre filas */
+}
+
+/* Filas de la tabla */
+.mat-table tr:nth-child(even) {
+  background-color: #f9f9f9; /* Color de fondo para filas pares */
+}
+
+.mat-table tr:hover {
+  background-color: #f1f1f1; /* Color de fondo al pasar el mouse sobre las filas */
+}
+
+/* Nueva clase para igualar el ancho de las columnas */
+.equal-width {
+  width: 50%; /* Aseguramos que ambas columnas tengan un ancho del 50% */
+  text-align: left; /* Ajustamos la alineación de texto si es necesario */
+}
+
+

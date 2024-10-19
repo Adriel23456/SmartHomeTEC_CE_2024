@@ -1,0 +1,38 @@
+<h1 mat-dialog-title class="center-title">Crear Nuevo Tipo de Dispositivo</h1>
+<div mat-dialog-content>
+  <form [formGroup]="createTypeForm">
+    <mat-form-field class="full-width">
+      <mat-label>Nombre del dispositivo</mat-label>
+      <input matInput formControlName="name">
+
+      <mat-error *ngIf="createTypeForm.get('name')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+      
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+        <mat-label>Días de Garantía</mat-label>
+        <input matInput formControlName="warranty" type="number">
+        <mat-error *ngIf="createTypeForm.get('warranty')?.hasError('required')">
+          Este campo es obligatorio.
+        </mat-error>
+        <mat-error *ngIf="createTypeForm.get('warranty')?.hasError('min')">
+          El valor tiene que ser un número válido.
+        </mat-error>
+      </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      <mat-error *ngIf="createTypeForm.get('description')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions class="action-buttons">
+  <button mat-raised-button color="primary" (click)="onSave()">Crear tipo</button>
+  <button mat-raised-button color="warn" (click)="onCancel()">Cancelar</button>
+</div>

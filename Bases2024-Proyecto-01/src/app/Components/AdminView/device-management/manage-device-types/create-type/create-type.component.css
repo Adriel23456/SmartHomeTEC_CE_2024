@@ -1,0 +1,22 @@
+.full-width {
+  width: 100%;
+}
+
+/* Estilos para los botones */
+.action-buttons {
+  display: flex;
+  justify-content: space-between; /* Distribuir los botones uniformemente */
+  width: 100%;
+  margin-top: 16px; /* Espacio sobre los botones */
+}
+
+.action-buttons button {
+  flex-grow: 1;
+  margin: 0 8px; /* Espacio entre los botones */
+}
+
+.center-title {
+    text-align: center; /* Centra el texto */
+    margin-bottom: 16px; /* Espacio inferior para separarlo del contenido */
+    font-weight: 500;
+}

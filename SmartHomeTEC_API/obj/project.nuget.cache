@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "VPQhdV9Wso0=",
+  "dgSpecHash": "astGCd+kB1g=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Adriel\\Desktop\\Informacion-de-Prioridad\\TEC\\2024\\Semestre_2\\Bases_De_Datos\\Evaluaciones\\Proyectos\\Proyecto1\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
+  "projectFilePath": "C:\\Users\\Adriel\\Desktop\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Adriel\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Adriel\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

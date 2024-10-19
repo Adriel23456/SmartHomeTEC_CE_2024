@@ -1,0 +1,53 @@
+<h1 mat-dialog-title class="center-title">Editar Distribuidor</h1>
+
+<h1 mat-dialog-title>{{data.distributor.name}} - {{data.distributor.legalNum}}</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="editDistributorForm">
+    
+    <mat-form-field class="full-width">
+      <mat-label>Nombre del Distribuidor</mat-label>
+      <input matInput formControlName="name" class="mat-input-element">
+      <mat-error *ngIf="editDistributorForm.get('name')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Cédula Jurídica</mat-label>
+      <input matInput formControlName="legalNum" type="number" class="mat-input-element">
+      <mat-error *ngIf="editDistributorForm.get('legalNum')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Desplegable para seleccionar la región -->
+    <mat-form-field class="full-width">
+      <mat-label>Seleccionar Región</mat-label>
+      <mat-select formControlName="region" (selectionChange)="onRegionSelected($event.value)">
+        <mat-option *ngFor="let region of regions" [value]="region.region">
+          {{ region.region }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="editDistributorForm.get('region')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>País</mat-label>
+      <input matInput formControlName="country" class="mat-input-element">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Continente</mat-label>
+      <input matInput formControlName="continent" class="mat-input-element" >
+    </mat-form-field>
+    
+  </form>
+</div>
+
+<div mat-dialog-actions class="action-buttons-edit">
+  <button mat-raised-button color="primary" (click)="onSave()">Guardar</button>
+  <button mat-raised-button color="warn" (click)="onCancel()">Cancelar</button>
+</div>

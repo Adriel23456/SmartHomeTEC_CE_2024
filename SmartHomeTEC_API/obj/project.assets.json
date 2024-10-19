@@ -2936,11 +2936,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Adriel\\Desktop\\Informacion-de-Prioridad\\TEC\\2024\\Semestre_2\\Bases_De_Datos\\Evaluaciones\\Proyectos\\Proyecto1\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
+      "projectUniqueName": "C:\\Users\\Adriel\\Desktop\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
       "projectName": "SmartHomeTEC_API",
-      "projectPath": "C:\\Users\\Adriel\\Desktop\\Informacion-de-Prioridad\\TEC\\2024\\Semestre_2\\Bases_De_Datos\\Evaluaciones\\Proyectos\\Proyecto1\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
+      "projectPath": "C:\\Users\\Adriel\\Desktop\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
       "packagesPath": "C:\\Users\\Adriel\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Adriel\\Desktop\\Informacion-de-Prioridad\\TEC\\2024\\Semestre_2\\Bases_De_Datos\\Evaluaciones\\Proyectos\\Proyecto1\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\obj\\",
+      "outputPath": "C:\\Users\\Adriel\\Desktop\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Adriel\\AppData\\Roaming\\NuGet\\NuGet.Config"

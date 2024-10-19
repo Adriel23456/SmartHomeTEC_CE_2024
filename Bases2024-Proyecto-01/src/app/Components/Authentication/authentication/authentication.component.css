@@ -1,0 +1,98 @@
+/* Asegúrate de que el cuerpo y el diálogo estén configurados correctamente */
+html, body {
+  height: 100%; /* Asegura que el body ocupe el 100% de la altura de la ventana */
+  margin: 0; /* Elimina márgenes por defecto */
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px; /* Separación entre los campos */
+}
+
+.dialog-container {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  height: 100vh; /* Toma toda la altura de la ventana */
+  background-color: #2b3b5c;
+}
+
+.authentication-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch; /* Cambia 'center' a 'stretch' para que los hijos ocupen el ancho completo */
+  padding: 24px;
+  max-width: 90vw; /* Cambia el ancho máximo para permitir más espacio en pantallas grandes */
+  max-height: 90vh; /* Limitar la altura máxima */
+  margin: auto;
+  min-width: 400px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.2); 
+}
+
+.center-title {
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: 24px; /* Espacio inferior para el título */
+}
+
+.action-buttons {
+  display: flex; /* Para que el botón ocupe el ancho completo */
+  justify-content: center;
+  margin-top: 32px; /* Aumenta el espacio sobre el botón de login */
+}
+
+.action-buttons button {
+  width: 100%; /* Hacer que el botón ocupe todo el ancho */
+  padding: 10px; /* Espaciado interno para el botón */
+  font-size: 15px;
+}
+
+.register-container {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.register-container a {
+  cursor: pointer;
+  color: #1976d2; /* Color del link */
+  text-decoration: underline;
+  font-weight: 500; /* Hacer el texto un poco más grueso */
+  transition: color 0.3s ease; /* Transición para el cambio de color */
+}
+
+.register-container a:hover {
+  color: #0d47a1; /* Cambiar color al pasar el mouse */
+}
+
+.form-group {
+  width: 100%; /* Asegura que los inputs ocupen todo el ancho */
+  margin-bottom: 16px; /* Separación vertical entre los inputs */
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%; /* Ancho del input */
+  padding: 10px 0; /* Espaciado interno (arriba y abajo) */
+  border: none; /* Elimina todos los bordes */
+  border-bottom: 2px solid #0d47a1; /* Color inicial del borde */
+  border-radius: 0; /* Sin esquinas redondeadas */
+  outline: none; /* Eliminar el contorno por defecto */
+  transition: border-color 0.3s, border-width 0.3s; /* Transiciones para borde y sombra */
+  font-size: 16px;
+}
+
+/* Al hacer foco en el input */
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-bottom: 2px solid #0d47a1; /* Grosor del borde al hacer foco */
+  border-radius: 4px; /* Opcional: agregar esquinas redondeadas al foco */
+}
+
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+  color: #989899; /* Color del texto de placeholder */
+  font-size: 16px;
+}

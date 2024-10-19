@@ -1,0 +1,37 @@
+<h1 mat-dialog-title class="center-title">Editar Asignación de Producto</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="editAssignmentForm">
+    <!-- Seleccionar Distribuidor -->
+    <mat-form-field class="full-width">
+      <mat-label>Distribuidor</mat-label>
+
+      <mat-select formControlName="distributor">
+        <mat-option *ngFor="let distributor of distributors" [value]="distributor.legalNum">
+          {{ distributor.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="editAssignmentForm.get('distributor')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Seleccionar Dispositivo -->
+    <mat-form-field class="full-width">
+      <mat-label>Dispositivo</mat-label>
+      <mat-select formControlName="device">
+        <mat-option *ngFor="let device of devices" [value]="device.serialNumber">
+          {{ device.serialNumber }} - {{ device.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="editAssignmentForm.get('device')?.hasError('required')">
+        Este campo es obligatorio.
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions class="action-buttons-create">
+  <button mat-raised-button color="primary" (click)="onSave()">Guardar</button>
+  <button mat-raised-button color="warn" (click)="onCancel()">Cancelar</button>
+</div>
