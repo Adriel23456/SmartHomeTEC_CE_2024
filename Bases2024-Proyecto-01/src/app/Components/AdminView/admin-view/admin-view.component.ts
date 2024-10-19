@@ -24,7 +24,7 @@ import { RouterOutlet } from '@angular/router';
     RouterOutlet
   ],
   templateUrl: './admin-view.component.html',
-  styleUrls: ['./admin-view.component.css']  // Asegúrate de que sea styleUrls, no styleUrl
+  styleUrls: ['./admin-view.component.css']
 })
 export class AdminViewComponent {}
 
