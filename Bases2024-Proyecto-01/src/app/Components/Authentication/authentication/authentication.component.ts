@@ -25,7 +25,7 @@ import { catchError, of, tap } from 'rxjs';
     MatButtonModule,
   ],
   templateUrl: './authentication.component.html',
-  styleUrls: ['./authentication.component.css'] // Asegúrate de que el estilo esté en plural
+  styleUrls: ['./authentication.component.css'] 
 })
 export class AuthenticationComponent {
   email: string = '';
@@ -37,41 +37,44 @@ export class AuthenticationComponent {
     private authenticationService: AuthenticationService,
     private dialog: MatDialog
   ) {}
-
+//Displays an error dialog with the provided error message.
   showErrorDialog(errorMessage: string): void {
     this.dialog.open(ErrorMessageComponent, {
       width: '400px',
       data: { message: errorMessage },
     });
   }
-
+//Extracts the domain part from the email address.
   getDomain(email: string): string {
     const parts = email.split('@');
     return parts.length > 1 ? parts[1] : '';
   }
-
+   //Handles the login action when the user submits their email and password.
+   // If login is successful, navigates to the appropriate view based on the email domain.
+   
   onLogin(): void {
     this.authenticationService.login(this.email, this.password).subscribe(email => {
       if (email) { // Verifica que email es válido
         const domain = this.getDomain(email);
-        if (domain === 'smartHomeAdmin.com') {
-          this.router.navigate(['/sidenavAdmin']);
+        if (domain === 'smartHomeAdmin.com') {// Checks if the email domain is for admins
+          this.router.navigate(['/sidenavAdmin']);// Navigates to the admin dashboard
         } else {
-          this.router.navigate(['/sidenavClient']);
+          this.router.navigate(['/sidenavClient']);// Navigates to the client dashboard
         }
       } else {
         const message = 'Error de Autenticación, credenciales inválidas. Por favor, intente de nuevo.';
-        this.showErrorDialog(message);
+        this.showErrorDialog(message);// Shows an error dialog if login fails
       }
     }, error => {
-      // Maneja el error en el suscriptor
+      // Handles login error
       this.showErrorDialog('Error de Autenticación, credenciales inválidas. Por favor, intente de nuevo.');
     });
   }    
 
-  /**
-   * Abre el diálogo para registrar un nuevo cliente y maneja la operación de registro.
-   */
+  
+   // Opens a dialog for client registration and handles the registration process.
+    //If registration is successful, it adds the client using the client service.
+   
   onRegister(): void {
     const dialogRef = this.dialog.open(CreateClientComponent, {
       width: '600px',
@@ -82,14 +85,13 @@ export class AuthenticationComponent {
       if (result) {
         this.clientService.addClient(result).pipe(
           tap((newClient) => {
-            // Manejar el éxito, por ejemplo, mostrar una notificación
+            // Handles successful client creation
             console.log('Cliente agregado exitosamente:', newClient);
-            // Puedes agregar aquí lógica adicional, como actualizar una lista de clientes
           }),
           catchError((error) => {
-            // Manejar el error, por ejemplo, mostrar una notificación de error
+            // Handles errors during client creation
             console.error('Error al agregar el cliente:', error);
-            // Retornar un observable vacío o manejar el error según tus necesidades
+            // Returns an observable in case of an error
             return of(null);
           })
         ).subscribe();
