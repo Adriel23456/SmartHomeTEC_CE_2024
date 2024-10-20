@@ -45,31 +45,35 @@ export class CreateTypeComponent {
     });
   }
 
+  // Save the new device type when the form is valid
   onSave(): void {
     if (this.createTypeForm.valid) {
       const newDeviceType: DeviceType = {
-        name: String(this.createTypeForm.value.name), // Forzar a que sea string
-        description: String(this.createTypeForm.value.description), // Forzar a que sea string
-        warrantyDays: Number(this.createTypeForm.value.warranty), // Convierte warranty a número
+        name: String(this.createTypeForm.value.name), 
+        description: String(this.createTypeForm.value.description), 
+        warrantyDays: Number(this.createTypeForm.value.warranty), 
       };
 
-      // Verificar si el nombre del tipo ya está en uso
+      // Check if the device type name is already in use
       if (!this.deviceTypeService.isTypeNameInUse(newDeviceType)) {
         this.showErrorDialog('El nombre ingresado ya está en uso. Por favor, elige otro.');
         return;
       }
 
-      this.dialogRef.close(newDeviceType); // Retorna el nuevo tipo de dispositivo al componente padre
+      // Close the dialog and return the new device type to the parent component
+      this.dialogRef.close(newDeviceType); 
     }
   }
   
+  // Open a dialog to show an error message
   showErrorDialog(errorMessage: string): void {
     this.dialog.open(ErrorMessageComponent, {
       width: '400px',
-      data: { message: errorMessage }
+      data: { message: errorMessage } // Pass the error message to the dialog
     });
   }
 
+  // Cancel the process and close the dialog without saving
   onCancel(): void {
     this.dialogRef.close();
   }

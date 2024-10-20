@@ -29,18 +29,18 @@ import { catchError, concat, of, switchMap, tap } from 'rxjs';
   ],
 })
 export class OnlineStoreManagementComponent {
-  assignments: any[] = []; // Almacena las asignaciones
+  assignments: any[] = []; 
   displayedColumns: string[] = [
     'idAssignment',
     'serialNumber',
     'distributorId',
     'deviceName',
     'distributorName',
-  ]; // Columnas de la tabla
+  ]; 
   validationErrors: string[] = [];
   message: string = '';
-  isFileLoaded = false; // Estado para controlar si se cargó un archivo
-  selectedFile: File | null = null; // Para almacenar el archivo seleccionado
+  isFileLoaded = false; 
+  selectedFile: File | null = null; 
 
   constructor(
     private dialog: MatDialog,
@@ -48,17 +48,19 @@ export class OnlineStoreManagementComponent {
     private distributorService: DistributorService
   ) {}
 
-  // Generar un nuevo idAssignment basado en el serialNumber y el legalNum
+  // Generates a new assignment ID based on serial number and legal number
   generateIdAssignment(serialNumber: string, legalNum: string): string {
     return `${serialNumber}${legalNum}`; // Concatenar los dos identificadores
   }
 
+  // Checks if an assignment already exists in the assignments list
   assignmentExists(serialNumber: string, legalNum: string): boolean {
     return this.assignments.some(
       (assignment) => assignment.serialNumber === serialNumber && assignment.legalNum === legalNum
     );
   }
 
+  // Handles file change and loads its content
   onFileChange(event: any) {
     const target: DataTransfer = <DataTransfer>event.target;
 
@@ -83,6 +85,7 @@ export class OnlineStoreManagementComponent {
     reader.readAsBinaryString(target.files[0]);
   }
 
+  // Processes the data extracted from the Excel file
   processExcelData(data: any) {
     this.assignments = [];
     this.validationErrors = [];
@@ -105,7 +108,7 @@ export class OnlineStoreManagementComponent {
         idAssignment: row[0],
         serialNumber: row[1],
         legalNum: row[2],
-        deviceName: '', // Inicializar campos adicionales
+        deviceName: '', 
         distributorName: '',
       };
 
@@ -120,7 +123,6 @@ export class OnlineStoreManagementComponent {
 
       this.assignments.push(assignment);
 
-      // Obtener el nombre del dispositivo por número de serie con protecciones
       this.deviceService
         .getDeviceNameBySerial(assignment.serialNumber)
         .pipe(
@@ -135,7 +137,6 @@ export class OnlineStoreManagementComponent {
         )
         .subscribe();
 
-      // Obtener el nombre del distribuidor por ID con protecciones
       this.distributorService
         .getDistributorNameById(assignment.legalNum)
         .pipe(
@@ -151,6 +152,7 @@ export class OnlineStoreManagementComponent {
         .subscribe();
     }
 
+    // Shows validation errors if there are any
     if (this.validationErrors.length != 0) {
       this.message =
         'Errores encontrados al cargar el archivo (Se ignoran entradas afectadas): ' +
@@ -160,6 +162,7 @@ export class OnlineStoreManagementComponent {
     }
   }
 
+  // Shows a dialog with an error message
   showErrorDialog(errorMessage: string): void {
     this.dialog.open(ErrorMessageComponent, {
       width: '400px',
@@ -167,6 +170,7 @@ export class OnlineStoreManagementComponent {
     });
   }
 
+  // Handles editing an assignment
   onEdit(assignment: any): void {
     const dialogRef = this.dialog.open(EditAssignmentComponent, {
       width: '600px',
@@ -177,17 +181,15 @@ export class OnlineStoreManagementComponent {
       if (result) {
         const previusIdAssignment = result.idAssignment;
         
-        // Acceder a los valores correctos del result
         const newIdAssignment = this.generateIdAssignment(result.serialNumber, result.legalNum);
-    
-        // Verificar si la asignación ya existe
+
         if (this.assignmentExists(result.serialNumber, result.legalNum)) {
           this.showErrorDialog('Esta asignación ya existe y no puede ser duplicada.');
           return; 
         }
     
         const newAssignment = {
-          idAssignment: newIdAssignment, // Generar un nuevo ID
+          idAssignment: newIdAssignment, 
           serialNumber: result.serialNumber, 
           legalNum: result.legalNum, 
           deviceName: result.deviceName, 
@@ -199,6 +201,7 @@ export class OnlineStoreManagementComponent {
     });
   }
 
+  // Handles creating a new assignment
   createAssignment(): void {
     const dialogRef = this.dialog.open(CreateAssignmentComponent, {
       width: '600px',
@@ -208,28 +211,26 @@ export class OnlineStoreManagementComponent {
       if (result) {
         const newIdAssignment = this.generateIdAssignment(result.device.serialNumber, result.distributor.legalNum);
 
-        // Verificar si la asignación ya existe
         if (this.assignmentExists(result.device.serialNumber, result.distributor.legalNum)) {
           this.showErrorDialog('Esta asignación ya existe y no puede ser duplicada.');
           return; 
         }
 
         const newAssignment = {
-          idAssignment: newIdAssignment, // Generar un nuevo ID
+          idAssignment: newIdAssignment, 
           serialNumber: result.device.serialNumber, 
           legalNum: result.distributor.legalNum, 
           deviceName: result.device.name, 
           distributorName: result.distributor.name,
         };
-        // Agregar la nueva asignación a la lista
         this.assignments.push(newAssignment);
 
-        // Forzar la detección de cambios
         this.assignments = [...this.assignments];
       }
     });
   }
 
+  // Handles editing an assignment
   updateAssignment(previusIdAssignment: number, updatedAssignment: any): void {
     const index = this.assignments.findIndex(
       (a) => a.idAssignment === previusIdAssignment
@@ -245,6 +246,7 @@ export class OnlineStoreManagementComponent {
     }
   }
 
+  // Handles deleting an assignment
   onDelete(idAssignment: string, distributorName: string, deviceName: string): void {
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '400px',
@@ -253,17 +255,16 @@ export class OnlineStoreManagementComponent {
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // El usuario confirmó que desea borrar
         this.assignments = this.assignments.filter(
           (a) => a.idAssignment !== idAssignment
         );
       } else {
-        // El usuario canceló la acción de borrar
         console.log('Acción de borrar cancelada');
       }
     });
   }
 
+  // Handles saving an assignment
   onSave(): void {
     const assignmentsToSave = this.assignments.map(({ idAssignment, serialNumber, legalNum }) => ({
       idAssignment,
@@ -271,12 +272,10 @@ export class OnlineStoreManagementComponent {
       legalNum,
     }));
   
-    // Array para almacenar los observables de actualización
     const updateObservables = assignmentsToSave.map(assignment => {
       return this.deviceService.getDeviceBySerialNumber(assignment.serialNumber).pipe(
         switchMap(device => {
           if (device) {
-            // Actualizar solo el legalNum
             const updatedDevice = { ...device, legalNum: assignment.legalNum };
             return this.deviceService.updateDevice(device, updatedDevice).pipe(
               tap(() => {
@@ -284,7 +283,7 @@ export class OnlineStoreManagementComponent {
               }),
               catchError(error => {
                 console.error(`Error al actualizar el dispositivo ${device.serialNumber}:`, error);
-                return of(null); // Continuar con la siguiente asignación
+                return of(null); 
               })
             );
           } else {
@@ -299,26 +298,25 @@ export class OnlineStoreManagementComponent {
       );
     });
   
-    // Ejecutar todas las actualizaciones de forma secuencial
     concat(...updateObservables).subscribe({
       complete: () => {
         console.log('Todos los dispositivos han sido actualizados.');
-        // Guardar las asignaciones en un archivo Excel después de las actualizaciones
         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(assignmentsToSave);
         const workbook: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Asignaciones');
         
-        // Guardar el archivo localmente
         XLSX.writeFile(workbook, 'Asignaciones.xlsx');
       }
     });
   }
 
+  // Compares two arrays to check if they are equal
   arrayEquals(a: any[], b: any[]): boolean {
     if (a.length !== b.length) return false;
     return a.every((val, index) => val === b[index]);
   }
 
+  // Checks if a value is numeric
   isNumeric(value: any): boolean {
     return !isNaN(value) && isFinite(value);
   }

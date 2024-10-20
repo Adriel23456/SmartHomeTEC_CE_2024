@@ -31,68 +31,62 @@ import { catchError, of, tap } from 'rxjs';
 export class DistributorManagementComponent implements OnInit {
   distributors: Distributor[] = [];
 
-  constructor(
+  constructor( // Constructor for the component
     private distributorService: DistributorService,
     private dialog: MatDialog,
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void { // Lifecycle method that runs on initialization
+    // Fetch the list of distributors from the service
     this.distributorService.getDistributors().subscribe(data => {
       this.distributors = data;
     });
   }
 
-  /**
-   * Abre el diálogo para agregar un nuevo distribuidor y maneja la operación de agregado.
-   */
-  addDistributor(): void {
+  addDistributor(): void { // Open the CreateDistributorComponent dialog
     const dialogRef = this.dialog.open(CreateDistributorComponent, {
       width: '600px'
     });
 
+    // Subscribe to the dialog close event
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.distributorService.addDistributor(result).pipe(
           tap((newDistributor: Distributor) => {
-            // Manejar el éxito, por ejemplo, mostrar una notificación
             console.log('Distribuidor agregado exitosamente:', newDistributor);
             this.refreshDistributors(); // Actualizar la lista de distribuidores
           }),
           catchError((error) => {
-            // Manejar el error, por ejemplo, mostrar una notificación de error
             console.error('Error al agregar el distribuidor:', error);
-            // Retornar un observable vacío para completar la cadena
             return of(null);
           })
-        ).subscribe();
+        ).subscribe(); // Subscribe to execute the observable
       }
     });
   }
 
   /**
-   * Abre el diálogo para editar un distribuidor existente y maneja la operación de actualización.
-   * @param distributor Distribuidor a editar.
+   * Opens the dialog to edit an existing distributor and handles the update operation.
+   * @param distributor Distributor to edit.
    */
   editDistributor(distributor: Distributor): void {
-    const originalDistributor = { ...distributor }; // Copia del distribuidor original
+    const originalDistributor = { ...distributor };
 
     const dialogRef = this.dialog.open(EditDistributorComponent, {
       width: '600px',
       data: { distributor }
     });
 
+    // Subscribe to the dialog close event
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.distributorService.updateDistributor(originalDistributor, result).pipe(
           tap((updatedDistributor: Distributor) => {
-            // Manejar el éxito, por ejemplo, mostrar una notificación
             console.log('Distribuidor actualizado exitosamente:', updatedDistributor);
-            this.refreshDistributors(); // Actualizar la lista de distribuidores
+            this.refreshDistributors();
           }),
           catchError((error) => {
-            // Manejar el error, por ejemplo, mostrar una notificación de error
             console.error('Error al actualizar el distribuidor:', error);
-            // Retornar un observable vacío para completar la cadena
             return of(null);
           })
         ).subscribe();
@@ -100,35 +94,37 @@ export class DistributorManagementComponent implements OnInit {
     });
   }
 
+  /**
+   * Opens the delete confirmation dialog for a distributor.
+   * @param distributor Distributor to delete.
+   */
   onDelete(distributor: Distributor): void {
+    // Open the DeleteDialogComponent with a confirmation message
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '400px',
       data: { message: `¿Seguro que quieres borrar el distribuidor: ${distributor.name} - ${distributor.legalNum}?` }
     });
 
+    // Subscribe to the dialog close event
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.distributorService.deleteDistributor(distributor).pipe(
           tap(() => {
-            // Manejar el éxito, por ejemplo, mostrar una notificación
             console.log('Distribuidor eliminado exitosamente:', distributor);
-            this.refreshDistributors(); // Actualizar la lista de distribuidores
+            this.refreshDistributors();
           }),
           catchError((error) => {
-            // Manejar el error, por ejemplo, mostrar una notificación de error
             console.error('Error al eliminar el distribuidor:', error);
-            // Retornar un observable vacío para completar la cadena sin propagar el error
             return of(null);
           })
         ).subscribe();
       } else {
-        // El usuario canceló la acción de borrar
         console.log('Acción de borrar cancelada');
       }
     });
   }
   
-  // Función para refrescar la lista de distribuidores
+  // Function to refresh the list of distributors
   refreshDistributors() {
     this.distributorService.getDistributors().subscribe(data => {
       this.distributors = data;

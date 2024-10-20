@@ -47,33 +47,32 @@ export class CreateAssignmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Load distributors and devices when the component initializes
     this.loadDistributors();
     this.loadDevices();
     
   }
 
-  // Cargar distribuidores desde el servicio
+  // Method to load distributors from the distributor service
   loadDistributors(): void {
     this.distributorService.getDistributors().subscribe((data: any[]) => {
       this.distributors = data;
     });
   }
 
-
-
-  // Cargar dispositivos desde el servicio
+  // Method to load devices from the device service
   loadDevices(): void {
     this.deviceService.getDevices().subscribe((data: any[]) => {
       this.devices = data;
     });
   }
 
-  // Cerrar el diálogo sin acciones
+  // Method to close the dialog without taking any action
   onCancel(): void {
     this.dialogRef.close();
   }
 
-  // Confirmar la creación de la asignación
+  // Method to confirm the creation of an assignment
   onCreate(): void {
     const assignmentData = {
       distributor: this.selectedDistributor,

@@ -2,18 +2,17 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Device, DeviceService } from '../../../../Services/Devices/Devices/devices.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { MatDialogModule } from '@angular/material/dialog'; 
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { ProductState, ProductStateService } from '../../../../Services/ProductState/ProductState/product-state.service';
-import { DeviceType, DeviceTypesService } from '../../../../Services/DeviceTypes/DeviceTypes/device-types.service';
+import { MatInputModule } from '@angular/material/input'; 
+import { MatButtonModule } from '@angular/material/button'; 
+import { MatSelectModule } from '@angular/material/select'; 
+import { ProductState, ProductStateService } from '../../../../Services/ProductState/ProductState/product-state.service'; 
+import { DeviceType, DeviceTypesService } from '../../../../Services/DeviceTypes/DeviceTypes/device-types.service'; 
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorMessageComponent } from '../../../error-message/error-message.component';
-
 
 @Component({
   selector: 'app-create-device',
@@ -32,19 +31,20 @@ import { ErrorMessageComponent } from '../../../error-message/error-message.comp
   ]
 })
 export class CreateDeviceComponent {
-  createDeviceForm: FormGroup;
-  deviceTypes: DeviceType[] = []; 
-  productStates: ProductState[] = [];
+  createDeviceForm: FormGroup; // Reactive form for creating a new device
+  deviceTypes: DeviceType[] = []; // List of available device types
+  productStates: ProductState[] = []; // List of available product states
 
   constructor(
-    private productStateService: ProductStateService,
-    private deviceTypesService: DeviceTypesService,
-    private dialog: MatDialog,
-    private deviceService: DeviceService,
-    private dialogRef: MatDialogRef<CreateDeviceComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder
+    private productStateService: ProductStateService, // Service to get product states
+    private deviceTypesService: DeviceTypesService, // Service to get device types
+    private dialog: MatDialog, // Service to handle dialogs
+    private deviceService: DeviceService, // Service for handling device operations
+    private dialogRef: MatDialogRef<CreateDeviceComponent>, // Reference to the current dialog
+    @Inject(MAT_DIALOG_DATA) public data: any, // Injected data from parent component
+    private fb: FormBuilder // Form builder for creating reactive forms
   ) {
+    // Initialize form fields with validators
     this.createDeviceForm = this.fb.group({
       serialNumber: ['', [Validators.required, Validators.min(0)]],
       name: ['', [Validators.required]],
@@ -60,7 +60,7 @@ export class CreateDeviceComponent {
   }
 
   ngOnInit(): void {
-
+    // Fetch device types and product states when the component initializes
     this.deviceTypesService.getDeviceTypes().subscribe((types: DeviceType[]) => {
       this.deviceTypes = types;
     });
@@ -70,8 +70,8 @@ export class CreateDeviceComponent {
     });
   }
 
-
   onSave(): void {
+    // Save new device if the form is valid
     if (this.createDeviceForm.valid) {
       const newDevice: Device = {
         serialNumber: Number(this.createDeviceForm.value.serialNumber),
@@ -82,21 +82,22 @@ export class CreateDeviceComponent {
         amountAvailable: Number(this.createDeviceForm.value.amountAvailable),
         electricalConsumption: Number(this.createDeviceForm.value.electricalConsumption),
         deviceTypeName: String(this.createDeviceForm.value.deviceTypeName),
-        legalNum: null, 
+        legalNum: null,
         description: String(this.createDeviceForm.value.description)
       };
 
-      // Verificar si ya existe un dispositivo con el mismo serial number
+      // Check if the serial number is already in use
       if (!this.deviceService.isSerialNumberInUse(newDevice)) {
-        this.showErrorDialog('El número de serie ya está en uso. Por favor, elige otro.');
+        this.showErrorDialog('The serial number is already in use. Please choose another.');
         return;
       }
 
-      this.dialogRef.close(newDevice); // Cierra el diálogo y pasa el nuevo dispositivo al componente padre
+      this.dialogRef.close(newDevice); // Close the dialog and return the new device to the parent component
     }
   }
 
   showErrorDialog(errorMessage: string): void {
+    // Opens a dialog to display an error message
     this.dialog.open(ErrorMessageComponent, {
       width: '400px',
       data: { message: errorMessage }
@@ -104,6 +105,7 @@ export class CreateDeviceComponent {
   }
 
   onCancel(): void {
-    this.dialogRef.close(); // Cierra el diálogo sin realizar ninguna acción
+    // Close the dialog without performing any action
+    this.dialogRef.close();
   }
 }

@@ -40,26 +40,27 @@ export class CreateDistributorComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener las regiones del servicio
+    // Fetch the list of regions from the distributor service when the component initializes
     this.distributorService.getRegions().subscribe((regions: Region[]) => {
       this.regions = regions;
     });
 
-    // Inicializar el formulario
+    // Initialize the create distributor form with form controls and validation
     this.createDistributorForm = this.fb.group({
-      legalNum: ['', [Validators.required]], // Campo habilitado para ingresar la cédula jurídica
+      legalNum: ['', [Validators.required]], 
       name: ['', [Validators.required]],
-      region: ['', [Validators.required]], // Desplegable para seleccionar la región
-      country: [{ value: '', disabled: true }, Validators.required], // Inicializar como deshabilitado
-      continent: [{ value: '', disabled: true }, Validators.required], // Inicializar como deshabilitado
+      region: ['', [Validators.required]], 
+      country: [{ value: '', disabled: true }, Validators.required], 
+      continent: [{ value: '', disabled: true }, Validators.required], 
     });
   }
 
+  // This function is triggered when the user selects a region from the dropdown
   onRegionSelected(region: string): void {
     const selectedRegion = this.regions.find(r => r.region === region);
     
     if (selectedRegion) {
-      // Actualizar los campos de país y continente en el formulario
+      // Update the country and continent fields in the form based on the selected region
       this.createDistributorForm.patchValue({
         country: selectedRegion.country,
         continent: selectedRegion.continent,
@@ -67,6 +68,7 @@ export class CreateDistributorComponent implements OnInit {
     }
   }
   
+  // This function is triggered when the user clicks the save button
   onSave(): void {
     if (this.createDistributorForm.valid) {
       const newDistributor: Distributor = {
@@ -77,17 +79,18 @@ export class CreateDistributorComponent implements OnInit {
         continent: this.createDistributorForm.get('continent')?.value
       };
 
-      // Verificar si el número de cédula jurídica ya está en uso
+      // Check if the legal number is already in use
       if (!this.distributorService.isLegalNumInUse(newDistributor)) {
         this.showErrorDialog('La cédula jurídica ya está en uso. Por favor, ingresa otro número.');
         return;
       }
 
-      // Si la cédula jurídica no está en uso, continuar con la creación
+      // If the legal number is not in use, close the dialog and pass the new distributor object to the parent
       this.dialogRef.close(newDistributor);
     }
   }
 
+  // This function opens a dialog to display an error message
   showErrorDialog(errorMessage: string): void {
     this.dialog.open(ErrorMessageComponent, {
       width: '400px',
@@ -95,6 +98,7 @@ export class CreateDistributorComponent implements OnInit {
     });
   }
 
+  // This function is triggered when the user cancels the form submission
   onCancel(): void {
     this.dialogRef.close();
   }

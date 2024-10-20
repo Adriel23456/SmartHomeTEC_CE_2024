@@ -3,7 +3,6 @@
 <div mat-dialog-content>
   <form [formGroup]="createAssignmentForm">
     
-    <!-- Seleccionar Distribuidor -->
     <mat-form-field class="full-width">
       <mat-label>Distribuidor</mat-label>
       <mat-select formControlName="distributor" [(value)]="selectedDistributor">
@@ -16,7 +15,6 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- Seleccionar Dispositivo -->
     <mat-form-field class="full-width">
       <mat-label>Dispositivo</mat-label>
       <mat-select formControlName="device" [(value)]="selectedDevice">

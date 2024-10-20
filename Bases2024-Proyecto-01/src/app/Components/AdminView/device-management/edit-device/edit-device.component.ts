@@ -31,7 +31,7 @@ import { ProductState, ProductStateService } from '../../../../Services/ProductS
 })
 export class EditDeviceComponent implements OnInit {
   editDeviceForm!: FormGroup;
-  selectedDeviceType: DeviceType | null = null;  // Tipo seleccionado
+  selectedDeviceType: DeviceType | null = null;  // selected type
   deviceTypes: DeviceType[] = []; 
   productStates: ProductState[] = [];
 
@@ -45,16 +45,17 @@ export class EditDeviceComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // obtener tipos de dispositivo al inicializar el componente
+    /// Fetch device types when the component is initialized
     this.deviceTypeService.getDeviceTypes().subscribe((types: DeviceType[]) => {
       this.deviceTypes = types;
     });
 
+    // Fetch product states when the component is initialized
     this.productStateService.getProductStates().subscribe((states: ProductState[]) => {
       this.productStates = states;
     });
 
-    // Inicializar el formulario con validaciones
+    // Initialize the form with the current device data and set validation rules
     this.editDeviceForm = this.fb.group({
       name: [this.data.device.name, [Validators.required]],
       deviceTypeName: [this.data.device.deviceTypeName, [Validators.required]],
@@ -67,6 +68,7 @@ export class EditDeviceComponent implements OnInit {
     });
   }
 
+  // Save the updated device when the form is valid
   onSave(): void {
     if (this.editDeviceForm.valid) {
       const updatedDevice: Device = {
@@ -74,10 +76,11 @@ export class EditDeviceComponent implements OnInit {
         ...this.editDeviceForm.value
       };
 
-      this.dialogRef.close(updatedDevice); // Cierra el diálogo y retorna el dispositivo actualizado
+      this.dialogRef.close(updatedDevice); // Close the dialog and return the updated device
     }
   }
 
+  // Cancel the editing process and close the dialog
   onCancel(): void {
     this.dialogRef.close();
   }

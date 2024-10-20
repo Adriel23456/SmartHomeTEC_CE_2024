@@ -14,7 +14,7 @@ export const routes: Routes = [
     { 
         path: 'sidenavAdmin',
         component: AdminViewComponent,
-        canActivate: [AuthenticationGuard], //protegiendo la ruta
+        canActivate: [AuthenticationGuard], //protecting the route
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', component: DashboardComponent},
