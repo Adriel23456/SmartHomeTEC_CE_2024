@@ -44,6 +44,7 @@ export class EditTypeComponent {
     });
   }
 
+  // Save the updated device type when the form is valid
   onSave(): void {
     if (this.editTypeForm.valid) {
       const updatedDeviceType: DeviceType = {
@@ -62,6 +63,7 @@ export class EditTypeComponent {
     }
   }
 
+  // Open a dialog to show an error message
   showErrorDialog(errorMessage: string): void {
     this.dialog.open(ErrorMessageComponent, {
       width: '400px',
@@ -69,6 +71,7 @@ export class EditTypeComponent {
     });
   }
 
+  // Cancel the process and close the dialog without saving
   onCancel(): void {
     this.dialogRef.close();
   }

@@ -1,71 +1,63 @@
-/* Estilos generales */
 .device-management-container {
   display: flex;
   flex-direction: column;
 }
 
-/* Barra de herramientas */
 mat-toolbar {
   font-weight: 500;
   color: white;
   background-color: #2b3b5c;
 }
 
-/* Espaciador */
 .spacer {
   flex: 1 1 auto;
 }
 
-/* Contenedor de la tabla con límite de altura y scroll */
 .table-container {
   margin-top: 16px;
   margin-left: 16px;
   margin-right: 16px;
-  max-height: 900px; /* Cambia este valor según lo que necesites */
-  overflow-y: auto; /* Permitir scroll si hay más de 15 dispositivos */
-  border: 1px solid #ccc; /* Añadir un borde para definir el área */
-  border-radius: 8px; /* Opcional: bordes redondeados */
+  max-height: 900px;
+  overflow-y: auto;
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
 }
 
-/* Tabla */
 .mat-table {
-  width: 100%; /* La tabla ocupa todo el ancho del contenedor */
+  width: 100%;
 }
 
 th.mat-header-cell {
   font-weight: bold;
 }
 
-/* Iconos de los botones del toolbar */
 mat-icon {
   margin-right: 8px;
 }
 
-/* Estilo para los botones en el toolbar */
 mat-toolbar button {
     font-size: medium;
     font-weight: bold;
     height: 40px;
     width: 200px;
-    background-color: #30426a; /* Color de fondo deseado */
-    color: white; /* Color del texto */
-    border-radius: 5px; /* Bordes redondeados */
-    border: 12; /*quita borde*/
-    margin-left: 5px; /* Espacio entre botones */
-    margin-right: 5px; /* Espacio entre botones */
-    transition: background-color 0.3s ease; /* Transición suave para el efecto hover */
-    display: flex; /* Usar flex para alinear el icono y el texto */
-    align-items: center; /* Centrar verticalmente */
-    padding: 0 10px; /* Espacio interno alrededor del texto */
+    background-color: #30426a; 
+    color: white; 
+    border-radius: 5px; 
+    border: 12; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+    transition: background-color 0.3s ease;
+    display: flex; 
+    align-items: center; 
+    padding: 0 10px; 
   }
 
-/* Efecto hover */
 mat-toolbar button:hover {
-  background-color: #425a8b; /* Color en hover, puedes ajustarlo según lo que necesites */
+  background-color: #425a8b;
 }
 
 mat-toolbar mat-icon {
-  margin-right: 8px; /* Espacio entre el icono y el texto */
+  margin-right: 8px; 
   font-size: 20px;
   color: white;
 }

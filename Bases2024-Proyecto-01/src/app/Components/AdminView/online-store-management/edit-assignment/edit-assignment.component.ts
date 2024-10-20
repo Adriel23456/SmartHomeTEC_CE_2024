@@ -46,18 +46,20 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Load distributors, devices, and set existing data when the component initializes
     this.loadDistributors();
     this.loadDevices();
     this.setExistingData();
   }
 
+  // Method to create the form with validation rules
   createForm() {
     this.editAssignmentForm = this.fb.group({
       distributor: [null, Validators.required],
       device: [null, Validators.required],
     });
 
-    // Escuchar los cambios en los selectores del formulario
+    // Listen for changes in the distributor and device selectors
     this.editAssignmentForm
       .get('distributor')
       ?.valueChanges.subscribe((value) => {
@@ -69,55 +71,59 @@ export class EditAssignmentComponent implements OnInit {
     });
   }
 
+  // Method to load distributors from the distributor service
   loadDistributors() {
     this.distributorService.getDistributors().subscribe((distributors) => {
       this.distributors = distributors;
     });
   }
 
+  // Method to load devices from the device service
   loadDevices() {
     this.deviceService.getDevices().subscribe((devices) => {
       this.devices = devices;
     });
   }
 
+  // Method to retrieve the device name by its serial number
   getDeviceName(serialNumber: number) {
     return this.deviceService.getDeviceNameBySerial(serialNumber);
   }
 
+  // Method to retrieve the distributor name by its legal number
   getDistributorName(legalNum: number) {
     return this.distributorService.getDistributorNameById(legalNum);
   }
 
+  // Method to set existing data in the form using data passed to the dialog
   setExistingData() {
-    // Establecer los valores iniciales del formulario con los datos pasados
     this.editAssignmentForm.patchValue({
       distributor: this.data.legalNum,
       device: this.data.serialNumber,
     });
   }
 
+  // Method to save the updated assignment data
   onSave() {
     if (this.editAssignmentForm.valid) {
-      // Uso de forkJoin para esperar a que ambos observables terminen
       forkJoin({
         distributorName: this.getDistributorName(this.selectedDistributor),
         deviceName: this.getDeviceName(this.selectedDevice),
       }).subscribe(({ distributorName, deviceName }) => {
         const updatedAssignment = {
           ...this.data,
-          legalNum: this.selectedDistributor, // ID del distribuidor seleccionado
-          serialNumber: this.selectedDevice, // ID del dispositivo seleccionado
-          distributorName, // Nombre del distribuidor obtenido
-          deviceName, // Nombre del dispositivo obtenido
+          legalNum: this.selectedDistributor,
+          serialNumber: this.selectedDevice,
+          distributorName,
+          deviceName, 
         };
 
-        // Cerrar el diálogo con los datos actualizados
         this.dialogRef.close(updatedAssignment);
       });
     }
   }
 
+  // Method to close the dialog without saving changes
   onCancel() {
     this.dialogRef.close();
   }

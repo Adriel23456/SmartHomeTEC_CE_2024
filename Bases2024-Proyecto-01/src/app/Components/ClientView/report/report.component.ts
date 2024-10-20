@@ -23,30 +23,30 @@ export class ReportComponent {
     private usageLogsService: UsageLogsService,
     private deviceService: DeviceService
   ) {}
-
+ // Method to close the dialog
   onNoClick(): void {
     this.dialogRef.close();
   }
-
+// Asynchronous method to generate device usage ranking PDF
   async generateDeviceRanking(): Promise<void> {
-    const currentUser = this.authService.currentUserValue;
+    const currentUser = this.authService.currentUserValue;// Get current authenticated user
   
     if (!currentUser) {
-      console.error('No hay usuario autenticado.');
+      console.error('No hay usuario autenticado.');// Log error if no user is authenticated
       return;
     }
   
-    // Obtener los logs del usuario actual
+    // Retrieve logs for the current user
     const userLogs = this.usageLogsService.getLogsByEmail(currentUser.email);
     const deviceUsage: { [serialNumber: number]: { totalUsage: number; name?: string } } = {};
-  
+  // Loop through user logs to calculate total usage per device
     for (const log of userLogs) {
-      // Obtener el número de serie a partir del assignedID
+      // Get serial number from assignedID
       const serialNumber = await firstValueFrom(this.usageLogsService.getSerialNumberByAssignedID(log.assignedID));
       const totalHours = this.calculateHours(log.startTime, log.endTime);
   
       if (serialNumber !== undefined && serialNumber !== null) {
-        // Sumar las horas de uso por número de serie
+        // Sum total usage hours for each device
         if (deviceUsage[serialNumber]) {
           deviceUsage[serialNumber].totalUsage += totalHours;
         } else {
@@ -57,56 +57,54 @@ export class ReportComponent {
       }
     }
   
-    // Obtener el nombre del dispositivo para cada número de serie
+    // Fetch device names for each serial number
     const namePromises = Object.keys(deviceUsage).map(async (serialNumber) => {
       const name = await firstValueFrom(this.deviceService.getDeviceNameBySerial(Number(serialNumber)));
       if (name) {
-        deviceUsage[Number(serialNumber)].name = name;
+        deviceUsage[Number(serialNumber)].name = name;// Set device name
       }
     });
   
-    // Esperar a que todas las solicitudes se completen
+    // Wait for all name requests to complete
     await Promise.all(namePromises);
   
-    // Crear el PDF
+    // Create PDF document
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text('Ranking de Dispositivos Más Utilizados', 10, 10);
   
-    // Agregar encabezados de la tabla
+    // Add table headers
     let y = 30;
     doc.setFontSize(12);
     doc.text('Nombre del Dispositivo     Número de Serie     Total de Uso (horas)', 10, y);
     y += 10;
   
-    // Ordenar el ranking por uso total
+    // Sort device usage by total hours and print data
     const sortedDeviceUsage = Object.entries(deviceUsage).sort((a, b) => b[1].totalUsage - a[1].totalUsage);
-  
-    // Imprimir los datos de uso
+
     for (const [serialNumber, usage] of sortedDeviceUsage) {
       const entry = `${usage.name || 'Desconocido'}          ${serialNumber}          ${usage.totalUsage}`;
       doc.text(entry, 10, y);
       y += 10;
-  
+  // Add new page if content exceeds height
       if (y > 280) {
         doc.addPage();
         y = 10;
       }
     }
   
-    // Guardar el PDF
     doc.save('Ranking de Dispositivos.pdf');
   }  
-
+// Method to generate daily usage report PDF
   generateDailyUsageReport(): void {
     const currentUser = this.authService.currentUserValue;
     if (currentUser) {
-        // Obtener los logs filtrados por el correo del usuario actual
+        // Filter logs by current user's email
         const userLogs = this.usageLogsService.getLogsByEmail(currentUser.email);
 
         const doc = new jsPDF();
 
-        // Add title
+         // Add title to the document
         doc.setFontSize(16);
         doc.text('Reporte con los periodos del día con mayor uso de dispositivos', 10, 10);
 
@@ -114,9 +112,9 @@ export class ReportComponent {
         let timeRange = 'No definido';
 
         if (userLogs.length > 0) {
-            mostFrequentPeriod = this.usageLogsService.getMostFrequentPeriod(userLogs);
+            mostFrequentPeriod = this.usageLogsService.getMostFrequentPeriod(userLogs);// Get most frequent usage period
 
-            // Define the time range for the most frequent period
+            // Define the time range based on the most frequent period
             if (mostFrequentPeriod === 'mañana') {
                 timeRange = '06:00 - 11:59';
             } else if (mostFrequentPeriod === 'tarde') {
@@ -125,11 +123,11 @@ export class ReportComponent {
                 timeRange = '20:00 - 05:59';
             }
         } else {
-            // No logs available, define the message
+            // Define message if no logs are available
             timeRange = 'No hay horas disponibles';
         }
 
-        // Add most frequent period section
+        // Add most frequent period section to PDF
         doc.setFontSize(12);
         doc.text(`El período del día en que más se utilizan los dispositivos es: ${mostFrequentPeriod}`, 10, 20);
         doc.text(`Rango de horas para este período: ${timeRange}`, 10, 30);
@@ -146,135 +144,134 @@ export class ReportComponent {
         } else {
             // Loop through userLogs and print each log entry
             userLogs.forEach(log => {
-                // Calcular las horas desde startTime y endTime
+                // Calculate hours from startTime and endTime
                 const totalHours = this.calculateHours(log.startTime, log.endTime);
 
-                // Crear una cadena para cada entrada de log
+                // Create a string for each log entry
                 const logEntry = `${log.startDate}     ${log.endDate}     ${log.startTime}     ${log.endTime}     ${totalHours.toFixed(2)}     ${log.assignedID}     ${log.logID}     ${log.clientEmail}`;
                 doc.text(logEntry, 10, y);
-                y += 10; // Incrementar posición Y para la siguiente entrada
+                y += 10; // Increment Y position for the next entry
 
-                // Agregar nueva página si el contenido excede la altura de la página
-                if (y > 280) { // Asumiendo que 295 es el margen inferior de la página
-                    doc.addPage(); // Agregar nueva página
-                    y = 10; // Reiniciar posición Y para la nueva página
+                // Add new page if content exceeds the height of the page
+                if (y > 280) { 
+                    doc.addPage(); // Add new page
+                    y = 10;// Reset Y position for the new page
                 }
             });
         }
 
-        // Save the PDF
+        // Save the PDF document
         doc.save('Reporte uso Dispositivos.pdf');
     }
 }
 
-  
+ // Method to generate monthly consumption report PDF 
 async generateMonthlyConsumption(): Promise<void> {
   const currentUser = this.authService.currentUserValue;
 
   if (currentUser) {
-    // Filtrar logs del usuario actual
+    // Filter logs for the current user
     const userLogs = this.usageLogsService.getLogsByEmail(currentUser.email);
 
     const consumptionData: { [serialNumber: number]: { totalHours: number; electricalConsumption?: number; totalElectricityCost?: number } } = {};
 
     for (const log of userLogs) {
       const totalHours = this.calculateHours(log.startTime, log.endTime);
-
+      // Get device serial number using assignedID
       if (totalHours != null) {
-        // Obtener el número de serie del dispositivo usando assignedID
+        
         const serialNumber = await firstValueFrom(this.usageLogsService.getSerialNumberByAssignedID(log.assignedID));
 
         if (serialNumber !== undefined && serialNumber !== null) {
-          // Acumular las horas de uso por número de serie
+          // Accumulate usage hours by serial number
           if (consumptionData[serialNumber]) {
             consumptionData[serialNumber].totalHours += totalHours;
           } else {
             consumptionData[serialNumber] = { totalHours };
           }
         } else {
-          console.warn(`No se pudo obtener el serialNumber para assignedID ${log.assignedID}`);
+          console.warn(`No se pudo obtener el serialNumber para assignedID ${log.assignedID}`);// Log warning if serial number is not found
         }
       } else {
-        console.warn(`Log con ID ${log.logID} tiene un totalHours inválido: ${totalHours}`);
+        console.warn(`Log con ID ${log.logID} tiene un totalHours inválido: ${totalHours}`);// Log warning for invalid totalHours
       }
     }
 
-    // Obtener el consumo eléctrico para cada número de serie
+    // Retrieve electrical consumption for each serial number
     const consumptionPromises = Object.keys(consumptionData).map(async (serialNumber) => {
       const electricalConsumption = await firstValueFrom(this.deviceService.getElectricalConsumptionBySerialNumber(Number(serialNumber)));
       consumptionData[Number(serialNumber)].electricalConsumption = electricalConsumption || 0;
     });
 
-    // Esperar a que todas las solicitudes de consumo eléctrico se completen
+    // Wait for all consumption requests to complete
     await Promise.all(consumptionPromises);
 
-    // Calcular el costo total de electricidad por dispositivo y el total general
+    // Calculate total electricity cost per device and overall total
     let totalConsumption = 0;
 
     for (const data of Object.values(consumptionData)) {
-      const totalElectricityCost = data.totalHours * (data.electricalConsumption || 0);
-      data.totalElectricityCost = totalElectricityCost;
-      totalConsumption += totalElectricityCost;
+      const totalElectricityCost = data.totalHours * (data.electricalConsumption || 0);// Calculate cost
+      data.totalElectricityCost = totalElectricityCost;// Store cost
+      totalConsumption += totalElectricityCost;// Accumulate total consumption
     }
 
-    // Crear el PDF
+     // Create PDF document
     const doc = new jsPDF();
 
-    // Agregar título
+   
     doc.setFontSize(16);
     doc.text('Reporte Mensual de Consumo de Dispositivos', 10, 10);
 
-    // Mostrar el total de consumo de todos los dispositivos
+    
     doc.setFontSize(14);
     doc.text(`Total de consumo eléctrico para el mes anterior: ${totalConsumption.toFixed(2)}`, 10, 20);
 
-    // Agregar encabezados de la tabla
+    // Add table headers
     let y = 30;
     doc.setFontSize(12);
     doc.text('Número de serie     Total de horas     Consumo eléctrico     Costo total de electricidad', 10, y);
     y += 10;
 
-    // Imprimir los datos de consumo
+    /// Print data for each device
     for (const [serialNumber, data] of Object.entries(consumptionData)) {
       const entry = `${serialNumber}          ${data.totalHours}          ${data.electricalConsumption || 0}          ${data.totalElectricityCost?.toFixed(2) || 0}`;
       doc.text(entry, 10, y);
       y += 10;
-
+// Add new page if content exceeds height
       if (y > 280) {
         doc.addPage();
         y = 10;
       }
     }
 
-    // Guardar el PDF
+    
     doc.save('Reporte Mensual Consumo Dispositivos.pdf');
     }
   }
 
   
-  // Función para calcular las horas entre dos tiempos
+ // Helper method to calculate total hours between start and end times
   private calculateHours(startTime: string, endTime: string): number {
     const [startHours, startMinutes] = startTime.split(':').map(Number);
     const [endHours, endMinutes] = endTime.split(':').map(Number);
   
     let totalHours = 0;
   
-    // Si el tiempo de fin es menor que el de inicio, significa que pasó a la siguiente jornada
+   
     if (endHours < startHours || (endHours === startHours && endMinutes < startMinutes)) {
-      totalHours += (24 - startHours) + endHours; // Total de horas hasta medianoche más horas hasta el fin
+      totalHours += (24 - startHours) + endHours; 
     } else {
-      totalHours += endHours - startHours; // Diferencia de horas
+      totalHours += endHours - startHours; 
     }
-  
-    // Sumar los minutos
+
     if (endMinutes < startMinutes) {
-      totalHours -= 1; // Restar una hora si los minutos de fin son menores
-      totalHours += (60 - startMinutes) + endMinutes; // Agregar los minutos
+      totalHours -= 1; 
+      totalHours += (60 - startMinutes) + endMinutes; 
     } else {
-      totalHours += (endMinutes - startMinutes) / 60; // Sumar la diferencia de minutos como fracción de horas
+      totalHours += (endMinutes - startMinutes) / 60; 
     }
   
-    return totalHours; // Retorna el total de horas calculadas
+    return totalHours; 
   }
   
 }

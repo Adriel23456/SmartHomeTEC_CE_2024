@@ -10,25 +10,21 @@
   <div class="distributor-management-container">
     <div class="table-container">
       <table mat-table [dataSource]="distributors" class="mat-elevation-z8">
-        <!-- Cédula Jurídica -->
         <ng-container matColumnDef="legalNum">
           <th mat-header-cell *matHeaderCellDef> Cédula Jurídica </th>
           <td mat-cell *matCellDef="let distributor"> {{ distributor.legalNum }} </td>
         </ng-container>
   
-        <!-- Nombre -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Nombre </th>
           <td mat-cell *matCellDef="let distributor"> {{ distributor.name }} </td>
         </ng-container>
   
-        <!-- Región -->
         <ng-container matColumnDef="region">
           <th mat-header-cell *matHeaderCellDef> Región </th>
           <td mat-cell *matCellDef="let distributor"> {{ distributor.region }} </td>
         </ng-container>
   
-        <!-- Botón de Editar -->
         <ng-container matColumnDef="edit">
           <th mat-header-cell *matHeaderCellDef> Editar </th>
           <td mat-cell *matCellDef="let distributor">
@@ -36,7 +32,6 @@
           </td>
         </ng-container>
   
-        <!-- Botón de Borrar -->
         <ng-container matColumnDef="delete">
           <th mat-header-cell *matHeaderCellDef> Eliminar </th>
           <td mat-cell *matCellDef="let distributor">

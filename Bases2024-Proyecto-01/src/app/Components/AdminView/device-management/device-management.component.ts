@@ -38,17 +38,19 @@ export class DeviceManagementComponent implements OnInit{
   deviceClientEmails: { [serialNumber: number]: string } = {};
   deviceAssignmentStatus: { [serialNumber: number]: boolean } = {};
   
-
+   // Initializes required services and sets default values
   constructor(
     private deviceService: DeviceService,
     private clientService: ClientService,
     private dialog: MatDialog,
   ){}
 
+  // Initializes component and fetches device data when the component loads
   ngOnInit(): void {
     this.refreshDevices();
   }
 
+  // Checks if a device is assigned to a client by its serial number and returns an observable boolean
   isDeviceAssigned(device: Device): Observable<boolean> {
     const operation = `GET ClientEmail by SerialNumber: ${device.serialNumber}`;
     return this.clientService.getClientEmailBySerial(device.serialNumber).pipe(
@@ -59,32 +61,34 @@ export class DeviceManagementComponent implements OnInit{
       }),
       catchError((error) => {
         console.error(`${operation} falló:`, error);
-        // Devuelve `false` en caso de error para continuar el flujo de la aplicación
+        // Return false on error to proceed with application flow
         return of(false);
       })
     );
   }  
 
+  // Retrieves the power consumption of a device and returns it as an observable number
   getPowerConsumption(device: Device): Observable<number> {
     return of(device.electricalConsumption);
   }
   
+  // Fetches the email of the client to whom a device is assigned by serial number
   getClientEmail(serialNumber: number): Observable<string> {
     const operation = `GET ClientEmail by SerialNumber: ${serialNumber}`;
     return this.clientService.getClientEmailBySerial(serialNumber).pipe(
-      map(email => email || "No asignado"),  // Si el email es falsy (null, undefined, etc.), devuelve 'No asignado'
-      tap(email => console.log(`${operation} - Resultado: ${email}`)),  // Registrar el resultado
+      map(email => email || "No asignado"),  // if email is falsy (null, undefined, etc.), return 'No asignado'
+      tap(email => console.log(`${operation} - Resultado: ${email}`)),  // save the result
       catchError(() => {
         console.error(`${operation} falló. Retornando 'No asignado'.`);
-        return of('No asignado');  // En caso de error, devuelve 'No asignado'
+        return of('No asignado');  // On error, returns 'Not assigned'
       })
     );
   }
 
-  // Editar un dispositivo
+  // Opens a dialog to edit a device, checks assignment status before allowing the edit
   editDevice(device: Device) {
-    // Guardar una copia del dispositivo original antes de abrir el diálogo
-    const originalDevice = { ...device }; // Copia del dispositivo original
+    // Make a copy of the device before opening the dialog
+    const originalDevice = { ...device }; 
     if (this.deviceAssignmentStatus[device.serialNumber]) {
       const dialogRef = this.dialog.open(EditDeviceComponent, {
         width: '600px',
@@ -95,11 +99,11 @@ export class DeviceManagementComponent implements OnInit{
           this.deviceService.updateDevice(originalDevice, result).pipe(
             tap(() => {
               console.log('Dispositivo actualizado exitosamente.');
-              this.refreshDevices(); // Actualizar la lista de dispositivos
+              this.refreshDevices(); // update the device list
             }),
             catchError(error => {
               console.error('Error al actualizar el dispositivo:', error);
-              // Retornar un observable vacío para completar la cadena sin interrumpir
+              // Return an empty observable to complete the chain without interrupting
               return of(null);
             })
           ).subscribe();
@@ -110,7 +114,7 @@ export class DeviceManagementComponent implements OnInit{
     }
   }
 
-  // Función para agregar un nuevo dispositivo
+  // Opens a dialog to add a new device and updates the list after the device is added
   addDevice() {
     const dialogRef = this.dialog.open(CreateDeviceComponent, {
       width: '600px',
@@ -122,11 +126,11 @@ export class DeviceManagementComponent implements OnInit{
         this.deviceService.addDevice(result).pipe(
           tap(() => {
             console.log('Dispositivo agregado exitosamente.');
-            this.refreshDevices(); // Actualizar la lista de dispositivos
+            this.refreshDevices(); //update the decive list
           }),
           catchError(error => {
             console.error('Error al agregar el dispositivo:', error);
-            // Retornar un observable vacío para completar la cadena sin propagar el error
+            // Return an empty observable to complete the chain without interrupting
             return of(null);
           })
         ).subscribe();
@@ -134,6 +138,7 @@ export class DeviceManagementComponent implements OnInit{
     });
   }
 
+  // Opens a dialog to confirm the deletion of a device and removes it if confirmed and not assigned
   onDelete(device: Device): void {
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '400px',
@@ -142,17 +147,17 @@ export class DeviceManagementComponent implements OnInit{
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Verificar si el dispositivo no está asignado utilizando `deviceAssignmentStatus`
+        // Check if the device is not assigned using `deviceAssignmentStatus`
         if (this.deviceAssignmentStatus[device.serialNumber]) {
-          // Llamar al servicio para eliminar el dispositivo y proteger la llamada con pipe, tap y catchError
+          // Call the service to remove the device and protect the call with pipe, tap and catchError
           this.deviceService.deleteDevice(device).pipe(
             tap(() => {
               console.log('Dispositivo eliminado exitosamente.');
-              this.refreshDevices(); // Actualizar la lista de dispositivos
+              this.refreshDevices(); // Update the device list
             }),
             catchError(error => {
               console.error('Error al eliminar el dispositivo:', error);
-              // Retornar un observable vacío para completar la cadena sin interrumpir
+              // Return an empty observable to complete the chain without interrupting
               return of(null);
             })
           ).subscribe();
@@ -165,14 +170,14 @@ export class DeviceManagementComponent implements OnInit{
     });
   }
 
-  // Función para gestionar tipos de dispositivos
+  // Opens a dialog to manage device types (e.g., editing or adding new types)
   manageDeviceTypes() {
     const dialogRef = this.dialog.open(ManageDeviceTypesComponent, {
       width: '600px',
       height: '500px',
       data: {
-        deviceType: {}, // Puedes pasar datos aquí si lo deseas
-        isEditMode: true // Indica si es modo edición
+        deviceType: {}, 
+        isEditMode: true 
       }
     });
 
@@ -181,28 +186,30 @@ export class DeviceManagementComponent implements OnInit{
     });
   }
 
+  // Fetches and updates the list of devices, logs the result, and handles errors
   refreshDevices() {
     const operation = 'GET Devices';
     
     this.deviceService.getDevices().pipe(
       tap((data) => {
-        console.log(`${operation} - Datos recibidos:`, data);  // Registrar los datos recibidos
+        console.log(`${operation} - Datos recibidos:`, data);  // Record the received data
       }),
       catchError((error) => {
-        console.error(`${operation} falló:`, error);  // Registrar cualquier error
-        return of([]);  // Devolver una lista vacía en caso de error
+        console.error(`${operation} falló:`, error);  // Log any errors
+        return of([]);  // Return an empty list on error
       })
     ).subscribe((data) => {
-      this.devices = data;  // Asignar los dispositivos obtenidos a la propiedad
+      this.devices = data;  // Assign the obtained devices to the property
       this.loadDeviceClientEmailsAndAssignments();
     });
   }
 
+  // Loads the client email and assignment status for each device and stores the results in dictionaries
   loadDeviceClientEmailsAndAssignments() {
     const observables = this.devices.map(device => {
       const serialNumber = device.serialNumber;
   
-      // Obtener el email del cliente y el estado de asignación
+      //function to get the client's email and the assignment status
       return this.clientService.getClientEmailBySerial(serialNumber).pipe(
         map(email => {
           const clientEmail = email || "No asignado";
@@ -218,7 +225,7 @@ export class DeviceManagementComponent implements OnInit{
       );
     });
   
-    // Esperar a que todos los observables se completen
+    // Wait for all observables to complete
     forkJoin(observables).subscribe(() => {
       console.log('Emails y estados de asignación cargados');
     });

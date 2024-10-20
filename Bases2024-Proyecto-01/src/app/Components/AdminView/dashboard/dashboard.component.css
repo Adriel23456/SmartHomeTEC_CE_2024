@@ -19,31 +19,29 @@ mat-toolbar {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  flex-wrap: wrap; /* Para ajustar en pantallas pequeñas */
+  flex-wrap: wrap; 
 }
 
-/* Modernización de las tarjetas */
 .stat-card {
   flex: 1;
-  min-width: 48%; /* Esto asegura que ocupen el 48% del ancho disponible */
+  min-width: 48%; 
   min-height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
   background-color: white;
-  border-radius: 10px; /* Bordes redondeados */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-  overflow: hidden; /* Para mantener el borde redondeado en el header */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efecto de hover */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
 
 .stat-card:hover {
-  transform: translateY(-5px); /* Efecto de elevación en hover */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* Sombra más fuerte en hover */
+  transform: translateY(-5px); 
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); 
 }
 
-/* Encabezado de las tarjetas */
 .stat-title {
   background-color: #30426a;
   color: white;
@@ -59,79 +57,72 @@ mat-toolbar {
   font-size: 2.5em;
   margin: 0;
   padding: 20px;
-  color: #333; /* Color del número */
+  color: #333; 
 }
 
-/* Tabla */
 .table-card {
   width: 100%;
   max-height: 400px;
   display: flex;
   flex-direction: column;
-  border-radius: 10px; /* Bordes redondeados para la tabla */
-  overflow: hidden; /* Para mantener el borde redondeado */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  border-radius: 10px; 
+  overflow: hidden; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .fixed-title {
   font-size: 1.25rem;
   font-weight: bold;
-  margin: 0; /* Eliminar márgenes */
-  padding: 10px; /* Mantener el padding */
+  margin: 0; 
+  padding: 10px; 
   color: white;
-  background-color: #30426a; /* Color de encabezado de la tabla */
+  background-color: #30426a; 
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-/* Contenedor de la tabla */
 .table-container {
   max-height: 250px;
-  overflow-y: auto; /* Permitir desplazamiento vertical */
-  margin-top: 0; /* Ajustar el margen superior */
-  background-color: white; /* Color de fondo de la tabla */
-  border-radius: 0 0 10px 10px; /* Bordes redondeados en la parte inferior */
+  overflow-y: auto; 
+  margin-top: 0; 
+  background-color: white;
+  border-radius: 0 0 10px 10px; 
 }
 
-/* Estilos para la tabla */
 .mat-table {
   width: 100%;
-  border-collapse: collapse; /* Quitar el espacio entre celdas */
-  position: relative; /* Necesario para que el sticky funcione correctamente */
+  border-collapse: collapse;
+  position: relative; 
 }
 
-/* Estilos para los encabezados de la tabla */
 .mat-table th {
-  background-color: #30426a; /* Color de encabezado de la tabla */
-  color: white; /* Color del texto del encabezado */
+  background-color: #30426a; 
+  color: white; 
   font-weight: bold;
-  padding: 12px 15px; /* Espaciado interno */
-  position: sticky; /* Mantener el encabezado en su lugar */
-  top: 0; /* Fijar en la parte superior */
-  z-index: 10; /* Asegurar que esté por encima de las filas */
+  padding: 12px 15px; 
+  position: sticky; 
+  top: 0; 
+  z-index: 10; 
 }
 
-/* Estilos para las celdas */
 .mat-table th,
 .mat-table td {
-  padding: 12px 15px; /* Espaciado interno */
-  text-align: left; /* Alineación a la izquierda */
-  border-bottom: 1px solid #e0e0e0; /* Línea de separación entre filas */
+  padding: 12px 15px;
+  text-align: left; 
+  border-bottom: 1px solid #e0e0e0; 
 }
 
-/* Filas de la tabla */
 .mat-table tr:nth-child(even) {
-  background-color: #f9f9f9; /* Color de fondo para filas pares */
+  background-color: #f9f9f9; 
 }
 
 .mat-table tr:hover {
-  background-color: #f1f1f1; /* Color de fondo al pasar el mouse sobre las filas */
+  background-color: #f1f1f1;
 }
 
-/* Nueva clase para igualar el ancho de las columnas */
 .equal-width {
-  width: 50%; /* Aseguramos que ambas columnas tengan un ancho del 50% */
-  text-align: left; /* Ajustamos la alineación de texto si es necesario */
+  width: 50%; 
+  text-align: left;
 }
 
 

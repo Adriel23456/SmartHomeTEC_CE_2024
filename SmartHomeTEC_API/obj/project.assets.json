@@ -2931,19 +2931,34 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Adriel\\.nuget\\packages\\": {}
+<<<<<<< HEAD
+    "C:\\Users\\User\\.nuget\\packages\\": {}
+=======
+    "/home/spark/.nuget/packages/": {}
+>>>>>>> 26da93fc45837241fb411949939ba2bb31d89760
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Adriel\\Desktop\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
+<<<<<<< HEAD
+      "projectUniqueName": "C:\\Users\\User\\OneDrive\\Documentos\\VI semestre\\Bases\\revision_smart\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
       "projectName": "SmartHomeTEC_API",
-      "projectPath": "C:\\Users\\Adriel\\Desktop\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
-      "packagesPath": "C:\\Users\\Adriel\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Adriel\\Desktop\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\obj\\",
+      "projectPath": "C:\\Users\\User\\OneDrive\\Documentos\\VI semestre\\Bases\\revision_smart\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\SmartHomeTEC_API.csproj",
+      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\User\\OneDrive\\Documentos\\VI semestre\\Bases\\revision_smart\\SmartHomeTEC_CE_2024\\SmartHomeTEC_API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Adriel\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
+=======
+      "projectUniqueName": "/home/spark/Documents/Projects/SmartHomeTEC_CE_2024/SmartHomeTEC_API/SmartHomeTEC_API.csproj",
+      "projectName": "SmartHomeTEC_API",
+      "projectPath": "/home/spark/Documents/Projects/SmartHomeTEC_CE_2024/SmartHomeTEC_API/SmartHomeTEC_API.csproj",
+      "packagesPath": "/home/spark/.nuget/packages/",
+      "outputPath": "/home/spark/Documents/Projects/SmartHomeTEC_CE_2024/SmartHomeTEC_API/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/home/spark/.nuget/NuGet/NuGet.Config"
+>>>>>>> 26da93fc45837241fb411949939ba2bb31d89760
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3018,7 +3033,11 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.306/PortableRuntimeIdentifierGraph.json"
+<<<<<<< HEAD
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+=======
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.403/PortableRuntimeIdentifierGraph.json"
+>>>>>>> 26da93fc45837241fb411949939ba2bb31d89760
       }
     }
   }

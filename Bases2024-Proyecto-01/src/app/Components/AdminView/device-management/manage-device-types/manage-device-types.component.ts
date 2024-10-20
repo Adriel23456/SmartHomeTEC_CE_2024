@@ -32,7 +32,7 @@ import { catchError, of, tap } from 'rxjs';
 })
 export class ManageDeviceTypesComponent {
 
-  selectedDeviceType: DeviceType | null = null;  // Tipo seleccionado
+  selectedDeviceType: DeviceType | null = null;  
   deviceTypes: DeviceType[] = []; 
   deviceType: DeviceType;
   isEditMode: boolean;
@@ -43,19 +43,20 @@ export class ManageDeviceTypesComponent {
     public dialogRef: MatDialogRef<ManageDeviceTypesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { deviceType: DeviceType, isEditMode: boolean }
   ) {
-    this.deviceType = { ...data.deviceType };  // Hacemos una copia del tipo
+    this.deviceType = { ...data.deviceType };  
     this.isEditMode = data.isEditMode;
   }
 
   ngOnInit(): void {
-    // obtener tipos de dispositivo al inicializar el componente
+    // Fetch the list of device types when the component initializes
     this.refreshDeviceTypes();
   }
 
   onDeleteType(selectedDeviceType: DeviceType): void {
+    // Deletes the selected device type if it's not in use
     if (this.selectedDeviceType) {
       if(this.deviceTypeService.isTypeNameInUse(this.selectedDeviceType)){
-
+        // Open confirmation dialog before deleting the device type
         const dialogRef = this.dialog.open(DeleteDialogComponent, {
           width: '400px',
           data: { message: `¿Seguro que quieres borrar el tipo: ${selectedDeviceType.name}?` }
@@ -63,26 +64,27 @@ export class ManageDeviceTypesComponent {
       
         dialogRef.afterClosed().subscribe(result => {
           if (result) {
-            // El usuario confirmó que desea borrar
+            // User confirmed the deletion
             this.deviceTypeService.deleteDeviceType(selectedDeviceType).pipe(
               tap(() => {
                 console.log('Tipo de dispositivo eliminado exitosamente.');
-                this.refreshDeviceTypes(); // Refrescar la lista
-                this.selectedDeviceType = null; // reinicia el desplegable
+                this.refreshDeviceTypes(); // Refresh the list of device types after deletion
+                this.selectedDeviceType = null; // Reset the selected device type
               }),
               catchError((error) => {
                 console.error('Error al eliminar el tipo de dispositivo:', error);
-                // Retornar un observable vacío para completar la cadena sin interrumpir
+                // Return an empty observable to continue the stream without errors
                 return of(null);
               })
             ).subscribe();
           } else {
-            // El usuario canceló la acción de borrar
+            // User cancelled the deletion action
             console.log('Acción de borrar cancelada');
           }
         });
 
       } else{
+         // If the device type is in use, show an error message dialog
         this.showErrorDialog('No se puede eliminar el tipo de dispositivo porque está en uso.');
         return;
       }
@@ -90,6 +92,7 @@ export class ManageDeviceTypesComponent {
   }
 
   showErrorDialog(errorMessage: string): void {
+    // Opens a dialog to display an error message
     this.dialog.open(ErrorMessageComponent, {
       width: '400px',
       data: { message: errorMessage }
@@ -97,23 +100,24 @@ export class ManageDeviceTypesComponent {
   }
 
   onCancel(): void {
+    // Closes the current dialog without taking action
     this.dialogRef.close();
   }
 
   onCreateType(): void{
+    // Opens the dialog for creating a new device type
     const dialogRef = this.dialog.open(CreateTypeComponent, {
       width: '600px',
       height: '500px',
       data: {
         deviceType: {}, 
-        isEditMode: false // Indica si es modo edición
+        isEditMode: false
       }
     });
-    // Este bloque se ejecuta después de que el diálogo se cierra
+    // Executes after the dialog is closed
     dialogRef.afterClosed().subscribe(result => {
-      if (result) { // Si el subcomponente devolvió un nuevo tipo de dispositivo
+      if (result) { 
         console.log('El diálogo se cerró con un resultado:', result);
-        // Llamamos al servicio para añadir el nuevo tipo de dispositivo
         this.deviceTypeService.addDeviceType(result).pipe(
           tap(() => {
             console.log('Tipo de dispositivo agregado exitosamente.');
@@ -121,7 +125,6 @@ export class ManageDeviceTypesComponent {
           }),
           catchError((error) => {
             console.error('Error al agregar el tipo de dispositivo:', error);
-            // Retornar un observable vacío para completar la cadena sin interrumpir
             return of(null);
           })
         ).subscribe();
@@ -131,35 +134,35 @@ export class ManageDeviceTypesComponent {
 
   refreshDeviceTypes() {
     this.deviceTypeService.getDeviceTypes().pipe(
+      // Fetches the list of available device types
       tap((types: DeviceType[]) => {
         console.log('Tipos de dispositivo obtenidos:', types);
       }),
       catchError((error) => {
         console.error('Error al obtener los tipos de dispositivo:', error);
-        // Retornar una lista vacía en caso de error
         return of([]);
       })
     ).subscribe((types: DeviceType[]) => {
-      this.deviceTypes = types; // Actualizamos la lista de tipos
+      this.deviceTypes = types; 
     });
   }
 
   onEditType(): void {
     if (this.selectedDeviceType) {
-      // Guardar una copia del tipo original antes de abrir el diálogo
-      const originalType = { ...this.selectedDeviceType }; // Copia del tipo original
+      // Saves a copy of the original device type before editing
+      const originalType = { ...this.selectedDeviceType }; 
 
       const dialogRef = this.dialog.open(EditTypeComponent, {
         width: '600px',
         height: '500px',
         data: {
-          deviceType: { ...this.selectedDeviceType } // Hacemos una copia del tipo seleccionado para editar
+          deviceType: { ...this.selectedDeviceType } // Pass a copy of the selected device type to the dialog
         }
       });
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          // Lógica para actualizar el tipo de dispositivo en la base de datos, ahora con el original y el actualizado
+          // Updates the device type in the database using the service
           this.deviceTypeService.updateDeviceType(originalType, result).pipe(
             tap(() => {
               console.log('Tipo de dispositivo actualizado exitosamente.');
@@ -167,7 +170,7 @@ export class ManageDeviceTypesComponent {
             }),
             catchError(error => {
               console.error('Error al actualizar el tipo de dispositivo:', error);
-              // Retornar un observable vacío para completar la cadena sin interrumpir
+              // Return an empty observable to complete the stream
               return of(null);
             })
           ).subscribe();

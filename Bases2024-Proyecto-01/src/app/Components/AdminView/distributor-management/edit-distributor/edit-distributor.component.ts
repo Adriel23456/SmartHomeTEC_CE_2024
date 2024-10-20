@@ -30,22 +30,23 @@ export class EditDistributorComponent implements OnInit {
   editDistributorForm!: FormGroup;
   regions: Region[] = [];
 
-  constructor(
+  constructor(// Constructor for the component
     private distributorService: DistributorService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditDistributorComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { distributor: Distributor },
   ) {}
 
+  // Lifecycle method that runs on initialization
   ngOnInit(): void {
 
-    // Obtener las regiones del servicio
+    // Fetch regions from the service
     this.distributorService.getRegions().subscribe((regions: Region[]) => {
       console.log('regiones disponibles: ', regions);
       this.regions = regions;
     });
 
-    // Inicializar el formulario con validaciones
+    // Initialize the form with validations
     this.editDistributorForm = this.fb.group({
       legalNum: [{value: this.data.distributor.legalNum, disabled: true}, [Validators.required]],
       name: [this.data.distributor.name, [Validators.required]],
@@ -55,11 +56,11 @@ export class EditDistributorComponent implements OnInit {
     });
   }
 
-  onRegionSelected(region: string): void {
+  onRegionSelected(region: string): void { // Method to handle region selection
     const selectedRegion = this.regions.find(r => r.region === region);
     
     if (selectedRegion) {
-      // Actualizar los campos de país y continente en el formulario
+      // Update the country and continent fields in the form
       this.editDistributorForm.patchValue({
         country: selectedRegion.country,
         continent: selectedRegion.continent,
@@ -67,22 +68,22 @@ export class EditDistributorComponent implements OnInit {
     }
   }
 
-  onSave(): void {
+  onSave(): void { // Method to save the distributor changes
     if (this.editDistributorForm.valid) {
-      // Asigna manualmente los campos 
+      // Manually assign the fields
       const updatedDistributor: Distributor = {
-        legalNum: this.data.distributor.legalNum, // Mantener el número legal (no editable)
+        legalNum: this.data.distributor.legalNum, 
         name: this.editDistributorForm.get('name')?.value,
         region: this.editDistributorForm.get('region')?.value,
         country: this.editDistributorForm.get('country')?.value,
         continent: this.editDistributorForm.get('continent')?.value
       };
-      this.dialogRef.close(updatedDistributor); // Retorna el distribuidor actualizado  
+      this.dialogRef.close(updatedDistributor); 
       }
     }
   
 
-  onCancel(): void {
+  onCancel(): void { // Method to cancel the editing process
     this.dialogRef.close();
   }
 }
