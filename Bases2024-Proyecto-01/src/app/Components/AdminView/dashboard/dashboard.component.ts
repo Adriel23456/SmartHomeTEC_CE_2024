@@ -34,10 +34,12 @@ export class DashboardComponent implements OnInit {
   devicesByRegion: { region: string; deviceCount: number }[] = [];
 
   constructor(
+    //service initialization
     private deviceService: DeviceService,
     private distributorService: DistributorService
   ) {}
 
+  //data inilization
   ngOnInit(): void {
     this.deviceService.getAssignedDevices().subscribe((data) => {
       this.devices = data;   
@@ -49,9 +51,9 @@ export class DashboardComponent implements OnInit {
       this.totalManagedDevices = length;
     });
 
-    // Llamamos al servicio de regiones para obtener la lista de regiones
+    //gettin the region list using the distributorService
     this.distributorService.getRegions().subscribe((regions: Region[]) => {
-      // Iteramos sobre cada región para obtener el conteo de dispositivos
+      //Iterates over the list to get the number of devices
       regions.forEach(region => {
         this.deviceService.getDeviceCountByRegion(region.region).subscribe(count => {
           this.devicesByRegion.push({ region: region.region, deviceCount: count });
@@ -59,7 +61,7 @@ export class DashboardComponent implements OnInit {
       });
     });
 
-    // Llamamos al servicio de dispositivos para obtener el promedio de dispositivos por usuario 
+    // The device service is called to get the average number of devices per user
     this.deviceService.getAvgDevicesPerUser().subscribe((avg : number) => {
       this.avgDevicesPerUser = Math.round(avg);
     });
