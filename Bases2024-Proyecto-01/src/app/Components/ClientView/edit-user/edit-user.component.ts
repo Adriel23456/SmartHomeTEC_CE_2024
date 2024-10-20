@@ -28,17 +28,17 @@ import { DistributorService, Region } from '../../../Services/Distributor/Distri
   styleUrls: ['./edit-user.component.css']
 })
 export class EditUserComponent {
-  editUserForm: FormGroup;
-  regions: Region[] = []; // Arreglo para almacenar las regiones
+  editUserForm: FormGroup;// Form group for user editing form
+  regions: Region[] = [];  // Array to store regions fetched from DistributorService
 
   constructor(
-    private clientService: ClientService,
-    private distributorService: DistributorService,
-    private dialog: MatDialog,
-    private dialogRef: MatDialogRef<EditUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { client: Client },
-    private fb: FormBuilder
-  ) {
+    private clientService: ClientService,// Service for client-related logic
+    private distributorService: DistributorService,// Service for fetching region-related data
+    private dialog: MatDialog,// Dialog service for displaying error dialogs
+    private dialogRef: MatDialogRef<EditUserComponent>,// Reference to the dialog instance
+    @Inject(MAT_DIALOG_DATA) public data: { client: Client },// Data passed into the dialog, containing the client to edit
+    private fb: FormBuilder// FormBuilder for constructing the form
+  ) { // Initializing the form with client data
     this.editUserForm = this.fb.group({
       email: [{ value: this.data.client.email, disabled: true }, [Validators.required, Validators.email]],
       password: [this.data.client.password, [Validators.required, Validators.minLength(4)]],
@@ -50,26 +50,24 @@ export class EditUserComponent {
       lastName: [this.data.client.lastName, Validators.required]
     });
   }
-
+// Fetch regions from the DistributorService on initialization
   ngOnInit(): void {
-    // Obtener las regiones del servicio
     this.distributorService.getRegions().subscribe((regions: Region[]) => {
       this.regions = regions;
     });
   }
-  
+  // Handles region selection, updates the country and continent fields based on the selected region
   onRegionSelected(region: string): void {
     const selectedRegion = this.regions.find(r => r.region === region);
-    
+    // Update form fields for country and continent based on the selected region
     if (selectedRegion) {
-      // Actualizar los campos de país y continente en el formulario
       this.editUserForm.patchValue({
         country: selectedRegion.country,
         continent: selectedRegion.continent,
       });
     }
   }
-
+   // Opens an error dialog when needed
   showErrorDialog(errorMessage: string): void {
     this.dialog.open(ErrorMessageComponent, {
       width: '400px',
@@ -80,16 +78,16 @@ export class EditUserComponent {
   onSave(): void {
     if (this.editUserForm.valid) {
 
-      // Habilitar temporalmente los campos deshabilitados para recoger sus valores
+      // Handles form submission when saving the edited user
       this.editUserForm.get('continent')?.enable();
       this.editUserForm.get('country')?.enable();
       this.editUserForm.get('email')?.enable();
-
+       // Prepare full name from form values
       const firstName = this.editUserForm.value.firstName;
-      const middleName = this.editUserForm.value.middleName || ''; // Si no hay segundo nombre, se deja vacio
+      const middleName = this.editUserForm.value.middleName || '';// Empty if middle name not provided
       const lastName = this.editUserForm.value.lastName;
-      const fullName = `${firstName} ${middleName} ${lastName}`; // Usamos trim() para eliminar espacios extra si no hay segundo nombre
-  
+      const fullName = `${firstName} ${middleName} ${lastName}`; 
+  // Construct new client object with updated values
       const newClient: Client = {
         email: this.editUserForm.value.email,
         password: this.editUserForm.value.password,
@@ -101,16 +99,16 @@ export class EditUserComponent {
         middleName: middleName,
         lastName: lastName
       };
-
+// Validate email format before proceeding
       if(!this.clientService.isEmailValid(newClient.email)){
         this.showErrorDialog('El correo electrónico no es valido. Por favor, ingresar otro Email.');
         return;
-      }
-      this.dialogRef.close(newClient); // Cierra el diálogo y pasa el nuevo cliente al componente padre
+      }// Close the dialog and pass the updated client object to the parent component
+      this.dialogRef.close(newClient); 
     }
   }
 
   onCancel(): void {
-    this.dialogRef.close(); // Cierra el diálogo sin realizar ninguna acción
+    this.dialogRef.close(); 
   }
 }

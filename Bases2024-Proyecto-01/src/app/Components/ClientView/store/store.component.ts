@@ -54,21 +54,18 @@ export class StoreComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtén el usuario actual
+    // Get the current logged-in user
     const currentUser: Client | null = this.authService.currentUserValue;
-    // Si hay un usuario, establece su región; de lo contrario, 'ALL'
     if (currentUser && currentUser.region) {
       this.selectedRegion = currentUser.region;
     } else {
-      this.selectedRegion = 'All';
+      this.selectedRegion = 'All';// Default region if none is set
     }
-    // Cargar distribuidores y luego dispositivos
+    // Load distributors on component initialization
     this.loadDistributors();
   }
 
-  /**
-   * Carga todos los distribuidores y crea un mapa de legalNum a region.
-   */
+  //Load all distributors and create a map of legalNum to region.
   loadDistributors(): void {
     this.distributorService.getDistributors().subscribe({
       next: (distributors) => {
@@ -77,40 +74,35 @@ export class StoreComponent implements OnInit {
         console.log('Distribuidores cargados:', this.distributors);
         console.log('Mapa de distribuidores:', this.distributorMap);
 
-        // Cargar dispositivos después de cargar distribuidores
         this.loadDevices();
       },
       error: (error) => {
         console.error('Error al cargar distribuidores:', error);
-        // Manejar el error si es necesario
+        // Handle error if distributor loading fails
       }
     });
   }
 
-  /**
-   * Carga todos los dispositivos desde la API.
-   */
+  // Load all devices from the API.
   loadDevices(): void {
     this.deviceService.getDevices().pipe(
       tap((devices) => {
-        this.devices = devices;
+        this.devices = devices;// Store the loaded devices
         console.log('Dispositivos cargados:', this.devices);
-        this.filterProducts();
+        this.filterProducts();// Filter products after loading devices
       }),
       catchError((error) => {
         console.error('Error al cargar dispositivos:', error);
-        // Manejar el error si es necesario
-        return of([]);
+        return of([]);// Return an empty observable if error occurs
       })
     ).subscribe();
   }
 
-  /**
-   * Filtra los dispositivos basándose en la región seleccionada.
-   */
+  //Filters the devices based on the selected region.
   filterProducts() {
-    console.log('selectedRegion:', this.selectedRegion);
-    const normalizedSelectedRegion = this.normalizeString(this.selectedRegion);
+    console.log('selectedRegion:', this.selectedRegion);// Log selected region for debugging
+    const normalizedSelectedRegion = this.normalizeString(this.selectedRegion);// Normalize region string for comparison
+
 
     this.filteredProducts = this.devices.filter((device) => {
       console.log('Revisando dispositivo:', device);
@@ -120,25 +112,23 @@ export class StoreComponent implements OnInit {
       const deviceRegion = this.distributorMap.get(device.legalNum);
       console.log(`Dispositivo ${device.serialNumber} región:`, deviceRegion);
 
-      const normalizedDeviceRegion = this.normalizeString(deviceRegion || '');
-      return normalizedDeviceRegion === normalizedSelectedRegion;
+      const normalizedDeviceRegion = this.normalizeString(deviceRegion || '');// Normalize the device region
+      return normalizedDeviceRegion === normalizedSelectedRegion;// Return true if region matches
     });
 
-    console.log('Productos después del filtrado:', this.filteredProducts);
+    console.log('Productos después del filtrado:', this.filteredProducts);// Log the filtered products
   }
 
   /**
-   * Normaliza una cadena eliminando acentos y convirtiéndola a minúsculas.
-   * @param str Cadena a normalizar
-   * @returns Cadena normalizada
+   * Normalizes a string by removing accents and converting to lowercase.
+   * @param str String to normalize
+   * @returns Normalized string
    */
   normalizeString(str: string): string {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   }
 
-  /**
-   * Filtra y busca dispositivos basándose en el término de búsqueda y la región seleccionada.
-   */
+  //Filters and searches devices based on the search term and selected region.
   searchFunction() {
     const term = this.searchTerm.trim().toLowerCase();
     this.filteredProducts = this.devices.filter((device) => {
@@ -154,12 +144,15 @@ export class StoreComponent implements OnInit {
     });
   }
 
-  // Función que limpia el campo de búsqueda y reinicia la lista de productos
+  //Clears the search field and resets the product list.
   clearSearch() {
-    this.searchTerm = ''; // Limpia el campo de búsqueda
-    this.searchFunction(); // Actualiza la lista para mostrar todos los productos
+    this.searchTerm = ''; // Clear the search term
+    this.searchFunction(); // Update the list to show all products
   }
-
+/**
+   * Generates an order and PDF invoice for the selected product.
+   * @param product Product for which to generate the invoice
+   */
   generateFact(product: any): void {
     const currentDate = new Date();
     const formattedDate = `${String(currentDate.getDate()).padStart(2, '0')}-${String(
@@ -186,12 +179,12 @@ export class StoreComponent implements OnInit {
             clientEmail: this.authService.currentUserValue?.email || '',
           };
   
-          // Agregar la orden al servicio
+          // Create the order
           return this.ordersService.addOrder(newOrder).pipe(
             tap((order) => {
               console.log('Orden agregada:', order);
   
-              // Generar el PDF
+              // Add order details to the PDF
               const doc = new jsPDF();
               doc.setFontSize(16);
               doc.text(`Detalles de compra del ${product.name}`, 10, 10);
@@ -212,20 +205,18 @@ export class StoreComponent implements OnInit {
                 y
               );
   
-              // Guarda el PDF
+              // Save PDF
               doc.save(`${product.name}_Factura.pdf`);
               this.generateGarant(product);
             }),
             catchError((error) => {
               console.error('Error al agregar la orden:', error);
-              // Manejar el error si es necesario
               return of(null);
             })
           );
         }),
         catchError((error) => {
           console.error('Error al obtener el conteo de órdenes:', error);
-          // Manejar el error si es necesario
           return of(null);
         })
       )
@@ -233,6 +224,7 @@ export class StoreComponent implements OnInit {
   }  
 
   generateGarant(product: any): void {
+    // Get the current date and format it for display
     const currentDate = new Date();
     const formattedDate = `${String(currentDate.getDate()).padStart(2, '0')}-${String(
       currentDate.getMonth() + 1
@@ -240,21 +232,21 @@ export class StoreComponent implements OnInit {
     const formattedDateFinish = `${String(currentDate.getDate()).padStart(2, '0')}-${String(
       currentDate.getMonth() + 1
     ).padStart(2, '0')}-${currentDate.getFullYear() + 1}`;
-  
+  // Retrieve the current user from the AuthenticationService
     const currentUser: Client | null = this.authService.currentUserValue;
-  
+  // Handle case where the current user is not found
     if (!currentUser) {
       console.error('No se encontró el usuario actual.');
-      // Manejar el error si es necesario
       return;
     }
   
-    // Generar el PDF
+    
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text(`Certificado de garantía del ${product.name}`, 10, 10);
-  
+  // Set the initial vertical position (y-axis) for the content
     let y = 20;
+    // Add content to the PDF document
     doc.text(
       `Compra realizada por ${currentUser.firstName} ${currentUser.middleName} ${currentUser.lastName}`,
       10,
@@ -273,10 +265,10 @@ export class StoreComponent implements OnInit {
     y += 10;
     doc.text(`La garantía termina el ${formattedDateFinish}`, 10, y);
   
-    // Guarda el PDF
+    // Save the PDF file with a name based on the product name
     doc.save(`${product.name}_Garantía.pdf`);
   
-    // Actualizar el estado del dispositivo con protección
+     // Update the device state after generating the warranty certificate
     this.updateState(product.serialNumber, 'Local');
   }  
 
@@ -287,8 +279,8 @@ export class StoreComponent implements OnInit {
       }),
       catchError((error) => {
         console.error(`Error al actualizar el estado del dispositivo con serialNumber ${serialNumber}:`, error);
-        // Manejar el error si es necesario
-        return of(null); // Continuar el flujo aunque ocurra un error
+        // Handle error if necessary
+        return of(null); // Continue flow even in case of an error
       })
     ).subscribe();
   }
@@ -300,30 +292,32 @@ export class StoreComponent implements OnInit {
     });
   }
   openDialogEditUser(): void {
+    // Get the current user from the authentication service
     const currentUser = this.authService.currentUserValue;
     console.log('user', currentUser);
+    // Open the edit user dialog with the current user data
     const dialogRef = this.dialog.open(EditUserComponent, {
       width: '600px',
       height: '550px',
-      data: { client: currentUser }
+      data: { client: currentUser }// Pass the current user data to the dialog
     });
-  
+  // Handle the result after the dialog is closed
     dialogRef.afterClosed().pipe(
       switchMap(result => {
         if (result) {
-          // Actualizar el cliente con los datos nuevos
+          // Update the client with the new data
           return this.clientService.updateClient(currentUser, result).pipe(
             tap(() => {
               console.log('Cliente actualizado:', result);
             }),
             catchError(error => {
               console.error('Error al actualizar el cliente:', error);
-              // Manejar el error si es necesario
+              // Handle the error if necessary
               return of(null);
             })
           );
         } else {
-          // Si no hay resultado (el diálogo fue cancelado), retornamos un Observable vacío
+          // If no result (dialog was canceled), return an empty observable
           return of(null);
         }
       })
